@@ -1,0 +1,3 @@
+all = [
+    "analyser", "guids", "TrustedGUIDs"
+]

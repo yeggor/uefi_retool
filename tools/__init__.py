@@ -1,4 +1,4 @@
 all = [
-    "parse_firmware", 
+    "get_efi_images", 
     "update_edk2_guids"
 ]
