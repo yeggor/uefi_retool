@@ -70,7 +70,7 @@ def update(edk2_path):
 
 def main():
     if len(sys.argv) != 2:
-        print("[*] Usage: $ python {0} <EDK2_PATH>".format(sys.argv[0]))
+        print("[*] Usage: $python {0} <EDK2_PATH>".format(sys.argv[0]))
         return False
     if get_guids_list(sys.argv[1]):
         os.system("COPY " + DATA_PATH + "\\edk2_guids.py " + GUIDS + "\\edk2_guids.py")
