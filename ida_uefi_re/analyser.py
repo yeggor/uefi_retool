@@ -5,20 +5,34 @@ import json
 
 from guids import edk_guids, ami_guids, edk2_guids
 
+OFFSET = {
+    "InstallProtocolInterface": 0x80,
+    "ReinstallProtocolInterface": 0x88,
+    "UninstallProtocolInterface": 0x90,
+    "HandleProtocol": 0x98,
+    "RegisterProtocolNotify": 0xA8,
+    "OpenProtocol": 0x118,
+    "CloseProtocol": 0x120,
+    "OpenProtocolInformation": 0x128,
+    "ProtocolsPerHandle": 0x130,
+    "LocateHandleBuffer": 0x138,
+    "LocateProtocol": 0x140,
+    "InstallMultipleProtocolInterfaces": 0x148,
+    "UninstallMultipleProtocolInterfaces": 0x150,
+}
 
 LEA_NUM = {
     "InstallProtocolInterface": 2,
-#   "ReinstallProtocolInterface": x,
-#   "UninstallProtocolInterface": x,
+    "ReinstallProtocolInterface": 1,
+    "UninstallProtocolInterface": 1,
     "HandleProtocol": 1,
     "RegisterProtocolNotify": 1,
-#   "OpenProtocol": x,
-#   "CloseProtocol": x,
-#   "OpenProtocolInformation": x,
-#   "ProtocolsPerHandle": x,
+    "OpenProtocol": 1,
+    "CloseProtocol": 1,
+    "OpenProtocolInformation": 1,
     "LocateHandleBuffer": 2,
     "LocateProtocol": 1,
-    "InstallMultipleProtocolInterfaces": 3,
+#   "InstallMultipleProtocolInterfaces": 2,
 #   "UninstallMultipleProtocolInterfaces": x,
 }
 
@@ -45,6 +59,7 @@ class Analyser(object):
         idc.Til2Idb(-1, "EFI_SYSTEM_TABLE")
         idc.Til2Idb(-1, "EFI_RUNTIME_SERVICES")
         idc.Til2Idb(-1, "EFI_BOOT_SERVICES")
+
 
         self.gBServices = {}
         self.gBServices["InstallProtocolInterface"] = []
@@ -91,43 +106,43 @@ class Analyser(object):
     def get_boot_services(self):
         for ea_start in idautils.Functions():
             for ea in idautils.FuncItems(ea_start):
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x80):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["InstallProtocolInterface"]):
                     if self.gBServices["InstallProtocolInterface"].count(ea) == 0:
                         self.gBServices["InstallProtocolInterface"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x88):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["ReinstallProtocolInterface"]):
                     if self.gBServices["ReinstallProtocolInterface"].count(ea) == 0:
                         self.gBServices["ReinstallProtocolInterface"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x90):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["UninstallProtocolInterface"]):
                     if self.gBServices["UninstallProtocolInterface"].count(ea) == 0:
                         self.gBServices["UninstallProtocolInterface"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x98):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["HandleProtocol"]):
                     if self.gBServices["HandleProtocol"].count(ea) == 0:
                         self.gBServices["HandleProtocol"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0xA8):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["RegisterProtocolNotify"]):
                     if self.gBServices["RegisterProtocolNotify"].count(ea) == 0:
                         self.gBServices["RegisterProtocolNotify"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x118):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["OpenProtocol"]):
                     if self.gBServices["OpenProtocol"].count(ea) == 0:
                         self.gBServices["OpenProtocol"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x120):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["CloseProtocol"]):
                     if self.gBServices["CloseProtocol"].count(ea) == 0:
                         self.gBServices["CloseProtocol"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x128):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["OpenProtocolInformation"]):
                     if self.gBServices["OpenProtocolInformation"].count(ea) == 0:
                         self.gBServices["OpenProtocolInformation"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x130):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["ProtocolsPerHandle"]):
                     if self.gBServices["ProtocolsPerHandle"].count(ea) == 0:
                         self.gBServices["ProtocolsPerHandle"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x138):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["LocateHandleBuffer"]):
                     if self.gBServices["LocateHandleBuffer"].count(ea) == 0:
                         self.gBServices["LocateHandleBuffer"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x140):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["LocateProtocol"]):
                     if self.gBServices["LocateProtocol"].count(ea) == 0:
                         self.gBServices["LocateProtocol"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x148):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["InstallMultipleProtocolInterfaces"]):
                     if self.gBServices["InstallMultipleProtocolInterfaces"].count(ea) == 0:
                         self.gBServices["InstallMultipleProtocolInterfaces"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == 0x150):
+                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["UninstallMultipleProtocolInterfaces"]):
                     if self.gBServices["UninstallMultipleProtocolInterfaces"].count(ea) == 0:
                         self.gBServices["UninstallMultipleProtocolInterfaces"].append(ea)
     
@@ -143,16 +158,8 @@ class Analyser(object):
                 idc.MakeComm(address, "EFI_BOOT_SERVICES->{0}".format(service))
 
     def get_protocols(self):
-        names = [
-            "InstallProtocolInterface",
-            "HandleProtocol",
-            "RegisterProtocolNotify",
-            "LocateHandleBuffer",
-            "LocateProtocol",
-            "InstallMultipleProtocolInterfaces"
-        ]
         for service_name in self.gBServices:
-            if service_name in names:
+            if service_name in LEA_NUM.keys():
                 for address in self.gBServices[service_name]:
                     ea = address
                     lea_counter = 0
