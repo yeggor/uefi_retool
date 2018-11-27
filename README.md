@@ -11,8 +11,8 @@
  * "IDA_PATH" and "IDA64_PATH" are paths to IDA's executable files
 ### Additional tools
  * `tools\get_efi_images.py` is a script to get all PE-images from firmware file
-    - usage: `python C:\Work\Github\UEFI_RETool\tools\get_efi_images.py <FIRMWARE_FILE_NAME>`
+    - usage: `python get_efi_images.py <FIRMWARE_FILE_NAME>`
     - by default files are dumped into the "PE_DIR" directory
  * `tools\update_edk2_guids.py` is a script to update protocol GUIDs list from `conf` directory
-    - usage: `python C:\Work\Github\UEFI_RETool\tools\update_edk2_guids.py <EDK2_PATH>`
+    - usage: `python update_edk2_guids.py <EDK2_PATH>`
     - current version of EDK2 your can get from https://github.com/tianocore/edk2
