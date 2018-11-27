@@ -3,9 +3,7 @@
  * Copy "ida_uefi_re" directory to <IDA_DIRECTORY>
  * Define path to firmware file in `config.json` file
  * Define path to `ida.exe` and `ida64.exe` in `config.json` file
- * Run `python analyse_fw.py`
- * Check `log` directory
-    - example: `log\result_log_all_tpx1c.log`
+ * Run `python analyse_fw.py` and read `help` message
 ### Configuration file content (`config.json`):
  * "FW_PATH" is a path to your firmware file for analysis
  * "PE_DIR" is a folder that consist all PE-images from firmware file

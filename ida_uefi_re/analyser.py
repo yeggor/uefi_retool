@@ -176,7 +176,8 @@ class Analyser(object):
                             protocol_record["address"] = xref
                             protocol_record["service"] = service_name
                             protocol_record["guid"] = CurrentGUID
-                            self.Protocols["All"].append(protocol_record)
+                            if self.Protocols["All"].count(protocol_record) == 0:
+                                self.Protocols["All"].append(protocol_record)
 
     def get_prot_names(self):
         for index in range(len(self.Protocols["All"])):

@@ -5,7 +5,7 @@ import glob
 import re
 
 DATA_PATH = "..\\conf"
-GUIDS = "..\\ida\\guids"
+GUIDS = "..\\ida_uefi_re\\guids"
 
 def get_py(string):
     new_string = "edk2_guids = {\n"
@@ -35,7 +35,7 @@ def get_py(string):
     return new_string
 
 
-def get_guids_list(edk2_path):
+def get_guids_list(edk2_path, data_path, guids_path):
     if path.isdir(edk2_path) == 0:
         print("[-] Error, check edk2 path")
         return False
@@ -62,8 +62,10 @@ def get_guids_list(edk2_path):
         conf.write(py_content)
     return True
 
-def update(edk2_path):    
-    if get_guids_list(edk2_path):
+def update(edk2_path, data_path, guids_path):
+    if get_guids_list(edk2_path, data_path, guids_path):
+        os.system("COPY " + data_path + "\\edk2_guids.py " + guids_path + "\\edk2_guids.py")
+        print("[*] Files {0}, {1} was successfully updated".format(data_path + "\\edk2_guids.conf", data_path + "\\edk2_guids.py"))
         return True
     else:
         return False
@@ -72,7 +74,7 @@ def main():
     if len(sys.argv) != 2:
         print("[*] Usage: $python {0} <EDK2_PATH>".format(sys.argv[0]))
         return False
-    if get_guids_list(sys.argv[1]):
+    if get_guids_list(sys.argv[1], DATA_PATH, GUIDS):
         os.system("COPY " + DATA_PATH + "\\edk2_guids.py " + GUIDS + "\\edk2_guids.py")
         print("[*] Files {0}, {1} was successfully updated".format(DATA_PATH + "\\edk2_guids.conf", DATA_PATH + "\\edk2_guids.py"))
         return True
