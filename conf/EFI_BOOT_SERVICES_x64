@@ -1,0 +1,47 @@
+00000000 EFI_BOOT_SERVICES struc ; (sizeof=0x178, align=0x8, copyof_68)
+00000000 Hdr             EFI_TABLE_HEADER ?
+00000018 RaiseTPL        dq ?                    ; offset
+00000020 RestoreTPL      dq ?                    ; offset
+00000028 AllocatePages   dq ?                    ; offset
+00000030 FreePages       dq ?                    ; offset
+00000038 GetMemoryMap    dq ?                    ; offset
+00000040 AllocatePool    dq ?                    ; offset
+00000048 FreePool        dq ?                    ; offset
+00000050 CreateEvent     dq ?                    ; offset
+00000058 SetTimer        dq ?                    ; offset
+00000060 WaitForEvent    dq ?                    ; offset
+00000068 SignalEvent     dq ?                    ; offset
+00000070 CloseEvent      dq ?                    ; offset
+00000078 CheckEvent      dq ?                    ; offset
+00000080 InstallProtocolInterface dq ?           ; offset
+00000088 ReinstallProtocolInterface dq ?         ; offset
+00000090 UninstallProtocolInterface dq ?         ; offset
+00000098 HandleProtocol  dq ?                    ; offset
+000000A0 Reserved        dq ?                    ; offset
+000000A8 RegisterProtocolNotify dq ?             ; offset
+000000B0 LocateHandle    dq ?                    ; offset
+000000B8 LocateDevicePath dq ?                   ; offset
+000000C0 InstallConfigurationTable dq ?          ; offset
+000000C8 LoadImage       dq ?                    ; offset
+000000D0 StartImage      dq ?                    ; offset
+000000D8 Exit            dq ?                    ; offset
+000000E0 UnloadImage     dq ?                    ; offset
+000000E8 ExitBootServices dq ?                   ; offset
+000000F0 GetNextMonotonicCount dq ?              ; offset
+000000F8 Stall           dq ?                    ; offset
+00000100 SetWatchdogTimer dq ?                   ; offset
+00000108 ConnectController dq ?                  ; offset
+00000110 DisconnectController dq ?               ; offset
+00000118 OpenProtocol    dq ?                    ; offset
+00000120 CloseProtocol   dq ?                    ; offset
+00000128 OpenProtocolInformation dq ?            ; offset
+00000130 ProtocolsPerHandle dq ?                 ; offset
+00000138 LocateHandleBuffer dq ?                 ; offset
+00000140 LocateProtocol  dq ?                    ; offset
+00000148 InstallMultipleProtocolInterfaces dq ?  ; offset
+00000150 UninstallMultipleProtocolInterfaces dq ? ; offset
+00000158 CalculateCrc32  dq ?                    ; offset
+00000160 CopyMem         dq ?                    ; offset
+00000168 SetMem          dq ?                    ; offset
+00000170 CreateEventEx   dq ?                    ; offset
+00000178 EFI_BOOT_SERVICES ends

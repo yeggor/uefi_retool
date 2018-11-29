@@ -1,492 +1,248 @@
-## Module: MnpDxe
+## Module: AbsoluteComputraceInstaller
 ### Boot services:
-* [0x2cd] EFI_BOOT_SERVICES->LocateHandleBuffer
-* [0x54a] EFI_BOOT_SERVICES->OpenProtocol
-* [0x616] EFI_BOOT_SERVICES->OpenProtocol
-* [0x7f5] EFI_BOOT_SERVICES->OpenProtocol
-* [0x829] EFI_BOOT_SERVICES->OpenProtocol
-* [0xa71] EFI_BOOT_SERVICES->OpenProtocol
-* [0xb63] EFI_BOOT_SERVICES->OpenProtocol
-* [0x1020] EFI_BOOT_SERVICES->OpenProtocol
-* [0x1463] EFI_BOOT_SERVICES->OpenProtocol
-* [0x1f13] EFI_BOOT_SERVICES->OpenProtocol
-* [0x1ff0] EFI_BOOT_SERVICES->OpenProtocol
-* [0x2086] EFI_BOOT_SERVICES->OpenProtocol
-* [0x365] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0x3aa] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0x3ef] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0x776] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
-* [0x8b6] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
-* [0xad6] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
-* [0xbcd] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
-* [0x1513] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
-* [0x156f] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
-* [0x4ef] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0x678] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0xa2e] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0x14b8] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0x20e7] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0x302] EFI_BOOT_SERVICES->HandleProtocol
-* [0x385] EFI_BOOT_SERVICES->HandleProtocol
-* [0x3ca] EFI_BOOT_SERVICES->HandleProtocol
-* [0x47e] EFI_BOOT_SERVICES->HandleProtocol
-* [0x4cef] EFI_BOOT_SERVICES->HandleProtocol
-* [0x534d] EFI_BOOT_SERVICES->HandleProtocol
-* [0x53bd] EFI_BOOT_SERVICES->HandleProtocol
-* [0x5456] EFI_BOOT_SERVICES->HandleProtocol
-* [0x54a5] EFI_BOOT_SERVICES->HandleProtocol
-* [0x461] EFI_BOOT_SERVICES->LocateProtocol
-* [0x1f6a] EFI_BOOT_SERVICES->OpenProtocolInformation
-* [0x56d] EFI_BOOT_SERVICES->CloseProtocol
-* [0xbb0] EFI_BOOT_SERVICES->CloseProtocol
-* [0x125e] EFI_BOOT_SERVICES->CloseProtocol
-* [0x154b] EFI_BOOT_SERVICES->CloseProtocol
-* [0x1f35] EFI_BOOT_SERVICES->CloseProtocol
+* [0x100c5a4] EFI_BOOT_SERVICES->LocateHandleBuffer
+* [0x1009896] EFI_BOOT_SERVICES->HandleProtocol
+* [0x10098e0] EFI_BOOT_SERVICES->HandleProtocol
+* [0x100c5d5] EFI_BOOT_SERVICES->HandleProtocol
+* [0x100c64a] EFI_BOOT_SERVICES->HandleProtocol
+* [0x100d99d] EFI_BOOT_SERVICES->LocateProtocol
 ### Protocols:
-* [0x5d20]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiSimpleNetworkProtocolGuid
+* [0x1001000]
+	 - [service] LocateHandleBuffer
+	 - [protocol_name] gEfiBlockIoProtocolGuid
 	 - [protocol_place] edk2_guids
-	 - [guid] [0xa19832b9, 0xac25, 0x11d3, 0x9a, 0x2d, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d]
-* [0x5d10]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiVlanConfigProtocolGuid
+	 - [guid] [0x964e5b21, 0x6459, 0x11d2, 0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
+* [0x1001020]
+	 - [service] HandleProtocol
+	 - [protocol_name] ProprietaryProtocol
+	 - [protocol_place] unknown
+	 - [guid] [0x18570749, 0x17eb, 0x4b79, 0x86, 0x99, 0x63, 0xcc, 0x5c, 0xde, 0xed, 0x22]
+* [0x1001060]
+	 - [service] HandleProtocol
+	 - [protocol_name] gEfiShellInterfaceGuid
 	 - [protocol_place] edk2_guids
-	 - [guid] [0x9e23d768, 0xd2f3, 0x4366, 0x9f, 0xc3, 0x3a, 0x7a, 0xba, 0x86, 0x43, 0x74]
-* [0x5cf0]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiManagedNetworkServiceBindingProtocolGuid
+	 - [guid] [0x47c7b223, 0xc42a, 0x11d2, 0x8e, 0x57, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
+* [0x1001000]
+	 - [service] HandleProtocol
+	 - [protocol_name] gEfiBlockIoProtocolGuid
 	 - [protocol_place] edk2_guids
-	 - [guid] [0xf36ff770, 0xa7e1, 0x42cf, 0x9e, 0xd2, 0x56, 0xf0, 0xf2, 0x71, 0xf4, 0x4c]
-* [0x5d40]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiManagedNetworkProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x7ab33a91, 0xace5, 0x4326, 0xb5, 0x72, 0xe7, 0xee, 0x33, 0xd3, 0x9f, 0x16]
-* [0x5d00]
-	 - [service] OpenProtocol
+	 - [guid] [0x964e5b21, 0x6459, 0x11d2, 0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
+* [0x1001010]
+	 - [service] HandleProtocol
 	 - [protocol_name] gEfiDevicePathProtocolGuid
 	 - [protocol_place] edk2_guids
 	 - [guid] [0x9576e91, 0x6d3f, 0x11d2, 0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
-* [0x5d30]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiDriverBindingProtocolGuid
+* [0x1001078]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiAcpiTableProtocolGuid
 	 - [protocol_place] edk2_guids
-	 - [guid] [0x18a031ab, 0xb443, 0x4d1a, 0xa5, 0xc0, 0xc, 0x9, 0x26, 0x1e, 0x9f, 0x71]
-* [0x5d50]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiComponentNameProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x107a772c, 0xd5e1, 0x11d4, 0x9a, 0x46, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d]
-* [0x5ce0]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiComponentName2ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x6a7a5cff, 0xe8d9, 0x4f70, 0xba, 0xda, 0x75, 0xab, 0x30, 0x25, 0xce, 0x14]
-* [0x5d30]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiDriverBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x18a031ab, 0xb443, 0x4d1a, 0xa5, 0xc0, 0xc, 0x9, 0x26, 0x1e, 0x9f, 0x71]
-* [0x5d50]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiComponentNameProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x107a772c, 0xd5e1, 0x11d4, 0x9a, 0x46, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d]
-* [0x5ce0]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiComponentName2ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x6a7a5cff, 0xe8d9, 0x4f70, 0xba, 0xda, 0x75, 0xab, 0x30, 0x25, 0xce, 0x14]
-* [0x5cc0]
+	 - [guid] [0xffe06bdd, 0x6107, 0x46a6, 0x7b, 0xb2, 0x5a, 0x9c, 0x7e, 0xc5, 0x27, 0x5c]
+## Module: AcpiDebugDxe
+### Boot services:
+* [0x563] EFI_BOOT_SERVICES->HandleProtocol
+* [0x599] EFI_BOOT_SERVICES->HandleProtocol
+* [0x3c1] EFI_BOOT_SERVICES->LocateProtocol
+* [0x52b] EFI_BOOT_SERVICES->LocateProtocol
+### Protocols:
+* [0x6c0]
 	 - [service] HandleProtocol
 	 - [protocol_name] gEfiLoadedImageProtocolGuid
 	 - [protocol_place] edk2_guids
 	 - [guid] [0x5b1b31a1, 0x9562, 0x11d2, 0x8e, 0x3f, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
-* [0x5d00]
+* [0x6d0]
 	 - [service] HandleProtocol
-	 - [protocol_name] gEfiDevicePathProtocolGuid
+	 - [protocol_name] gEfiFirmwareVolume2ProtocolGuid
 	 - [protocol_place] edk2_guids
-	 - [guid] [0x9576e91, 0x6d3f, 0x11d2, 0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
-* [0x5d20]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiSimpleNetworkProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xa19832b9, 0xac25, 0x11d3, 0x9a, 0x2d, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d]
-* [0x5cf0]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiManagedNetworkServiceBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xf36ff770, 0xa7e1, 0x42cf, 0x9e, 0xd2, 0x56, 0xf0, 0xf2, 0x71, 0xf4, 0x4c]
-* [0x5d40]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiManagedNetworkProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x7ab33a91, 0xace5, 0x4326, 0xb5, 0x72, 0xe7, 0xee, 0x33, 0xd3, 0x9f, 0x16]
-* [0x5cd0]
+	 - [guid] [0x220e73b6, 0x6bdb, 0x4413, 0x84, 0x5, 0xb9, 0x74, 0xb1, 0x8, 0x61, 0x9a]
+* [0x700]
 	 - [service] LocateProtocol
-	 - [protocol_name] gEfiDpcProtocolGuid
+	 - [protocol_name] gEfiAcpiTableProtocolGuid
 	 - [protocol_place] edk2_guids
-	 - [guid] [0x480f8ae9, 0xc46, 0x4aa9, 0xbc, 0x89, 0xdb, 0x9f, 0xba, 0x61, 0x98, 0x6]
-* [0x5cf0]
-	 - [service] OpenProtocolInformation
-	 - [protocol_name] gEfiManagedNetworkServiceBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xf36ff770, 0xa7e1, 0x42cf, 0x9e, 0xd2, 0x56, 0xf0, 0xf2, 0x71, 0xf4, 0x4c]
-* [0x5d20]
-	 - [service] CloseProtocol
-	 - [protocol_name] gEfiSimpleNetworkProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xa19832b9, 0xac25, 0x11d3, 0x9a, 0x2d, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d]
-* [0x5cf0]
-	 - [service] CloseProtocol
-	 - [protocol_name] gEfiManagedNetworkServiceBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xf36ff770, 0xa7e1, 0x42cf, 0x9e, 0xd2, 0x56, 0xf0, 0xf2, 0x71, 0xf4, 0x4c]
-* [0x5d10]
-	 - [service] CloseProtocol
-	 - [protocol_name] gEfiVlanConfigProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x9e23d768, 0xd2f3, 0x4366, 0x9f, 0xc3, 0x3a, 0x7a, 0xba, 0x86, 0x43, 0x74]
-## Module: ModuleS3ResumePeim
-### Boot services:
-* empty
-### Protocols:
-* empty
-## Module: MonotonicCounterRuntimeDxe
-### Boot services:
-* [0x11a0] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-### Protocols:
-* empty
-## Module: Mtftp4Dxe
-### Boot services:
-* [0x2cd] EFI_BOOT_SERVICES->LocateHandleBuffer
-* [0x534] EFI_BOOT_SERVICES->OpenProtocol
-* [0x6e2] EFI_BOOT_SERVICES->OpenProtocol
-* [0x8bd] EFI_BOOT_SERVICES->OpenProtocol
-* [0xfea] EFI_BOOT_SERVICES->OpenProtocol
-* [0x3945] EFI_BOOT_SERVICES->OpenProtocol
-* [0x4438] EFI_BOOT_SERVICES->OpenProtocol
-* [0x4488] EFI_BOOT_SERVICES->OpenProtocol
-* [0x5b3b] EFI_BOOT_SERVICES->OpenProtocol
-* [0x365] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0x3aa] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0x3ef] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0x987] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0x4f5] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0x758] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0x302] EFI_BOOT_SERVICES->HandleProtocol
-* [0x385] EFI_BOOT_SERVICES->HandleProtocol
-* [0x3ca] EFI_BOOT_SERVICES->HandleProtocol
-* [0x484] EFI_BOOT_SERVICES->HandleProtocol
-* [0x45d] EFI_BOOT_SERVICES->LocateProtocol
-* [0x840] EFI_BOOT_SERVICES->OpenProtocolInformation
-* [0xf67] EFI_BOOT_SERVICES->OpenProtocolInformation
-* [0x1120] EFI_BOOT_SERVICES->CloseProtocol
-* [0x44e1] EFI_BOOT_SERVICES->CloseProtocol
-* [0x45c7] EFI_BOOT_SERVICES->CloseProtocol
-* [0x4606] EFI_BOOT_SERVICES->CloseProtocol
-### Protocols:
-* [0x63e0]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiUdp4ServiceBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x83f01464, 0x99bd, 0x45e5, 0xb3, 0x83, 0xaf, 0x63, 0x5, 0xd8, 0xe9, 0xe6]
-* [0x6430]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiMtftp4ServiceBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x2fe800be, 0x8f01, 0x4aa6, 0x94, 0x6b, 0xd7, 0x13, 0x88, 0xe1, 0x83, 0x3f]
-* [0x63f0]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiMtftp4ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x78247c57, 0x63db, 0x4708, 0x99, 0xc2, 0xa8, 0xb4, 0xa9, 0xa6, 0x1f, 0x6b]
-* [0x6400]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiUdp4ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x3ad9df29, 0x4501, 0x478d, 0xb1, 0xf8, 0x7f, 0x7f, 0xe7, 0xe, 0x50, 0xf3]
-* [0x6410]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiDriverBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x18a031ab, 0xb443, 0x4d1a, 0xa5, 0xc0, 0xc, 0x9, 0x26, 0x1e, 0x9f, 0x71]
-* [0x6420]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiComponentNameProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x107a772c, 0xd5e1, 0x11d4, 0x9a, 0x46, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d]
-* [0x63d0]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiComponentName2ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x6a7a5cff, 0xe8d9, 0x4f70, 0xba, 0xda, 0x75, 0xab, 0x30, 0x25, 0xce, 0x14]
-* [0x6430]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiMtftp4ServiceBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x2fe800be, 0x8f01, 0x4aa6, 0x94, 0x6b, 0xd7, 0x13, 0x88, 0xe1, 0x83, 0x3f]
-* [0x6410]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiDriverBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x18a031ab, 0xb443, 0x4d1a, 0xa5, 0xc0, 0xc, 0x9, 0x26, 0x1e, 0x9f, 0x71]
-* [0x6420]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiComponentNameProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x107a772c, 0xd5e1, 0x11d4, 0x9a, 0x46, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d]
-* [0x63d0]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiComponentName2ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x6a7a5cff, 0xe8d9, 0x4f70, 0xba, 0xda, 0x75, 0xab, 0x30, 0x25, 0xce, 0x14]
-* [0x63a0]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiLoadedImageProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x5b1b31a1, 0x9562, 0x11d2, 0x8e, 0x3f, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
-* [0x63b0]
-	 - [service] LocateProtocol
-	 - [protocol_name] gEfiDpcProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x480f8ae9, 0xc46, 0x4aa9, 0xbc, 0x89, 0xdb, 0x9f, 0xba, 0x61, 0x98, 0x6]
-* [0x6400]
-	 - [service] OpenProtocolInformation
-	 - [protocol_name] gEfiUdp4ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x3ad9df29, 0x4501, 0x478d, 0xb1, 0xf8, 0x7f, 0x7f, 0xe7, 0xe, 0x50, 0xf3]
-* [0x6400]
-	 - [service] CloseProtocol
-	 - [protocol_name] gEfiUdp4ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x3ad9df29, 0x4501, 0x478d, 0xb1, 0xf8, 0x7f, 0x7f, 0xe7, 0xe, 0x50, 0xf3]
-* [0x63c0]
-	 - [service] CloseProtocol
-	 - [protocol_name] gEfiUdp6ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x4f948815, 0xb4b9, 0x43cb, 0x8a, 0x33, 0x90, 0xe0, 0x60, 0xb3, 0x49, 0x55]
-## Module: Mtftp6Dxe
-### Boot services:
-* [0x2cd] EFI_BOOT_SERVICES->LocateHandleBuffer
-* [0x774] EFI_BOOT_SERVICES->OpenProtocol
-* [0x7ba] EFI_BOOT_SERVICES->OpenProtocol
-* [0x941] EFI_BOOT_SERVICES->OpenProtocol
-* [0xb4d] EFI_BOOT_SERVICES->OpenProtocol
-* [0xc3b] EFI_BOOT_SERVICES->OpenProtocol
-* [0xfac] EFI_BOOT_SERVICES->OpenProtocol
-* [0x240e] EFI_BOOT_SERVICES->OpenProtocol
-* [0x3557] EFI_BOOT_SERVICES->OpenProtocol
-* [0x3e20] EFI_BOOT_SERVICES->OpenProtocol
-* [0x3e70] EFI_BOOT_SERVICES->OpenProtocol
-* [0x57a7] EFI_BOOT_SERVICES->OpenProtocol
-* [0x365] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0x3aa] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0x3ef] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0xa0b] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0xd39] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0xb73] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
-* [0x4f5] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0x830] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0xb06] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0x302] EFI_BOOT_SERVICES->HandleProtocol
-* [0x385] EFI_BOOT_SERVICES->HandleProtocol
-* [0x3ca] EFI_BOOT_SERVICES->HandleProtocol
-* [0x484] EFI_BOOT_SERVICES->HandleProtocol
-* [0x45d] EFI_BOOT_SERVICES->LocateProtocol
-* [0x8c4] EFI_BOOT_SERVICES->OpenProtocolInformation
-* [0x238b] EFI_BOOT_SERVICES->OpenProtocolInformation
-* [0xcb1] EFI_BOOT_SERVICES->CloseProtocol
-* [0xce1] EFI_BOOT_SERVICES->CloseProtocol
-* [0xd10] EFI_BOOT_SERVICES->CloseProtocol
-* [0x1d18] EFI_BOOT_SERVICES->CloseProtocol
-* [0x3ec9] EFI_BOOT_SERVICES->CloseProtocol
-* [0x3faf] EFI_BOOT_SERVICES->CloseProtocol
-* [0x3fee] EFI_BOOT_SERVICES->CloseProtocol
-### Protocols:
-* [0x6520]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiUdp6ServiceBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x66ed4721, 0x3c98, 0x4d3e, 0x81, 0xe3, 0xd0, 0x3d, 0xd3, 0x9a, 0x72, 0x54]
-* [0x64d0]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiMtftp6ServiceBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xd9760ff3, 0x3cca, 0x4267, 0x80, 0xf9, 0x75, 0x27, 0xfa, 0xfa, 0x42, 0x23]
-* [0x64a0]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiUdp6ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x4f948815, 0xb4b9, 0x43cb, 0x8a, 0x33, 0x90, 0xe0, 0x60, 0xb3, 0x49, 0x55]
-* [0x6510]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiMtftp6ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xbf0a78ba, 0xec29, 0x49cf, 0xa1, 0xc9, 0x7a, 0xe5, 0x4e, 0xab, 0x6a, 0x51]
-* [0x64f0]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiDriverBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x18a031ab, 0xb443, 0x4d1a, 0xa5, 0xc0, 0xc, 0x9, 0x26, 0x1e, 0x9f, 0x71]
-* [0x6500]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiComponentNameProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x107a772c, 0xd5e1, 0x11d4, 0x9a, 0x46, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d]
-* [0x64b0]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiComponentName2ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x6a7a5cff, 0xe8d9, 0x4f70, 0xba, 0xda, 0x75, 0xab, 0x30, 0x25, 0xce, 0x14]
-* [0x64d0]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiMtftp6ServiceBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xd9760ff3, 0x3cca, 0x4267, 0x80, 0xf9, 0x75, 0x27, 0xfa, 0xfa, 0x42, 0x23]
-* [0x6510]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiMtftp6ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xbf0a78ba, 0xec29, 0x49cf, 0xa1, 0xc9, 0x7a, 0xe5, 0x4e, 0xab, 0x6a, 0x51]
-* [0x64f0]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiDriverBindingProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x18a031ab, 0xb443, 0x4d1a, 0xa5, 0xc0, 0xc, 0x9, 0x26, 0x1e, 0x9f, 0x71]
-* [0x6500]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiComponentNameProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x107a772c, 0xd5e1, 0x11d4, 0x9a, 0x46, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d]
-* [0x64b0]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiComponentName2ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x6a7a5cff, 0xe8d9, 0x4f70, 0xba, 0xda, 0x75, 0xab, 0x30, 0x25, 0xce, 0x14]
-* [0x6480]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiLoadedImageProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x5b1b31a1, 0x9562, 0x11d2, 0x8e, 0x3f, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
-* [0x6490]
-	 - [service] LocateProtocol
-	 - [protocol_name] gEfiDpcProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x480f8ae9, 0xc46, 0x4aa9, 0xbc, 0x89, 0xdb, 0x9f, 0xba, 0x61, 0x98, 0x6]
-* [0x64a0]
-	 - [service] OpenProtocolInformation
-	 - [protocol_name] gEfiUdp6ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x4f948815, 0xb4b9, 0x43cb, 0x8a, 0x33, 0x90, 0xe0, 0x60, 0xb3, 0x49, 0x55]
-* [0x64a0]
-	 - [service] CloseProtocol
-	 - [protocol_name] gEfiUdp6ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x4f948815, 0xb4b9, 0x43cb, 0x8a, 0x33, 0x90, 0xe0, 0x60, 0xb3, 0x49, 0x55]
-* [0x64e0]
-	 - [service] CloseProtocol
-	 - [protocol_name] gEfiUdp4ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x3ad9df29, 0x4501, 0x478d, 0xb1, 0xf8, 0x7f, 0x7f, 0xe7, 0xe, 0x50, 0xf3]
-## Module: NationalPC8374L
-### Boot services:
-* [0x710] EFI_BOOT_SERVICES->OpenProtocol
-* [0x76f] EFI_BOOT_SERVICES->OpenProtocol
-* [0x977] EFI_BOOT_SERVICES->OpenProtocol
-* [0x9df] EFI_BOOT_SERVICES->OpenProtocol
-* [0xa20] EFI_BOOT_SERVICES->OpenProtocol
-* [0xdc6] EFI_BOOT_SERVICES->OpenProtocol
-* [0x4d0] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0x1d87] EFI_BOOT_SERVICES->UninstallProtocolInterface
-* [0xd8d] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
-* [0x602] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0x943] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-* [0xb17] EFI_BOOT_SERVICES->HandleProtocol
-* [0xd37] EFI_BOOT_SERVICES->HandleProtocol
-* [0x1a1d] EFI_BOOT_SERVICES->LocateProtocol
-* [0x1b11] EFI_BOOT_SERVICES->LocateProtocol
-* [0x1cf9] EFI_BOOT_SERVICES->LocateProtocol
-* [0x20ab] EFI_BOOT_SERVICES->LocateProtocol
-* [0x20e7] EFI_BOOT_SERVICES->LocateProtocol
-* [0x2143] EFI_BOOT_SERVICES->LocateProtocol
-* [0x2216] EFI_BOOT_SERVICES->LocateProtocol
-* [0x2305] EFI_BOOT_SERVICES->LocateProtocol
-* [0x2406] EFI_BOOT_SERVICES->LocateProtocol
-* [0x746] EFI_BOOT_SERVICES->CloseProtocol
-* [0x81b] EFI_BOOT_SERVICES->CloseProtocol
-* [0xa4b] EFI_BOOT_SERVICES->CloseProtocol
-* [0xccc] EFI_BOOT_SERVICES->CloseProtocol
-* [0xcea] EFI_BOOT_SERVICES->CloseProtocol
-* [0xd61] EFI_BOOT_SERVICES->CloseProtocol
-* [0x1cbf] EFI_BOOT_SERVICES->RegisterProtocolNotify
-### Protocols:
-* [0x25b0]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiDevicePathProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x9576e91, 0x6d3f, 0x11d2, 0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
-* [0x25c0]
-	 - [service] OpenProtocol
-	 - [protocol_name] gEfiPciIoProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x4cf5b200, 0x68b8, 0x4ca5, 0x9e, 0xec, 0xb2, 0x3e, 0x3f, 0x50, 0x2, 0x9a]
-* [0x25e0]
-	 - [service] UninstallProtocolInterface
-	 - [protocol_name] gEfiMdeModulePkgTokenSpaceGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xa1aff049, 0xfdeb, 0x442a, 0xb3, 0x20, 0x13, 0xab, 0x4c, 0xb7, 0x2b, 0xbc]
-* [0x25b0]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiDevicePathProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x9576e91, 0x6d3f, 0x11d2, 0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
-* [0x25a0]
-	 - [service] HandleProtocol
-	 - [protocol_name] gEfiSioProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x215fdd18, 0xbd50, 0x4feb, 0x89, 0xb, 0x58, 0xca, 0xb, 0x47, 0x39, 0xe9]
-* [0x2560]
-	 - [service] LocateProtocol
-	 - [protocol_name] gEfiDxeMmReadyToLockProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x60ff8964, 0xe906, 0x41d0, 0xaf, 0xed, 0xf2, 0x41, 0xe9, 0x74, 0xe0, 0x8e]
-* [0x2590]
-	 - [service] LocateProtocol
-	 - [protocol_name] gEfiMmCommunicationProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xc68ed8e2, 0x9dc6, 0x4cbd, 0x9d, 0x94, 0xdb, 0x65, 0xac, 0xc5, 0xc3, 0x32]
-* [0x2570]
-	 - [service] LocateProtocol
-	 - [protocol_name] gEfiSmmBase2ProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0xf4ccbfb7, 0xf6e0, 0x47fd, 0x9d, 0xd4, 0x10, 0xa8, 0xf1, 0x50, 0xc1, 0x91]
-* [0x25f0]
-	 - [service] LocateProtocol
-	 - [protocol_name] gEfiPcdProtocolGuid
-	 - [protocol_place] edk2_guids
-	 - [guid] [0x13a3f0f6, 0x264a, 0x3ef0, 0xf2, 0xe0, 0xde, 0xc5, 0x12, 0x34, 0x2f, 0x34]
-* [0x2660]
+	 - [guid] [0xffe06bdd, 0x6107, 0x46a6, 0x7b, 0xb2, 0x5a, 0x9c, 0x7e, 0xc5, 0x27, 0x5c]
+* [0x710]
 	 - [service] LocateProtocol
 	 - [protocol_name] gPcdProtocolGuid
 	 - [protocol_place] edk2_guids
 	 - [guid] [0x11b34006, 0xd85b, 0x4d0a, 0xa2, 0x90, 0xd5, 0xa5, 0x71, 0x31, 0xe, 0xf7]
-* [0x25b0]
-	 - [service] CloseProtocol
-	 - [protocol_name] gEfiDevicePathProtocolGuid
+## Module: AcpiGlobalVariable
+### Boot services:
+* empty
+### Protocols:
+* empty
+## Module: AcpiPlatform
+### Boot services:
+* [0x195d] EFI_BOOT_SERVICES->LocateHandleBuffer
+* [0x19be] EFI_BOOT_SERVICES->LocateHandleBuffer
+* [0x1bfa] EFI_BOOT_SERVICES->LocateHandleBuffer
+* [0x1f24] EFI_BOOT_SERVICES->LocateHandleBuffer
+* [0x5c86] EFI_BOOT_SERVICES->LocateHandleBuffer
+* [0x5ceb] EFI_BOOT_SERVICES->LocateHandleBuffer
+* [0x468] EFI_BOOT_SERVICES->UninstallProtocolInterface
+* [0x772f] EFI_BOOT_SERVICES->UninstallProtocolInterface
+* [0x5bb8] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+* [0x4ca] EFI_BOOT_SERVICES->HandleProtocol
+* [0x1c63] EFI_BOOT_SERVICES->HandleProtocol
+* [0x1f4c] EFI_BOOT_SERVICES->HandleProtocol
+* [0x6b7] EFI_BOOT_SERVICES->LocateProtocol
+* [0x6d1] EFI_BOOT_SERVICES->LocateProtocol
+* [0x1fc8] EFI_BOOT_SERVICES->LocateProtocol
+* [0x2141] EFI_BOOT_SERVICES->LocateProtocol
+* [0x37d8] EFI_BOOT_SERVICES->LocateProtocol
+* [0x6c13] EFI_BOOT_SERVICES->LocateProtocol
+* [0x6c4f] EFI_BOOT_SERVICES->LocateProtocol
+* [0x730f] EFI_BOOT_SERVICES->LocateProtocol
+* [0x7459] EFI_BOOT_SERVICES->LocateProtocol
+* [0x76a1] EFI_BOOT_SERVICES->LocateProtocol
+* [0x7883] EFI_BOOT_SERVICES->LocateProtocol
+* [0x7956] EFI_BOOT_SERVICES->LocateProtocol
+* [0x7a1e] EFI_BOOT_SERVICES->LocateProtocol
+* [0x7667] EFI_BOOT_SERVICES->RegisterProtocolNotify
+### Protocols:
+* [0x7d20]
+	 - [service] LocateHandleBuffer
+	 - [protocol_name] gEfiFirmwareVolume2ProtocolGuid
 	 - [protocol_place] edk2_guids
-	 - [guid] [0x9576e91, 0x6d3f, 0x11d2, 0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
-* [0x25c0]
-	 - [service] CloseProtocol
+	 - [guid] [0x220e73b6, 0x6bdb, 0x4413, 0x84, 0x5, 0xb9, 0x74, 0xb1, 0x8, 0x61, 0x9a]
+* [0x7d00]
+	 - [service] UninstallProtocolInterface
+	 - [protocol_name] gEfiMdeModulePkgTokenSpaceGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xa1aff049, 0xfdeb, 0x442a, 0xb3, 0x20, 0x13, 0xab, 0x4c, 0xb7, 0x2b, 0xbc]
+* [0x7d00]
+	 - [service] HandleProtocol
+	 - [protocol_name] gEfiMdeModulePkgTokenSpaceGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xa1aff049, 0xfdeb, 0x442a, 0xb3, 0x20, 0x13, 0xab, 0x4c, 0xb7, 0x2b, 0xbc]
+* [0x7cd0]
+	 - [service] HandleProtocol
 	 - [protocol_name] gEfiPciIoProtocolGuid
 	 - [protocol_place] edk2_guids
 	 - [guid] [0x4cf5b200, 0x68b8, 0x4ca5, 0x9e, 0xec, 0xb2, 0x3e, 0x3f, 0x50, 0x2, 0x9a]
-* [0x2560]
+* [0x7d20]
+	 - [service] HandleProtocol
+	 - [protocol_name] gEfiFirmwareVolume2ProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x220e73b6, 0x6bdb, 0x4413, 0x84, 0x5, 0xb9, 0x74, 0xb1, 0x8, 0x61, 0x9a]
+* [0x7dc0]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiPciRootBridgeIoProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x2f707ebb, 0x4a1a, 0x11d4, 0x9a, 0x38, 0x0, 0x90, 0x27, 0x3f, 0xc1, 0x4d]
+* [0x7d60]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiMpServiceProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x3fdda605, 0xa76e, 0x4f46, 0xad, 0x29, 0x12, 0xf4, 0x53, 0x1b, 0x3d, 0x8]
+* [0x7df0]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiAcpiTableProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xffe06bdd, 0x6107, 0x46a6, 0x7b, 0xb2, 0x5a, 0x9c, 0x7e, 0xc5, 0x27, 0x5c]
+* [0x7cb0]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiCpuIo2ProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xad61f191, 0xae5f, 0x4c0e, 0xb9, 0xfa, 0xe8, 0x69, 0xd2, 0x88, 0xc6, 0x4f]
+* [0x7d10]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiPcdProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x13a3f0f6, 0x264a, 0x3ef0, 0xf2, 0xe0, 0xde, 0xc5, 0x12, 0x34, 0x2f, 0x34]
+* [0x7e10]
+	 - [service] LocateProtocol
+	 - [protocol_name] gPcdProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x11b34006, 0xd85b, 0x4d0a, 0xa2, 0x90, 0xd5, 0xa5, 0x71, 0x31, 0xe, 0xf7]
+* [0x7c50]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiAcpiSdtProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xeb97088e, 0xcfdf, 0x49c6, 0xbe, 0x4b, 0xd9, 0x6, 0xa5, 0xb2, 0xe, 0x86]
+* [0x7c30]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiDxeMmReadyToLockProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x60ff8964, 0xe906, 0x41d0, 0xaf, 0xed, 0xf2, 0x41, 0xe9, 0x74, 0xe0, 0x8e]
+* [0x7c70]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiSmmBase2ProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xf4ccbfb7, 0xf6e0, 0x47fd, 0x9d, 0xd4, 0x10, 0xa8, 0xf1, 0x50, 0xc1, 0x91]
+* [0x7c90]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiMmCommunicationProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xc68ed8e2, 0x9dc6, 0x4cbd, 0x9d, 0x94, 0xdb, 0x65, 0xac, 0xc5, 0xc3, 0x32]
+* [0x7c30]
 	 - [service] RegisterProtocolNotify
 	 - [protocol_name] gEfiDxeMmReadyToLockProtocolGuid
 	 - [protocol_place] edk2_guids
 	 - [guid] [0x60ff8964, 0xe906, 0x41d0, 0xaf, 0xed, 0xf2, 0x41, 0xe9, 0x74, 0xe0, 0x8e]
+## Module: AcpiPlatformFeatures
+### Boot services:
+* [0xaf7] EFI_BOOT_SERVICES->LocateHandleBuffer
+* [0xb55] EFI_BOOT_SERVICES->LocateHandleBuffer
+* [0x5fa] EFI_BOOT_SERVICES->HandleProtocol
+* [0x378] EFI_BOOT_SERVICES->LocateProtocol
+* [0x723] EFI_BOOT_SERVICES->LocateProtocol
+* [0xa48] EFI_BOOT_SERVICES->LocateProtocol
+### Protocols:
+* [0x1120]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiAcpiTableProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xffe06bdd, 0x6107, 0x46a6, 0x7b, 0xb2, 0x5a, 0x9c, 0x7e, 0xc5, 0x27, 0x5c]
+* [0x10e0]
+	 - [service] LocateProtocol
+	 - [protocol_name] ProprietaryProtocol
+	 - [protocol_place] unknown
+	 - [guid] [0xd9035175, 0x8ce2, 0x47de, 0xa8, 0xb8, 0xcc, 0x98, 0xe5, 0xe2, 0xa8, 0x85]
+* [0x10b0]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiGlobalNvsAreaProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x74e1e48, 0x8132, 0x47a1, 0x8c, 0x2c, 0x3f, 0x14, 0xad, 0x9a, 0x66, 0xdc]
+## Module: AcpiS3SaveDxe
+### Boot services:
+* [0x369] EFI_BOOT_SERVICES->InstallProtocolInterface
+* [0x976] EFI_BOOT_SERVICES->LocateProtocol
+* [0x9cd] EFI_BOOT_SERVICES->LocateProtocol
+* [0xa11] EFI_BOOT_SERVICES->LocateProtocol
+* [0xb57] EFI_BOOT_SERVICES->LocateProtocol
+* [0xbaa] EFI_BOOT_SERVICES->LocateProtocol
+* [0xc7e] EFI_BOOT_SERVICES->LocateProtocol
+* [0xaf3] EFI_BOOT_SERVICES->RegisterProtocolNotify
+### Protocols:
+* [0xe50]
+	 - [service] InstallProtocolInterface
+	 - [protocol_name] gEfiAcpiS3SaveProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x125f2de1, 0xfb85, 0x440c, 0xa5, 0x4c, 0x4d, 0x99, 0x35, 0x8a, 0x8d, 0x38]
+* [0xe90]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEdkiiVariableLockProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xcd3d0a05, 0x9e24, 0x437c, 0xa8, 0x91, 0x1e, 0xe0, 0x53, 0xdb, 0x76, 0x38]
+* [0xec0]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiMpServiceProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x3fdda605, 0xa76e, 0x4f46, 0xad, 0x29, 0x12, 0xf4, 0x53, 0x1b, 0x3d, 0x8]
+* [0xf00]
+	 - [service] LocateProtocol
+	 - [protocol_name] gPcdProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x11b34006, 0xd85b, 0x4d0a, 0xa2, 0x90, 0xd5, 0xa5, 0x71, 0x31, 0xe, 0xf7]
+* [0xe70]
+	 - [service] LocateProtocol
+	 - [protocol_name] gEfiMmCommunicationProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xc68ed8e2, 0x9dc6, 0x4cbd, 0x9d, 0x94, 0xdb, 0x65, 0xac, 0xc5, 0xc3, 0x32]
+* [0xe90]
+	 - [service] RegisterProtocolNotify
+	 - [protocol_name] gEdkiiVariableLockProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xcd3d0a05, 0x9e24, 0x437c, 0xa8, 0x91, 0x1e, 0xe0, 0x53, 0xdb, 0x76, 0x38]
 ## Module: AbsoluteComputraceInstaller
 ### Boot services:
 * [0x100c5a4] EFI_BOOT_SERVICES->LocateHandleBuffer
@@ -4741,6 +4497,7 @@
 * [0x26762] EFI_BOOT_SERVICES->UninstallProtocolInterface
 * [0x31859] EFI_BOOT_SERVICES->UninstallProtocolInterface
 * [0x31cf4] EFI_BOOT_SERVICES->UninstallProtocolInterface
+* [0x47b46] EFI_BOOT_SERVICES->UninstallProtocolInterface
 * [0x60df7] EFI_BOOT_SERVICES->UninstallProtocolInterface
 * [0x60f4f] EFI_BOOT_SERVICES->UninstallProtocolInterface
 * [0x61018] EFI_BOOT_SERVICES->UninstallProtocolInterface
@@ -4790,6 +4547,7 @@
 * [0x39255] EFI_BOOT_SERVICES->InstallProtocolInterface
 * [0x3a937] EFI_BOOT_SERVICES->InstallProtocolInterface
 * [0x3aa83] EFI_BOOT_SERVICES->InstallProtocolInterface
+* [0x47b0c] EFI_BOOT_SERVICES->InstallProtocolInterface
 * [0x618a3] EFI_BOOT_SERVICES->InstallProtocolInterface
 * [0x1b62a] EFI_BOOT_SERVICES->ProtocolsPerHandle
 * [0x21f20] EFI_BOOT_SERVICES->ProtocolsPerHandle
@@ -4857,6 +4615,7 @@
 * [0x3926b] EFI_BOOT_SERVICES->ReinstallProtocolInterface
 * [0x3a952] EFI_BOOT_SERVICES->ReinstallProtocolInterface
 * [0x3aa9e] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+* [0x47b29] EFI_BOOT_SERVICES->ReinstallProtocolInterface
 * [0x618c9] EFI_BOOT_SERVICES->ReinstallProtocolInterface
 * [0x2ea9] EFI_BOOT_SERVICES->HandleProtocol
 * [0x31c8] EFI_BOOT_SERVICES->HandleProtocol
@@ -5011,6 +4770,7 @@
 * [0x3a7e8] EFI_BOOT_SERVICES->HandleProtocol
 * [0x3a904] EFI_BOOT_SERVICES->HandleProtocol
 * [0x3aa50] EFI_BOOT_SERVICES->HandleProtocol
+* [0x47b63] EFI_BOOT_SERVICES->HandleProtocol
 * [0x56573] EFI_BOOT_SERVICES->HandleProtocol
 * [0x61ac0] EFI_BOOT_SERVICES->HandleProtocol
 * [0x243a] EFI_BOOT_SERVICES->LocateProtocol
@@ -5216,6 +4976,7 @@
 * [0x2572f] EFI_BOOT_SERVICES->RegisterProtocolNotify
 * [0x26775] EFI_BOOT_SERVICES->RegisterProtocolNotify
 * [0x32b1c] EFI_BOOT_SERVICES->RegisterProtocolNotify
+* [0x47bba] EFI_BOOT_SERVICES->RegisterProtocolNotify
 * [0x61a1a] EFI_BOOT_SERVICES->RegisterProtocolNotify
 ### Protocols:
 * [0x6c2d0]
@@ -7331,9 +7092,9 @@
 ## Module: IpSecDxe
 ### Boot services:
 * [0x630] EFI_BOOT_SERVICES->OpenProtocol
-* [0x69c] EFI_BOOT_SERVICES->OpenProtocol
 * [0x374] EFI_BOOT_SERVICES->OpenProtocol
 * [0x398] EFI_BOOT_SERVICES->OpenProtocol
+* [0x69c] EFI_BOOT_SERVICES->OpenProtocol
 * [0xb35] EFI_BOOT_SERVICES->OpenProtocol
 * [0xe369] EFI_BOOT_SERVICES->OpenProtocol
 * [0xe3b9] EFI_BOOT_SERVICES->OpenProtocol
@@ -15947,6 +15708,16 @@
 * [0x7ec] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
 * [0x31b] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
 * [0x652] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+* [0x962] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+* [0x981] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+* [0xad2] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+* [0xaf1] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+* [0xd02] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+* [0xd21] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+* [0xebe] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+* [0xedd] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+* [0x1082] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+* [0x10a0] EFI_BOOT_SERVICES->ReinstallProtocolInterface
 * [0x3ee5] EFI_BOOT_SERVICES->HandleProtocol
 * [0x408e] EFI_BOOT_SERVICES->HandleProtocol
 * [0x3e7a] EFI_BOOT_SERVICES->OpenProtocolInformation
@@ -15967,6 +15738,16 @@
 	 - [protocol_name] gEfiBlockIoProtocolGuid
 	 - [protocol_place] edk2_guids
 	 - [guid] [0x964e5b21, 0x6459, 0x11d2, 0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
+* [0x56f0]
+	 - [service] ReinstallProtocolInterface
+	 - [protocol_name] gEfiBlockIoProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x964e5b21, 0x6459, 0x11d2, 0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
+* [0x5740]
+	 - [service] ReinstallProtocolInterface
+	 - [protocol_name] gEfiBlockIo2ProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0xa77b2472, 0xe282, 0x4e9f, 0xa2, 0x45, 0xc2, 0xc0, 0xe2, 0x7b, 0xbc, 0xc1]
 * [0x5700]
 	 - [service] HandleProtocol
 	 - [protocol_name] gEfiDevicePathProtocolGuid
@@ -17839,6 +17620,7 @@
 * [0x16352] EFI_BOOT_SERVICES->HandleProtocol
 * [0x16608] EFI_BOOT_SERVICES->HandleProtocol
 * [0x17809] EFI_BOOT_SERVICES->HandleProtocol
+* [0x182d3] EFI_BOOT_SERVICES->HandleProtocol
 * [0x185ae] EFI_BOOT_SERVICES->HandleProtocol
 * [0x18680] EFI_BOOT_SERVICES->HandleProtocol
 * [0x1884e] EFI_BOOT_SERVICES->HandleProtocol
@@ -18608,6 +18390,8 @@
 * [0x2441] EFI_BOOT_SERVICES->HandleProtocol
 * [0x267c] EFI_BOOT_SERVICES->HandleProtocol
 * [0x2755] EFI_BOOT_SERVICES->HandleProtocol
+* [0x451b] EFI_BOOT_SERVICES->HandleProtocol
+* [0x4540] EFI_BOOT_SERVICES->HandleProtocol
 * [0x45fc] EFI_BOOT_SERVICES->HandleProtocol
 * [0x4ad3] EFI_BOOT_SERVICES->HandleProtocol
 * [0x4af3] EFI_BOOT_SERVICES->HandleProtocol
@@ -18698,6 +18482,11 @@
 	 - [protocol_name] gEfiNvmExpressPassThruProtocolGuid
 	 - [protocol_place] edk2_guids
 	 - [guid] [0x52c78312, 0x8edc, 0x4233, 0x98, 0xf2, 0x1a, 0x1a, 0xa5, 0xe3, 0x88, 0xa5]
+* [0xb0b8]
+	 - [service] HandleProtocol
+	 - [protocol_name] gEfiSimpleTextInProtocolGuid
+	 - [protocol_place] edk2_guids
+	 - [guid] [0x387477c1, 0x69c7, 0x11d2, 0x8e, 0x39, 0x0, 0xa0, 0xc9, 0x69, 0x72, 0x3b]
 * [0xb0f8]
 	 - [service] HandleProtocol
 	 - [protocol_name] gEfiComponentNameProtocolGuid
