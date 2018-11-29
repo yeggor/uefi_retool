@@ -105,6 +105,7 @@ def main():
 			update(edk2_path, data_path, guids_path)
 			help_msg = False
 	
+	print(colorama.Style.RESET_ALL)
 	if help_msg:
 		parser.print_help()
 
