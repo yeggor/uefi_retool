@@ -81,7 +81,7 @@ def main():
 	help_msg = True
 
 	if (args.all and os.path.isfile(args.firmware_path)):
-#		get_efi_images(args.firmware_path)
+		get_efi_images(args.firmware_path)
 		analyse_all("log_all.py")
 		print("Check .{0}log{0}result_log_all.md file".format(os.sep))
 		help_msg = False

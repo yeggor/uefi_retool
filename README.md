@@ -2,6 +2,7 @@
 ### To analyse your UEFI firmware:
  * Copy "ida_uefi_re" directory to <IDA_DIRECTORY>
  * Edit `config.json` file
+ * Run `pip install -r requirements.txt`
  * Run `python analyse_fw.py` and read `help` message
 ### Configuration file content (`config.json`):
  * "PE_DIR" is a folder that consist all PE-images from firmware file
