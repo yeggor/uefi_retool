@@ -1,11 +1,12 @@
-import sys
 import os
-from os import path
 import glob
 import re
+import argparse
+import shutil
+import click
 
-DATA_PATH = "..\\conf"
-GUIDS = "..\\ida_uefi_re\\guids"
+DATA_PATH = "..{0}conf".format(os.sep)
+GUIDS = "..{0}ida_uefi_re{0}guids".format(os.sep)
 
 def get_py(string):
     new_string = "edk2_guids = {\n"
@@ -36,15 +37,15 @@ def get_py(string):
 
 
 def get_guids_list(edk2_path, data_path, guids_path):
-    if path.isdir(edk2_path) == 0:
+    if os.path.isdir(edk2_path) == 0:
         print("[-] Error, check edk2 path")
         return False
-    dec_files = glob.glob(edk2_path + "\\*\\*.dec")
+    dec_files = glob.glob(edk2_path + "{0}*{0}*.dec".format(os.sep))
     if len(dec_files) == 0:
         print("[-] Error, *.dec files list is empty")
         return False
-    if path.isdir(DATA_PATH) == False:
-        os.system("MKDIR " + DATA_PATH)
+    if os.path.isdir(DATA_PATH) == False:
+        os.mkdir(DATA_PATH)
     regexp = re.compile(r"g.+=.+{.+}")
     conf_content = ""
     for dec_file in dec_files:
@@ -53,33 +54,38 @@ def get_guids_list(edk2_path, data_path, guids_path):
             conf_content += "# Guids from {0} file \n".format(dec_file)
             for guid in guids_list:
                 conf_content += guid + "\n"
-    with open(DATA_PATH + "\\edk2_guids.conf", "wb") as conf:
+    with open(DATA_PATH + os.sep + "edk2_guids.conf", "wb") as conf:
         conf.write("# This file was automatically generated with update_edk2_guids.py script\n")
         conf.write(conf_content)
     py_content = get_py(conf_content)
-    with open(DATA_PATH + "\\edk2_guids.py", "wb") as conf:
+    with open(DATA_PATH + os.sep + "edk2_guids.py", "wb") as conf:
         conf.write("# This file was automatically generated with update_edk2_guids.py script\n")
         conf.write(py_content)
     return True
 
 def update(edk2_path, data_path, guids_path):
     if get_guids_list(edk2_path, data_path, guids_path):
-        os.system("COPY " + data_path + "\\edk2_guids.py " + guids_path + "\\edk2_guids.py")
-        print("[*] Files {0}, {1} was successfully updated".format(data_path + "\\edk2_guids.conf", data_path + "\\edk2_guids.py"))
+        shutil.copy(data_path + os.sep + "edk2_guids.py", guids_path + os.sep + "edk2_guids.py")
+        print("[*] Files {0}, {1} was successfully updated"
+        .format(data_path + os.sep + "edk2_guids.conf", data_path + os.sep + "edk2_guids.py"))
         return True
     else:
         return False
 
 def main():
-    if len(sys.argv) != 2:
-        print("[*] Usage: $python {0} <EDK2_PATH>".format(sys.argv[0]))
-        return False
-    if get_guids_list(sys.argv[1], DATA_PATH, GUIDS):
-        os.system("COPY " + DATA_PATH + "\\edk2_guids.py " + GUIDS + "\\edk2_guids.py")
-        print("[*] Files {0}, {1} was successfully updated".format(DATA_PATH + "\\edk2_guids.conf", DATA_PATH + "\\edk2_guids.py"))
-        return True
-    else:
-        return False
+    click.echo(click.style("Copyright (c) 2018 yeggor", fg="cyan"))
+    program = "python " + os.path.basename(__file__)
+    parser = argparse.ArgumentParser(description="Get all UEFI PE-images",
+									 prog=program)
+    parser.add_argument("edk2_path", 
+						type=str, 
+						help="the path to EDK2 directory")
+    
+    args = parser.parse_args()
+    if get_guids_list(args.edk2_path, DATA_PATH, GUIDS):
+        shutil.copyfile(DATA_PATH + os.sep + "edk2_guids.py", GUIDS + os.sep + "edk2_guids.py")
+        print("[*] Files {0}, {1} was successfully updated"
+        .format(DATA_PATH + os.sep + "edk2_guids.conf", DATA_PATH + os.sep + "edk2_guids.py"))
     
 
 if __name__=="__main__":

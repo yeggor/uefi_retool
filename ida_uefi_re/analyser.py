@@ -147,9 +147,13 @@ class Analyser(object):
                         self.gBServices["UninstallMultipleProtocolInterfaces"].append(ea)
     
     def list_boot_services(self):
+        empty = True
         for service in self.gBServices:
             for address in self.gBServices[service]:
+                empty = False
                 print("\t [{0}] EFI_BOOT_SERVICES->{1}".format(hex(address), service))
+        if empty:
+            print(" * list is empty")
 
     def make_comments(self):
         for service in self.gBServices:
@@ -223,6 +227,8 @@ class Analyser(object):
         analyser.get_prot_names()
         data = analyser.Protocols["All"]
         print("\r\nProtocols:")
+        if len(data) == 0:
+            print(" * list is empty")
         for element in data:
             guid_str = "[guid] " + str(map(hex, element["guid"]))
             print("\t [address] " + hex(element["address"]))

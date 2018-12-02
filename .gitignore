@@ -6,3 +6,6 @@ __pycache__/
 # Directories
 all/
 modules/
+
+# Files
+config.json
