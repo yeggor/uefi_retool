@@ -28,11 +28,11 @@ def analyse_all(scr_name):
 		os.remove(log_path)
 	files = os.listdir(pe_dir)
 	with click.progressbar(files,
-						length=len(files),
-						bar_template=click.style("%(label)s  %(bar)s | %(info)s", fg="cyan"),
-						label="Modules analysis",
-						item_show_func=show_item,
-						) as bar:
+		length=len(files),
+		bar_template=click.style("%(label)s  %(bar)s | %(info)s", fg="cyan"),
+		label="Modules analysis",
+		item_show_func=show_item,
+		) as bar:
 		for module in bar:
 			if module.find(".i64") == -1 and module.find(".idb") == -1:
 				module_path = pe_dir + os.sep + module

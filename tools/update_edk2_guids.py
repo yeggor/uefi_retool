@@ -76,7 +76,7 @@ def main():
     click.echo(click.style("Copyright (c) 2018 yeggor", fg="cyan"))
     program = "python " + os.path.basename(__file__)
     parser = argparse.ArgumentParser(description="Get all UEFI PE-images",
-									 prog=program)
+		prog=program)
     parser.add_argument("edk2_path", 
         type=str, 
         help="the path to EDK2 directory")

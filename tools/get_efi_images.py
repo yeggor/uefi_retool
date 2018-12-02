@@ -71,7 +71,7 @@ def main():
 	colorama.init()
 	program = "python " + os.path.basename(__file__)
 	parser = argparse.ArgumentParser(description="Get all UEFI PE-images",
-									 prog=program)
+		prog=program)
 	parser.add_argument("firmware_path", 
 		type=str, 
 		help="the path to your UEFI firmware")
