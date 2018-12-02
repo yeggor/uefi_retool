@@ -15,9 +15,9 @@ def get_files(directory_name, pe_dir):
 		os.mkdir(pe_dir)
 	files = os.listdir(directory_name)
 	with click.progressbar(files,
-						length=len(files),
-						bar_template=click.style("%(label)s  %(bar)s | %(info)s", fg="cyan"),
-						label="Obtaining UEFI images") as bar:
+		length=len(files),
+		bar_template=click.style("%(label)s  %(bar)s | %(info)s", fg="cyan"),
+		label="Obtaining UEFI images") as bar:
 		for obj in bar:
 			if os.path.isfile(directory_name + os.sep + obj):
 				if obj[len(obj)-3:len(obj):] == ".pe":
@@ -73,16 +73,16 @@ def main():
 	parser = argparse.ArgumentParser(description="Get all UEFI PE-images",
 									 prog=program)
 	parser.add_argument("firmware_path", 
-						type=str, 
-						help="the path to your UEFI firmware")
+		type=str, 
+		help="the path to your UEFI firmware")
 	parser.add_argument("--all_dir", 
-						type=str, 
-						help="the name of the directory containing all firmware items (default: 'all')", 
-						default=dir_name)
+		type=str, 
+		help="the name of the directory containing all firmware items (default: 'all')", 
+		default=dir_name)
 	parser.add_argument("--pe_dir", 
-						type=str, 
-						help="the name of the directory containing all firmware PE-images (default: 'modules')", 
-						default=pe_dir)
+		type=str, 
+		help="the name of the directory containing all firmware PE-images (default: 'modules')", 
+		default=pe_dir)
 	args = parser.parse_args()
 	
 	dumper = Dumper(args.firmware_path, args.all_dir, args.pe_dir)

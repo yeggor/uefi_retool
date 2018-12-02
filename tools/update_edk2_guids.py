@@ -78,8 +78,8 @@ def main():
     parser = argparse.ArgumentParser(description="Get all UEFI PE-images",
 									 prog=program)
     parser.add_argument("edk2_path", 
-						type=str, 
-						help="the path to EDK2 directory")
+        type=str, 
+        help="the path to EDK2 directory")
     
     args = parser.parse_args()
     if get_guids_list(args.edk2_path, DATA_PATH, GUIDS):

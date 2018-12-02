@@ -50,33 +50,33 @@ def main():
 	program = "python " + os.path.basename(__file__)
 	parser = argparse.ArgumentParser(prog=program)
 	parser.add_argument("firmware_path",
-						type=str,
-						help="the path to your UEFI firmware for analysis")
+		type=str,
+		help="the path to your UEFI firmware for analysis")
 	parser.add_argument("--all",
-						action="store_true", 
-						help="""analyse all UEFI firmware modules
-						and output information to .{0}log{0}result_log_all.md file
-						(example: python analyse_fw.py --all <firmware_path>)"""
-						.format(os.sep))
+		action="store_true", 
+		help="""analyse all UEFI firmware modules
+		and output information to .{0}log{0}result_log_all.md file
+		(example: python analyse_fw.py --all <firmware_path>)"""
+		.format(os.sep))
 	parser.add_argument("--pp_guids", 
-						action="store_true", 
-						help="""analyse all UEFI firmware modules
-						and write a table with proprietry protocols
-						to .{0}log{0}result_pp_guids.md file
-						(example: python analyse_fw.py --pp_guids <firmware_path>)"""
-						.format(os.sep))
+		action="store_true", 
+		help="""analyse all UEFI firmware modules
+		and write a table with proprietry protocols
+		to .{0}log{0}result_pp_guids.md file
+		(example: python analyse_fw.py --pp_guids <firmware_path>)"""
+		.format(os.sep))
 	parser.add_argument("--get_efi_images", 
-						action="store_true", 
-						help="""get all UEFI firmware images
-						(images are store in .{0}modules directory, 
-						example: python analyse_fw.py --get_efi_images <firmware_path>)"""
-						.format(os.sep))
+		action="store_true", 
+		help="""get all UEFI firmware images
+		(images are store in .{0}modules directory, 
+		example: python analyse_fw.py --get_efi_images <firmware_path>)"""
+		.format(os.sep))
 	parser.add_argument("--update_edk2_guids", 
-						metavar="EDK2_PATH", 
-						type=str, 
-						help="""update list of GUIDs from EDK2 
-						(example: git clone https://github.com/tianocore/edk2,
-						python --update_edk2_guids edk2)""")
+		metavar="EDK2_PATH", 
+		type=str, 
+		help="""update list of GUIDs from EDK2 
+		(example: git clone https://github.com/tianocore/edk2,
+		python --update_edk2_guids edk2)""")
 	args = parser.parse_args()
 	help_msg = True
 
