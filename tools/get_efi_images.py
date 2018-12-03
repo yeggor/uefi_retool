@@ -61,7 +61,8 @@ def get_efi_images(fw_name):
 	""" for correct color display in uefi_firmware module """
 	colorama.init()
 	dumper = Dumper(fw_name, dir_name, pe_dir)
-	dumper.dump_all()
+	if (dumper.dump_all() == False):
+		exit()
 	dumper.get_pe_files()
 	return True
 
@@ -86,7 +87,8 @@ def main():
 	args = parser.parse_args()
 	
 	dumper = Dumper(args.firmware_path, args.all_dir, args.pe_dir)
-	dumper.dump_all()
+	if (dumper.dump_all() == False):
+		exit()
 	dumper.get_pe_files()
 
 if __name__=="__main__":

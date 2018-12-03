@@ -3,6 +3,7 @@ import idaapi
 import idc
 import json
 
+import utils
 from guids import edk_guids, ami_guids, edk2_guids
 
 OFFSET = {
@@ -35,23 +36,6 @@ LEA_NUM = {
 #   "InstallMultipleProtocolInterfaces": 2,
 #   "UninstallMultipleProtocolInterfaces": x,
 }
-
-def SetHexRaysComment(address, text):
-    cfunc = idaapi.decompile(address)
-    tl = idaapi.treeloc_t()
-    tl.ea = address
-    tl.itp = idaapi.ITP_SEMI
-    cfunc.set_user_cmt(tl, text)
-    cfunc.save_user_cmts()
-
-def get_guid(address):
-    CurrentGUID = []
-    CurrentGUID.append(idc.Dword(address))
-    CurrentGUID.append(idc.Word(address + 4))
-    CurrentGUID.append(idc.Word(address + 6))
-    for addr in range(address + 8, address + 16, 1):
-        CurrentGUID.append(idc.Byte(addr))
-    return CurrentGUID
 
 class Analyser(object):
     def __init__(self):
@@ -96,11 +80,12 @@ class Analyser(object):
         print(" * analyser.get_boot_services()")
         print("   - check: analyser.gBServices[<service_name>]")
         print(" * analyser.list_boot_services()")
-        print(" * analyser.make_comments()")
         print(" * analyser.get_protocols()")
         print("   - check: analyser.Protocols['All']")
         print(" * analyser.get_prot_names()")
         print("   - check: analyser.Protocols['All']")
+        print(" * analyser.make_comments()")
+        print(" * analyser.set_efi_types()")
         print(" * analyser.print_all()")
 
     def get_boot_services(self):
@@ -155,12 +140,6 @@ class Analyser(object):
         if empty:
             print(" * list is empty")
 
-    def make_comments(self):
-        for service in self.gBServices:
-            for address in self.gBServices[service]:
-                SetHexRaysComment(address, "EFI_BOOT_SERVICES->{0}".format(service))
-                idc.MakeComm(address, "EFI_BOOT_SERVICES->{0}".format(service))
-
     def get_protocols(self):
         for service_name in self.gBServices:
             if service_name in LEA_NUM.keys():
@@ -175,7 +154,7 @@ class Analyser(object):
                                 break
                     for xref in idautils.DataRefsFrom(ea):
                         if (idc.GetMnem(xref) == ""):
-                            CurrentGUID = get_guid(xref)
+                            CurrentGUID = utils.get_guid(xref)
                             protocol_record = {}
                             protocol_record["address"] = xref
                             protocol_record["service"] = service_name
@@ -216,6 +195,46 @@ class Analyser(object):
             if not "protocol_name" in self.Protocols["All"][index]:
                 self.Protocols["All"][index]["protocol_name"] = "ProprietaryProtocol"
                 self.Protocols["All"][index]["protocol_place"] = "unknown"
+
+    def make_comments(self):
+        for service in self.gBServices:
+            for address in self.gBServices[service]:
+                """ utils.set_hexrays_comment(address, "EFI_BOOT_SERVICES->{0}".format(service)) """
+                idc.MakeComm(address, "EFI_BOOT_SERVICES->{0}".format(service))
+    
+    def set_efi_types(self):
+        """ handle (EFI_BOOT_SERVICES *) type """
+        RAX = 0
+        O_REG = 1
+        O_MEM = 2
+        EFI_BOOT_SERVICES = "EFI_BOOT_SERVICES *"
+        for service in self.gBServices:
+            for address in self.gBServices[service]:
+                ea = address
+                num_of_attempts = 10
+                for _ in range(num_of_attempts):
+                    ea = idc.prev_head(ea)
+                    if (idc.GetMnem(ea) == "mov" and idc.get_operand_type(ea, 1) == O_MEM):
+                        if (idc.get_operand_type(ea, 0) == O_REG and idc.get_operand_value(ea, 0) == RAX):
+                            gBs_var = idc.get_operand_value(ea, 1)
+                            gBs_var_type = idc.get_type(gBs_var)
+                            if (gBs_var_type == "EFI_BOOT_SERVICES *"):
+                                print("[{0}] EFI_BOOT_SERVICES->{1}".format(hex(address).replace("L", ""), service))
+                                print("\t [address] {0}".format(hex(gBs_var).replace("L", "")))
+                                print("\t [message] type already applied")
+                                break
+                            if idc.SetType(gBs_var, EFI_BOOT_SERVICES):
+                                old_name = idc.Name(gBs_var)
+                                idc.MakeName(gBs_var, "gBs_" + old_name)
+                                print("[{0}] EFI_BOOT_SERVICES->{1}".format(hex(address).replace("L", ""), service))
+                                print("\t [address] {0}".format(hex(gBs_var).replace("L", "")))
+                                print("\t [message] type successfully applied")
+                            else:
+                                print("[{0}] EFI_BOOT_SERVICES->{1}".format(hex(address).replace("L", ""), service))
+                                print("\t [address] {0}".format(hex(gBs_var).replace("L", "")))
+                                print("\t [message] type not applied")
+                            break
+                
 
     @classmethod
     def print_all(cls):

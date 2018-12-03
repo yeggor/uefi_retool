@@ -1,3 +1,3 @@
 all = [
-    "analyser", "guids", "TrustedGUIDs"
+    "analyser", "guids", "utils"
 ]
