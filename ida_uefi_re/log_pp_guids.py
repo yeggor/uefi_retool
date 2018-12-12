@@ -4,7 +4,7 @@ import os
 
 from analyser import Analyser
 
-LOG_FILE = "..\\log\\result_log_pp_guids.md"
+LOG_FILE = "..{sep}log{sep}ida_log_pp_guids.md".format(sep=os.sep)
 
 """
 output format:

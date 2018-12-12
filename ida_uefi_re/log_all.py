@@ -1,9 +1,10 @@
 import idc
 import idaapi
+import os
 
 from analyser import Analyser
 
-LOG_FILE = "..\\log\\result_log_all.md"
+LOG_FILE = "..{sep}log{sep}ida_log_all.md".format(sep=os.sep)
 
 def print_log(data):
     with open(LOG_FILE, "ab") as log:

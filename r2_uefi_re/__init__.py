@@ -1,0 +1,3 @@
+all=[
+    "print_info"
+]
