@@ -1,3 +1,3 @@
 all=[
-    "print_info"
+    "module_info"
 ]

@@ -34,7 +34,11 @@ def analyse_all(scr_name):
 		item_show_func=show_item,
 		) as bar:
 		for module in bar:
-			if (module[len(module)-4:len(module):] == ".efi"):
+			if (
+				module.find(".idb") == -1 and module.find(".i64") == -1 and \
+				module.find(".id1") == -1 and module.find(".id2") == -1 and \
+				module.find(".nam") == -1 and module.find(".til") == -1
+			):
 				module_path = pe_dir + os.sep + module
 				""" x64 only """
 				if utils.get_machine_type(module_path) == utils.IMAGE_FILE_MACHINE_IA64:
