@@ -5,8 +5,8 @@ import argparse
 import shutil
 import click
 
-DATA_PATH = "..{0}conf".format(os.sep)
-GUIDS = "..{0}ida_uefi_re{0}guids".format(os.sep)
+DATA_PATH = "..{sep}conf".format(sep=os.sep)
+GUIDS = "..{sep}ida_uefi_re{sep}guids".format(sep=os.sep)
 
 def get_py(string):
     new_string = "edk2_guids = {\n"
@@ -36,11 +36,11 @@ def get_py(string):
     return new_string
 
 
-def get_guids_list(edk2_path, data_path, guids_path):
+def get_guids_list(edk2_path, data_path):
     if os.path.isdir(edk2_path) == 0:
         print("[-] Error, check edk2 path")
         return False
-    dec_files = glob.glob(edk2_path + "{0}*{0}*.dec".format(os.sep))
+    dec_files = glob.glob(edk2_path + "{sep}*{sep}*.dec".format(sep=os.sep))
     if len(dec_files) == 0:
         print("[-] Error, *.dec files list is empty")
         return False
@@ -51,7 +51,7 @@ def get_guids_list(edk2_path, data_path, guids_path):
     for dec_file in dec_files:
         with open(dec_file, "rb") as dec:
             guids_list = re.findall(regexp, dec.read())
-            conf_content += "# Guids from {0} file \n".format(dec_file)
+            conf_content += "# Guids from {dec_file} file \n".format(dec_file=dec_file)
             for guid in guids_list:
                 conf_content += guid + "\n"
     with open(DATA_PATH + os.sep + "edk2_guids.conf", "wb") as conf:
@@ -64,7 +64,7 @@ def get_guids_list(edk2_path, data_path, guids_path):
     return True
 
 def update(edk2_path, data_path, guids_path):
-    if get_guids_list(edk2_path, data_path, guids_path):
+    if get_guids_list(edk2_path, data_path):
         shutil.copy(data_path + os.sep + "edk2_guids.py", guids_path + os.sep + "edk2_guids.py")
         print("[*] Files {0}, {1} was successfully updated"
         .format(data_path + os.sep + "edk2_guids.conf", data_path + os.sep + "edk2_guids.py"))
@@ -75,14 +75,15 @@ def update(edk2_path, data_path, guids_path):
 def main():
     click.echo(click.style("Copyright (c) 2018 yeggor", fg="cyan"))
     program = "python " + os.path.basename(__file__)
-    parser = argparse.ArgumentParser(description="Get all UEFI PE-images",
+    parser = argparse.ArgumentParser(
+        description="Get all UEFI PE-images",
 		prog=program)
     parser.add_argument("edk2_path", 
         type=str, 
         help="the path to EDK2 directory")
     
     args = parser.parse_args()
-    if get_guids_list(args.edk2_path, DATA_PATH, GUIDS):
+    if get_guids_list(args.edk2_path, DATA_PATH):
         shutil.copyfile(DATA_PATH + os.sep + "edk2_guids.py", GUIDS + os.sep + "edk2_guids.py")
         print("[*] Files {0}, {1} was successfully updated"
         .format(DATA_PATH + os.sep + "edk2_guids.conf", DATA_PATH + os.sep + "edk2_guids.py"))
