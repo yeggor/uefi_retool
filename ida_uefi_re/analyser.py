@@ -91,46 +91,13 @@ class Analyser(object):
     def get_boot_services(self):
         for ea_start in idautils.Functions():
             for ea in idautils.FuncItems(ea_start):
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["InstallProtocolInterface"]):
-                    if self.gBServices["InstallProtocolInterface"].count(ea) == 0:
-                        self.gBServices["InstallProtocolInterface"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["ReinstallProtocolInterface"]):
-                    if self.gBServices["ReinstallProtocolInterface"].count(ea) == 0:
-                        self.gBServices["ReinstallProtocolInterface"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["UninstallProtocolInterface"]):
-                    if self.gBServices["UninstallProtocolInterface"].count(ea) == 0:
-                        self.gBServices["UninstallProtocolInterface"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["HandleProtocol"]):
-                    if self.gBServices["HandleProtocol"].count(ea) == 0:
-                        self.gBServices["HandleProtocol"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["RegisterProtocolNotify"]):
-                    if self.gBServices["RegisterProtocolNotify"].count(ea) == 0:
-                        self.gBServices["RegisterProtocolNotify"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["OpenProtocol"]):
-                    if self.gBServices["OpenProtocol"].count(ea) == 0:
-                        self.gBServices["OpenProtocol"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["CloseProtocol"]):
-                    if self.gBServices["CloseProtocol"].count(ea) == 0:
-                        self.gBServices["CloseProtocol"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["OpenProtocolInformation"]):
-                    if self.gBServices["OpenProtocolInformation"].count(ea) == 0:
-                        self.gBServices["OpenProtocolInformation"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["ProtocolsPerHandle"]):
-                    if self.gBServices["ProtocolsPerHandle"].count(ea) == 0:
-                        self.gBServices["ProtocolsPerHandle"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["LocateHandleBuffer"]):
-                    if self.gBServices["LocateHandleBuffer"].count(ea) == 0:
-                        self.gBServices["LocateHandleBuffer"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["LocateProtocol"]):
-                    if self.gBServices["LocateProtocol"].count(ea) == 0:
-                        self.gBServices["LocateProtocol"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["InstallMultipleProtocolInterfaces"]):
-                    if self.gBServices["InstallMultipleProtocolInterfaces"].count(ea) == 0:
-                        self.gBServices["InstallMultipleProtocolInterfaces"].append(ea)
-                if (idc.GetMnem(ea) == "call") and (idc.get_operand_value(ea, 0) == OFFSET["UninstallMultipleProtocolInterfaces"]):
-                    if self.gBServices["UninstallMultipleProtocolInterfaces"].count(ea) == 0:
-                        self.gBServices["UninstallMultipleProtocolInterfaces"].append(ea)
-    
+                for service_name in OFFSET:
+                    if (idc.GetMnem(ea) == "call" and \
+                        idc.get_operand_value(ea, 0) == OFFSET[service_name]
+                        ):
+                        if self.gBServices[service_name].count(ea) == 0:
+                            self.gBServices[service_name].append(ea)
+
     def list_boot_services(self):
         empty = True
         for service in self.gBServices:

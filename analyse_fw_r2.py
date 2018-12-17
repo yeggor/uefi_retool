@@ -6,6 +6,7 @@ import time
 
 from tools import utils
 from r2_uefi_re import module_info
+from r2_uefi_re.analyser import Analyser
 
 """ reads configuration data """
 with open("config.json", "rb") as cfile:
@@ -25,8 +26,13 @@ def analyse_all():
 		):
 			module_path = pe_dir + os.sep + module
 			try:
-				module_info.test(module_path)
 				print("[*] current module: {module}".format(module=module_path))
+				#module_info.test(module_path)
+				analyser = Analyser(module_path)
+				analyser.get_boot_services()
+				analyser.list_boot_services()
+				analyser.get_protocols()
+				print(analyser.Protocols["All"])
 				time.sleep(0.01)
 			except Exception:
 				continue

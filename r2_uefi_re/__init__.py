@@ -1,3 +1,4 @@
 __all__ = [
-    "module_info"
+    "module_info",
+    "analyser"
 ]
