@@ -5,6 +5,9 @@ import r2pipe
 import click
 import argparse
 
+import utils
+from guids import edk_guids, ami_guids, edk2_guids
+
 MIN_SET_LEN = 8
 
 OFFSET = {
@@ -59,7 +62,10 @@ class Analyser():
         self.gBServices["InstallMultipleProtocolInterfaces"] = []
         self.gBServices["UninstallMultipleProtocolInterfaces"] = []
 
-        self.Protocols  = {}
+        self.Protocols = {}
+        self.Protocols["AmiGuids"] = ami_guids.ami_guids
+        self.Protocols["EdkGuids"] = edk_guids.edk_guids
+        self.Protocols["Edk2Guids"] = edk2_guids.edk2_guids
         self.Protocols["All"] = [
             # {
             #   address: ...
@@ -68,12 +74,14 @@ class Analyser():
             # }, 
             # ...
         ]
-    
+        self.Protocols["PropGuids"] = []
+
+
     def get_info(self):
         info = json.loads(self.r2.cmd("ij"))
         return json.dumps(info, indent=2)
     
-    """ 
+    """
     format: {
         func_name: func_address,
         ...
@@ -87,12 +95,12 @@ class Analyser():
         for func_info in json_funcs:
             funcs[func_info["name"]] = func_info["offset"]
         return funcs
-    
+
     def get_boot_services(self):
         funcs = self.get_funcs()
         pdfs = []
         for name in funcs:
-            func_info = self.r2.cmd("pdfj @ {addr}".format(addr=funcs[name]))
+            func_info = self.r2.cmd("pdfj @ {name}".format(name=funcs[name]))
             pdfs.append(json.loads(func_info))
         for func_info in pdfs:
             if ("ops" in func_info):
@@ -120,35 +128,29 @@ class Analyser():
         if empty:
             print(" * list is empty")
 
-    """ return 0 if ea is end of block """
-    def next_head(self, ea):
-        ea = 16827769
-        addresses = []
-        block = json.loads(self.r2.cmd("pdbj @ {addr}".format(addr=ea)))
-        for instr in block:
-            addresses.append(instr["offset"])
-        index = addresses.index(ea)
-        if index < len(addresses) - 1:
-            return addresses[index + 1]
-        else:
-            return 0
-
     """ return 0 if ea is start of block """
     def prev_head(self, ea):
         addresses = []
-        block = json.loads(self.r2.cmd("pdbj @ {addr}".format(addr=ea)))
-        for instr in block:
+        i = 0
+        self.r2.cmd("s {addr}".format(addr=ea))
+        block = json.loads(self.r2.cmd("pdfj"))
+        for instr in block["ops"]:
             addresses.append(instr["offset"])
-        index = addresses.index(ea)
-        if index > 0:
-            return addresses[index - 1]
+        i = addresses.index(ea)
+        if i > 0:
+            return addresses[i - 1]
         else:
             return 0
 
     def get_guid(self, address):
         self.r2.cmd("s {addr}".format(addr=address))
         guid_bytes = json.loads(self.r2.cmd("pcj 16"))
-        return guid_bytes
+        CurrentGUID = []
+        CurrentGUID.append(utils.get_dword(bytearray(guid_bytes[:4:])))
+        CurrentGUID.append(utils.get_word(bytearray(guid_bytes[4:6:])))
+        CurrentGUID.append(utils.get_word(bytearray(guid_bytes[6:8:])))
+        CurrentGUID += guid_bytes[8:16:]
+        return CurrentGUID
         
     def get_protocols(self):
         for service_name in self.gBServices:
@@ -158,11 +160,15 @@ class Analyser():
                     lea_counter = 0
                     while (True):
                         ea = self.prev_head(ea)
+                        if ea == 0:
+                            break
                         instr = json.loads(self.r2.cmd("pdj1 @ {addr}".format(addr=ea)))[0]
                         if (instr["type"] == "lea"):
                             lea_counter += 1
                             if (lea_counter == LEA_NUM[service_name]):
                                 break
+                    if ea == 0:
+                        continue
                     guid_addr = instr.get("ptr")
                     if guid_addr is None:
                         continue
@@ -174,6 +180,59 @@ class Analyser():
                         protocol_record["guid"] = CurrentGUID
                         if self.Protocols["All"].count(protocol_record) == 0:
                             self.Protocols["All"].append(protocol_record)
+    
+    def get_prot_names(self):
+        for index in range(len(self.Protocols["All"])):
+            fin = False
+            for prot_name in self.Protocols["Edk2Guids"].keys():
+                guid_idb = self.Protocols["All"][index]["guid"]
+                guid_conf = self.Protocols["Edk2Guids"][prot_name]
+                if (guid_idb == guid_conf):
+                    self.Protocols["All"][index]["protocol_name"] = prot_name
+                    self.Protocols["All"][index]["protocol_place"] = "edk2_guids"
+                    fin = True
+                    break
+            if fin: continue
+            for prot_name in self.Protocols["EdkGuids"].keys():
+                guid_idb = self.Protocols["All"][index]["guid"]
+                guid_conf = self.Protocols["EdkGuids"][prot_name]
+                if (guid_idb == guid_conf):
+                    self.Protocols["All"][index]["protocol_name"] = prot_name
+                    self.Protocols["All"][index]["protocol_place"] = "edk_guids"
+                    fin = True
+                    break
+            if fin: continue
+            for prot_name in self.Protocols["Edk2Guids"].keys():
+                guid_idb = self.Protocols["All"][index]["guid"]
+                guid_conf = self.Protocols["Edk2Guids"][prot_name]
+                if (guid_idb == guid_conf):
+                    self.Protocols["All"][index]["protocol_name"] = prot_name
+                    self.Protocols["All"][index]["protocol_place"] = "ami_guids"
+                    fin = True
+                    break
+            if fin: continue
+            if not "protocol_name" in self.Protocols["All"][index]:
+                self.Protocols["All"][index]["protocol_name"] = "ProprietaryProtocol"
+                self.Protocols["All"][index]["protocol_place"] = "unknown"
+
+    def print_all(self):
+        self.get_boot_services()
+        print("\r\nBoot services:")
+        self.list_boot_services()
+        self.get_protocols()
+        self.get_prot_names()
+        data = analyser.Protocols["All"]
+        print("\r\nProtocols:")
+        if len(data) == 0:
+            print(" * list is empty")
+        for element in data:
+            guid_str = "[guid] " + str(map(hex, element["guid"]))
+            print("\t [address] " + hex(element["address"]))
+            print("\t [service] " + element["service"])
+            print("\t [protocol_name] " + element["protocol_name"])
+            print("\t [protocol_place] " + element["protocol_place"])
+            print("\t " + guid_str)
+            print("\t " + "*" * len(guid_str))
 
 if __name__=="__main__":
     click.echo(click.style("Copyright (c) 2018 yeggor", fg="cyan"))
@@ -185,7 +244,4 @@ if __name__=="__main__":
 		help="the path to UEFI module")
     args = parser.parse_args()
     analyser = Analyser(args.module)
-    analyser.get_boot_services()
-    analyser.list_boot_services()
-    analyser.get_protocols()
-    print(analyser.Protocols["All"])
+    analyser.print_all()
