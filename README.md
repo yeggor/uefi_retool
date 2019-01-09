@@ -60,3 +60,5 @@
                        proprietry protocols to .\log\r2_pp_guids.md file (example:
                        python analyse_fw_r2.py --pp_guids <firmware_path>)
     ```
+
+*Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpx1c.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpx1c.md)*
