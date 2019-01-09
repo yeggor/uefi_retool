@@ -33,7 +33,7 @@ LEA_NUM = {
     "OpenProtocolInformation": 1,
     "LocateHandleBuffer": 2,
     "LocateProtocol": 1,
-#   "InstallMultipleProtocolInterfaces": 2,
+#   "InstallMultipleProtocolInterfaces": x,
 #   "UninstallMultipleProtocolInterfaces": x,
 }
 
@@ -166,7 +166,7 @@ class Analyser(object):
     def make_comments(self):
         for service in self.gBServices:
             for address in self.gBServices[service]:
-                """ utils.set_hexrays_comment(address, "EFI_BOOT_SERVICES->{0}".format(service)) """
+                utils.set_hexrays_comment(address, "EFI_BOOT_SERVICES->{0}".format(service))
                 idc.MakeComm(address, "EFI_BOOT_SERVICES->{0}".format(service))
     
     def set_efi_types(self):

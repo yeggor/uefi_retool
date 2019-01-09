@@ -37,14 +37,15 @@ LEA_NUM = {
     "OpenProtocolInformation": 1,
     "LocateHandleBuffer": 2,
     "LocateProtocol": 1,
-#   "InstallMultipleProtocolInterfaces": 2,
+#   "InstallMultipleProtocolInterfaces": x,
 #   "UninstallMultipleProtocolInterfaces": x,
 }
 
 class Analyser():
     def __init__(self, module_path):
         self.module_path = module_path
-        self.r2 = r2pipe.open(module_path)
+        """ '-2' for disabling warnings """
+        self.r2 = r2pipe.open(module_path, ["-2"])
         self.r2.cmd("aaa")
         
         self.gBServices = {}
@@ -79,7 +80,7 @@ class Analyser():
 
     def get_info(self):
         info = json.loads(self.r2.cmd("ij"))
-        return json.dumps(info, indent=2)
+        return info
     
     """
     format: {
@@ -153,6 +154,7 @@ class Analyser():
         return CurrentGUID
         
     def get_protocols(self):
+        baddr = self.get_info()["bin"]["baddr"]
         for service_name in self.gBServices:
             if service_name in LEA_NUM.keys():
                 for address in self.gBServices[service_name]:
@@ -170,7 +172,7 @@ class Analyser():
                     if ea == 0:
                         continue
                     guid_addr = instr.get("ptr")
-                    if guid_addr is None:
+                    if (guid_addr is None) or (guid_addr < baddr):
                         continue
                     CurrentGUID = self.get_guid(guid_addr)
                     if len(set(CurrentGUID)) > MIN_SET_LEN:
@@ -185,27 +187,27 @@ class Analyser():
         for index in range(len(self.Protocols["All"])):
             fin = False
             for prot_name in self.Protocols["Edk2Guids"].keys():
-                guid_idb = self.Protocols["All"][index]["guid"]
+                guid_r2 = self.Protocols["All"][index]["guid"]
                 guid_conf = self.Protocols["Edk2Guids"][prot_name]
-                if (guid_idb == guid_conf):
+                if (guid_r2 == guid_conf):
                     self.Protocols["All"][index]["protocol_name"] = prot_name
                     self.Protocols["All"][index]["protocol_place"] = "edk2_guids"
                     fin = True
                     break
             if fin: continue
             for prot_name in self.Protocols["EdkGuids"].keys():
-                guid_idb = self.Protocols["All"][index]["guid"]
+                guid_r2 = self.Protocols["All"][index]["guid"]
                 guid_conf = self.Protocols["EdkGuids"][prot_name]
-                if (guid_idb == guid_conf):
+                if (guid_r2 == guid_conf):
                     self.Protocols["All"][index]["protocol_name"] = prot_name
                     self.Protocols["All"][index]["protocol_place"] = "edk_guids"
                     fin = True
                     break
             if fin: continue
             for prot_name in self.Protocols["Edk2Guids"].keys():
-                guid_idb = self.Protocols["All"][index]["guid"]
+                guid_r2 = self.Protocols["All"][index]["guid"]
                 guid_conf = self.Protocols["Edk2Guids"][prot_name]
-                if (guid_idb == guid_conf):
+                if (guid_r2 == guid_conf):
                     self.Protocols["All"][index]["protocol_name"] = prot_name
                     self.Protocols["All"][index]["protocol_place"] = "ami_guids"
                     fin = True
@@ -214,6 +216,7 @@ class Analyser():
             if not "protocol_name" in self.Protocols["All"][index]:
                 self.Protocols["All"][index]["protocol_name"] = "ProprietaryProtocol"
                 self.Protocols["All"][index]["protocol_place"] = "unknown"
+                self.Protocols["PropGuids"].append(guid_r2)
 
     def print_all(self):
         self.get_boot_services()
@@ -233,13 +236,23 @@ class Analyser():
             print("\t [protocol_place] " + element["protocol_place"])
             print("\t " + guid_str)
             print("\t " + "*" * len(guid_str))
+        print("\r\nProprietary protocols:")
+        if len(self.Protocols["PropGuids"]) == 0:
+            print (" * list is empty")
+        for guid in self.Protocols["PropGuids"]:
+            print("\t [guid] {guid}".format(guid=str(map(hex, guid))))
+        print("\r\nTotal:")
+        print("\t [number of proprietary protocols] {0}"
+        .format(len(self.Protocols["PropGuids"])))
+        print("\t [full number of protocols] {0}"
+        .format(len(data)))
 
 if __name__=="__main__":
     click.echo(click.style("Copyright (c) 2018 yeggor", fg="cyan"))
     program = "python " + os.path.basename(__file__)
     parser = argparse.ArgumentParser(description="UEFI module analyser",
 		prog=program)
-    parser.add_argument("module", 
+    parser.add_argument("module",
 		type=str, 
 		help="the path to UEFI module")
     args = parser.parse_args()
