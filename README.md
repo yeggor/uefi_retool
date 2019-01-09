@@ -36,7 +36,7 @@
  * "PE_DIR" is a folder that consist all executable images from UEFI firmware file
  * "DUMP_DIR" is a folder that consist all components from firmware filesystem
  * "IDA_PATH" and "IDA64_PATH" are paths to IDA Pro executable files
-### Additional tools
+### Additional tools:
  * `tools\get_efi_images.py` is a script to get all PE-images from firmware file
  * `tools\update_edk2_guids.py` is a script to update protocol GUIDs list from `conf` directory
 ### To analyse UEFI firmware with radare2:
