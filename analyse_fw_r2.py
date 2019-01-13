@@ -121,6 +121,39 @@ def get_pp_guids():
 						continue
 	log.close()
 
+def get_pp_guids_num():
+	full_guids_num = 0
+	pp_guids_num = 0
+	if os.path.isdir(pe_dir) == 0:
+		return False
+	files = os.listdir(pe_dir)
+	with click.progressbar(
+		files,
+		length=len(files),
+		bar_template=click.style("%(label)s  %(bar)s | %(info)s", fg="cyan"),
+		label="Modules analysis",
+		item_show_func=show_item,
+		) as bar:
+			for module in bar:
+				if (
+					module.find(".idb") == -1 and module.find(".i64") == -1 and \
+					module.find(".id1") == -1 and module.find(".id2") == -1 and \
+					module.find(".nam") == -1 and module.find(".til") == -1
+				):
+					module_path = pe_dir + os.sep + module
+					try:
+						analyser = Analyser(module_path)
+						analyser.get_boot_services()
+						analyser.get_protocols()
+						analyser.get_prot_names()
+						full_guids_num += len(analyser.Protocols["All"])
+						pp_guids_num += len(analyser.Protocols["PropGuids"])
+					except:
+						continue
+	print("\t [number of proprietary protocols] {0}".format(pp_guids_num))
+	print("\t [full number of protocols] {0}".format(full_guids_num))
+
+
 def main():
 	click.echo(click.style("UEFI_RETool", fg="cyan"))
 	click.echo(click.style("A tool for full UEFI firmware analysis with radare2", fg="cyan"))
@@ -143,6 +176,14 @@ def main():
 		to .{sep}log{sep}r2_pp_guids.md file
 		(example: python analyse_fw_r2.py --pp_guids <firmware_path>)"""
 		.format(sep=os.sep))
+
+	parser.add_argument("--pp_guids_num", 
+		action="store_true",
+		help="""analyse all UEFI firmware modules and 
+		get number of proprietry protocols
+		(example: python analyse_fw_r2.py --pp_guids_num <firmware_path>)"""
+		.format(sep=os.sep))
+	
 	args = parser.parse_args()
 	
 	if (args.all and os.path.isfile(args.firmware_path)):
@@ -154,6 +195,11 @@ def main():
 		get_efi_images(args.firmware_path)
 		""" log all information """
 		get_pp_guids()
+	
+	if (args.pp_guids_num and os.path.isfile(args.firmware_path)):
+		get_efi_images(args.firmware_path)
+		""" log all information """
+		get_pp_guids_num()
 
 if __name__=="__main__":
 	main()
