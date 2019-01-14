@@ -256,5 +256,8 @@ if __name__=="__main__":
 		type=str, 
 		help="the path to UEFI module")
     args = parser.parse_args()
-    analyser = Analyser(args.module)
-    analyser.print_all()
+    if os.path.isfile(args.module):
+        analyser = Analyser(args.module)
+        analyser.print_all()
+    else:
+        print("Invalid argument")
