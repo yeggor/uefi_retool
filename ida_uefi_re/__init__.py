@@ -1,3 +1,3 @@
-all = [
+__all__ = [
     "analyser", "guids", "utils"
 ]
