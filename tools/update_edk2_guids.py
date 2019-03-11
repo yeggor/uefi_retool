@@ -73,7 +73,6 @@ def update(edk2_path, data_path, guids_path):
         return False
 
 def main():
-    click.echo(click.style("Copyright (c) 2018 yeggor", fg="cyan"))
     program = "python " + os.path.basename(__file__)
     parser = argparse.ArgumentParser(
         description="Get all UEFI PE-images",

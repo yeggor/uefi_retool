@@ -248,7 +248,6 @@ class Analyser():
         .format(len(data)))
 
 if __name__=="__main__":
-    click.echo(click.style("Copyright (c) 2018 yeggor", fg="cyan"))
     program = "python " + os.path.basename(__file__)
     parser = argparse.ArgumentParser(description="UEFI module analyser",
 		prog=program)

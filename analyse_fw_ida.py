@@ -50,7 +50,6 @@ def analyse_all(scr_name):
 def main():
 	click.echo(click.style("UEFI_RETool", fg="cyan"))
 	click.echo(click.style("A tool for UEFI firmware analysis with IDA Pro", fg="cyan"))
-	click.echo(click.style("Copyright (c) 2018 yeggor", fg="cyan"))
 	program = "python " + os.path.basename(__file__)
 	parser = argparse.ArgumentParser(prog=program)
 	parser.add_argument("firmware_path",

@@ -67,7 +67,6 @@ def get_efi_images(fw_name):
 	return True
 
 def main():
-	click.echo(click.style("Copyright (c) 2018 yeggor", fg="cyan"))
 	""" for correct color display in uefi_firmware module """
 	colorama.init()
 	program = "python " + os.path.basename(__file__)

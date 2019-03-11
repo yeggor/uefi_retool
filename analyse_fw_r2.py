@@ -157,7 +157,6 @@ def get_pp_guids_num():
 def main():
 	click.echo(click.style("UEFI_RETool", fg="cyan"))
 	click.echo(click.style("A tool for full UEFI firmware analysis with radare2", fg="cyan"))
-	click.echo(click.style("Copyright (c) 2018 yeggor", fg="cyan"))
 	program = "python " + os.path.basename(__file__)
 	parser = argparse.ArgumentParser(prog=program)
 	parser.add_argument("firmware_path",
