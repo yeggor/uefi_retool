@@ -7,7 +7,6 @@
     ```
         UEFI_RETool
         A tool for UEFI firmware analysis with IDA Pro
-        Copyright (c) 2018 yeggor
         usage: python analyse_fw_ida.py [-h] [--all] [--pp_guids] [--get_efi_images]
                                         [--update_edk2_guids EDK2_PATH]
                                         firmware_path
@@ -45,7 +44,6 @@
     ```
         UEFI_RETool
         A tool for full UEFI firmware analysis with radare2
-        Copyright (c) 2018 yeggor
         usage: python analyse_fw_r2.py [-h] [--all] [--pp_guids] firmware_path
 
         positional arguments:
