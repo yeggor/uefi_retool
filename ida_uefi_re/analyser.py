@@ -2,6 +2,7 @@ import idautils
 import idaapi
 import idc
 import json
+from terminaltables import SingleTable
 
 import utils
 from guids import edk_guids, ami_guids, edk2_guids
@@ -44,7 +45,6 @@ class Analyser(object):
         idc.Til2Idb(-1, "EFI_RUNTIME_SERVICES")
         idc.Til2Idb(-1, "EFI_BOOT_SERVICES")
 
-
         self.gBServices = {}
         self.gBServices["InstallProtocolInterface"] = []
         self.gBServices["ReinstallProtocolInterface"] = []
@@ -79,13 +79,16 @@ class Analyser(object):
         print("Methods:")
         print(" * analyser.get_boot_services()")
         print("   - check: analyser.gBServices[<service_name>]")
-        print(" * analyser.list_boot_services()")
         print(" * analyser.get_protocols()")
         print("   - check: analyser.Protocols['All']")
         print(" * analyser.get_prot_names()")
         print("   - check: analyser.Protocols['All']")
+        print("Commands:")
+        print(" * analyser.list_boot_services()")
+        print(" * analyser.list_protocols()")
         print(" * analyser.make_comments()")
-        print(" * analyser.set_efi_types()")
+        print(" * analyser.make_names()")
+        print(" * analyser.set_types()")
         print(" * analyser.print_all()")
 
     def get_boot_services(self):
@@ -99,13 +102,42 @@ class Analyser(object):
                             self.gBServices[service_name].append(ea)
 
     def list_boot_services(self):
+        self.get_boot_services()
         empty = True
+        table_data = []
+        table_instance = SingleTable(table_data)
+        table_data.append(["Address", "Service"])
+        print("Boot services:")
         for service in self.gBServices:
             for address in self.gBServices[service]:
+                table_data.append([hex(address), service])
                 empty = False
-                print("\t [{0}] EFI_BOOT_SERVICES->{1}".format(hex(address), service))
         if empty:
             print(" * list is empty")
+        else:
+            print(table_instance.table)
+    
+    def list_protocols(self):
+        self.get_boot_services()
+        self.get_protocols()
+        self.get_prot_names()
+        data = self.Protocols["All"]
+        print("Protocols:")
+        if len(data) == 0:
+            print(" * list is empty")
+        else:
+            table_data = []
+            table_instance = SingleTable(table_data)
+            table_data.append(["GUID", "Protocol name", "Address", "Service", "Protocol place"])
+            for element in data:
+                table_data.append([
+                    str(map(hex, element["guid"])), 
+                    element["protocol_name"],
+                    hex(element["address"]),
+                    element["service"],
+                    element["protocol_place"]
+                    ])
+            print(table_instance.table)
 
     def get_protocols(self):
         for service_name in self.gBServices:
@@ -164,12 +196,29 @@ class Analyser(object):
                 self.Protocols["All"][index]["protocol_place"] = "unknown"
 
     def make_comments(self):
+        self.get_boot_services()
         for service in self.gBServices:
             for address in self.gBServices[service]:
                 """ utils.set_hexrays_comment(address, "EFI_BOOT_SERVICES->{0}".format(service)) """
-                idc.MakeComm(address, "EFI_BOOT_SERVICES->{0}".format(service))
+                message = "EFI_BOOT_SERVICES->{0}".format(service)
+                idc.MakeComm(address, message)
+                print("[{ea}] {message}".format(ea=hex(address), message=message))
     
-    def set_efi_types(self):
+    def make_names(self):
+        EFI_GUID = "EFI_GUID *"
+        self.get_boot_services()
+        self.get_protocols()
+        self.get_prot_names()
+        data = self.Protocols["All"]
+        for element in data:
+            try:
+                idc.SetType(element["address"], EFI_GUID)
+                idc.MakeName(element["address"], element["protocol_name"])
+                print("[{ea}] {name}".format(ea=hex(element["address"]), name=element["protocol_name"]))
+            except:
+                continue
+
+    def set_types(self):
         """ handle (EFI_BOOT_SERVICES *) type """
         RAX = 0
         O_REG = 1
@@ -201,34 +250,26 @@ class Analyser(object):
                                 print("\t [address] {0}".format(hex(gBs_var).replace("L", "")))
                                 print("\t [message] type not applied")
                             break
-                
 
-    @classmethod
-    def print_all(cls):
-        analyser = cls()
-        analyser.get_boot_services()
-        print("\r\nBoot services:")
-        analyser.list_boot_services()
-        analyser.get_protocols()
-        analyser.get_prot_names()
-        data = analyser.Protocols["All"]
-        print("\r\nProtocols:")
-        if len(data) == 0:
-            print(" * list is empty")
-        for element in data:
-            guid_str = "[guid] " + str(map(hex, element["guid"]))
-            print("\t [address] " + hex(element["address"]))
-            print("\t [service] " + element["service"])
-            print("\t [protocol_name] " + element["protocol_name"])
-            print("\t [protocol_place] " + element["protocol_place"])
-            print("\t " + guid_str)
-            print("\t " + "*" * len(guid_str))
+    def print_all(self):
+        self.list_boot_services()
+        self.list_protocols()
+    
+    def analyse_all(self):
+        print("Comments:")
+        self.make_comments()
+        print("Names:")
+        self.make_names()
+        print("Types:")
+        self.set_types()
 
 def main():
     print("Usage:")
-    print(" * analyser = Analyser()")
-    print(" * analyser.help()")
-    Analyser().print_all()
+    print("analyser = Analyser()")
+    print("analyser.help()")
+    analyser = Analyser()
+    analyser.print_all()
+    analyser.analyse_all()
 
 if __name__=="__main__":
     main()
