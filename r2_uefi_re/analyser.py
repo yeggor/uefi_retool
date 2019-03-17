@@ -5,6 +5,7 @@ import r2pipe
 import click
 import argparse
 import click
+from terminaltables import SingleTable
 
 import utils
 from guids import edk_guids, ami_guids, edk2_guids
@@ -120,15 +121,6 @@ class Analyser():
                                     self.gBServices[service_name].count(ea) == 0
                                     ):
                                     self.gBServices[service_name].append(ea)
-    
-    def list_boot_services(self):
-        empty = True
-        for service in self.gBServices:
-            for address in self.gBServices[service]:
-                empty = False
-                print("\t [{0}] EFI_BOOT_SERVICES->{1}".format(hex(address), service))
-        if empty:
-            print(" * list is empty")
 
     """ return 0 if ea is start of block """
     def prev_head(self, ea):
@@ -218,35 +210,52 @@ class Analyser():
                 self.Protocols["All"][index]["protocol_name"] = "ProprietaryProtocol"
                 self.Protocols["All"][index]["protocol_place"] = "unknown"
                 self.Protocols["PropGuids"].append(guid_r2)
-
-    def print_all(self):
+    
+    def list_boot_services(self):
         self.get_boot_services()
-        print("\r\nBoot services:")
-        self.list_boot_services()
+        empty = True
+        table_data = []
+        table_instance = SingleTable(table_data)
+        table_data.append(["Address", "Service"])
+        print("Boot services:")
+        for service in self.gBServices:
+            for address in self.gBServices[service]:
+                table_data.append([hex(address), service])
+                empty = False
+        if empty:
+            print(" * list is empty")
+        else:
+            print(table_instance.table)
+    
+    def list_protocols(self):
+        self.get_boot_services()
         self.get_protocols()
         self.get_prot_names()
-        data = analyser.Protocols["All"]
-        print("\r\nProtocols:")
+        data = self.Protocols["All"]
+        print("Protocols:")
         if len(data) == 0:
             print(" * list is empty")
-        for element in data:
-            guid_str = "[guid] " + str(map(hex, element["guid"]))
-            print("\t [address] " + hex(element["address"]))
-            print("\t [service] " + element["service"])
-            print("\t [protocol_name] " + element["protocol_name"])
-            print("\t [protocol_place] " + element["protocol_place"])
-            print("\t " + guid_str)
-            print("\t " + "*" * len(guid_str))
-        print("\r\nProprietary protocols:")
-        if len(self.Protocols["PropGuids"]) == 0:
-            print (" * list is empty")
-        for guid in self.Protocols["PropGuids"]:
-            print("\t [guid] {guid}".format(guid=str(map(hex, guid))))
-        print("\r\nTotal:")
-        print("\t [number of proprietary protocols] {0}"
-        .format(len(self.Protocols["PropGuids"])))
-        print("\t [full number of protocols] {0}"
-        .format(len(data)))
+        else:
+            table_data = []
+            table_instance = SingleTable(table_data)
+            table_data.append(["GUID", "Protocol name", "Address", "Service", "Protocol place"])
+            for element in data:
+                guid = str(map(hex, element["guid"]))
+                guid = guid.replace(", ", "-")
+                guid = guid.replace("L", "")
+                guid = guid.replace("'", "")
+                table_data.append([
+                    guid,
+                    element["protocol_name"],
+                    hex(element["address"]),
+                    element["service"],
+                    element["protocol_place"]
+                    ])
+            print(table_instance.table)
+
+    def print_all(self):
+        self.list_boot_services()
+        self.list_protocols()
 
 if __name__=="__main__":
     click.echo(click.style("UEFI_RETool", fg="cyan"))

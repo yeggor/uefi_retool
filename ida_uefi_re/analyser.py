@@ -102,48 +102,6 @@ class Analyser(object):
                         if self.gBServices[service_name].count(ea) == 0:
                             self.gBServices[service_name].append(ea)
 
-    def list_boot_services(self):
-        self.get_boot_services()
-        empty = True
-        table_data = []
-        table_instance = SingleTable(table_data)
-        table_data.append(["Address", "Service"])
-        print("Boot services:")
-        for service in self.gBServices:
-            for address in self.gBServices[service]:
-                table_data.append([hex(address), service])
-                empty = False
-        if empty:
-            print(" * list is empty")
-        else:
-            print(table_instance.table)
-    
-    def list_protocols(self):
-        self.get_boot_services()
-        self.get_protocols()
-        self.get_prot_names()
-        data = self.Protocols["All"]
-        print("Protocols:")
-        if len(data) == 0:
-            print(" * list is empty")
-        else:
-            table_data = []
-            table_instance = SingleTable(table_data)
-            table_data.append(["GUID", "Protocol name", "Address", "Service", "Protocol place"])
-            for element in data:
-                guid = str(map(hex, element["guid"]))
-                guid = guid.replace(", '", "-")
-                guid = guid.replace("'0x", "")
-                guid = guid.replace("L'", "")
-                table_data.append([
-                    guid,
-                    element["protocol_name"],
-                    hex(element["address"]),
-                    element["service"],
-                    element["protocol_place"]
-                    ])
-            print(table_instance.table)
-
     def get_protocols(self):
         for service_name in self.gBServices:
             if service_name in LEA_NUM.keys():
@@ -256,6 +214,48 @@ class Analyser(object):
                                 print("\t [address] {0}".format(hex(gBs_var).replace("L", "")))
                                 print("\t [message] type not applied")
                             break
+
+    def list_boot_services(self):
+        self.get_boot_services()
+        empty = True
+        table_data = []
+        table_instance = SingleTable(table_data)
+        table_data.append(["Address", "Service"])
+        print("Boot services:")
+        for service in self.gBServices:
+            for address in self.gBServices[service]:
+                table_data.append([hex(address), service])
+                empty = False
+        if empty:
+            print(" * list is empty")
+        else:
+            print(table_instance.table)
+    
+    def list_protocols(self):
+        self.get_boot_services()
+        self.get_protocols()
+        self.get_prot_names()
+        data = self.Protocols["All"]
+        print("Protocols:")
+        if len(data) == 0:
+            print(" * list is empty")
+        else:
+            table_data = []
+            table_instance = SingleTable(table_data)
+            table_data.append(["GUID", "Protocol name", "Address", "Service", "Protocol place"])
+            for element in data:
+                guid = str(map(hex, element["guid"]))
+                guid = guid.replace(", ", "-")
+                guid = guid.replace("L", "")
+                guid = guid.replace("'", "")
+                table_data.append([
+                    guid,
+                    element["protocol_name"],
+                    hex(element["address"]),
+                    element["service"],
+                    element["protocol_place"]
+                    ])
+            print(table_instance.table)
 
     def print_all(self):
         self.list_boot_services()
