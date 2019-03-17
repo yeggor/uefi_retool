@@ -90,6 +90,7 @@ class Analyser(object):
         print(" * analyser.make_names()")
         print(" * analyser.set_types()")
         print(" * analyser.print_all()")
+        print(" * analyser.analyse_all()")
 
     def get_boot_services(self):
         for ea_start in idautils.Functions():
@@ -130,8 +131,12 @@ class Analyser(object):
             table_instance = SingleTable(table_data)
             table_data.append(["GUID", "Protocol name", "Address", "Service", "Protocol place"])
             for element in data:
+                guid = str(map(hex, element["guid"]))
+                guid = guid.replace(", '", "-")
+                guid = guid.replace("'0x", "")
+                guid = guid.replace("L'", "")
                 table_data.append([
-                    str(map(hex, element["guid"])), 
+                    guid,
                     element["protocol_name"],
                     hex(element["address"]),
                     element["service"],
@@ -213,8 +218,9 @@ class Analyser(object):
         for element in data:
             try:
                 idc.SetType(element["address"], EFI_GUID)
-                idc.MakeName(element["address"], element["protocol_name"])
-                print("[{ea}] {name}".format(ea=hex(element["address"]), name=element["protocol_name"]))
+                name = element["protocol_name"] + "_" + hex(element["address"])
+                idc.MakeName(element["address"], name)
+                print("[{ea}] {name}".format(ea=hex(element["address"]), name=name))
             except:
                 continue
 
