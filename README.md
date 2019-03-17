@@ -2,8 +2,6 @@
 
 A tool for finding proprietary protocols in UEFI firmware and UEFI modules analysing
 
-## Analysing UEFI firmware with IDA Pro
-
 ## `ida_uefi_re\analyser.py`
 
 A script for simplifying reverse engineering of UEFI firmware modules with IDA Pro
@@ -280,7 +278,7 @@ optional arguments:
 
 *Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpx1c.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpx1c.md)*
 
-## `analyse_fw_ida.py`
+## `analyse_fw_r2.py`
 
 A similar tool for UEFI firmware analysis with radare2
 
