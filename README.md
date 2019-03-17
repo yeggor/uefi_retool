@@ -135,11 +135,11 @@ Types:
 
  * Before analysis:
 
-    ![before_analysis](img\before_analysis.png)
+    ![before_analysis](https://github.com/yeggor/UEFI_RETool/blob/master/img/before_analysis.png)
 
  * After analysis:
 
-    ![after_analysis](img\after_analysis.png)
+    ![after_analysis](https://github.com/yeggor/UEFI_RETool/blob/master/img/after_analysis.png)
 
 ## `r2_uefi_re\analyser.py`
 
