@@ -28,4 +28,5 @@ if __name__=="__main__":
 		type=str, 
 		help="the path to UEFI module")
     args = parser.parse_args()
-    print_info(args.module)
+    if os.path.isfile(args.module):
+        print_info(args.module)

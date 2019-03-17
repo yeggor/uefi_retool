@@ -6,7 +6,8 @@ import shutil
 import click
 
 DATA_PATH = "..{sep}conf".format(sep=os.sep)
-GUIDS = "..{sep}ida_uefi_re{sep}guids".format(sep=os.sep)
+IDA_GUIDS = "..{sep}ida_uefi_re{sep}guids".format(sep=os.sep)
+R2_GUIDS = "..{sep}r2_uefi_re{sep}guids".format(sep=os.sep)
 
 def get_py(string):
     new_string = "edk2_guids = {\n"
@@ -34,7 +35,6 @@ def get_py(string):
     for regexp in re_table:
         new_string = re.sub(re.compile(regexp), re_table[regexp], new_string)
     return new_string
-
 
 def get_guids_list(edk2_path, data_path):
     if os.path.isdir(edk2_path) == 0:
@@ -83,10 +83,10 @@ def main():
     
     args = parser.parse_args()
     if get_guids_list(args.edk2_path, DATA_PATH):
-        shutil.copyfile(DATA_PATH + os.sep + "edk2_guids.py", GUIDS + os.sep + "edk2_guids.py")
+        shutil.copyfile(DATA_PATH + os.sep + "edk2_guids.py", IDA_GUIDS + os.sep + "edk2_guids.py")
+        shutil.copyfile(DATA_PATH + os.sep + "edk2_guids.py", R2_GUIDS + os.sep + "edk2_guids.py")
         print("[*] Files {0}, {1} was successfully updated"
         .format(DATA_PATH + os.sep + "edk2_guids.conf", DATA_PATH + os.sep + "edk2_guids.py"))
-    
 
 if __name__=="__main__":
     main()

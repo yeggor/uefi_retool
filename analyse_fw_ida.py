@@ -41,11 +41,21 @@ def analyse_all(scr_name):
 			):
 				module_path = pe_dir + os.sep + module
 				""" x64 only """
-				if utils.get_machine_type(module_path) == utils.IMAGE_FILE_MACHINE_IA64:
+				machine_type = utils.get_machine_type(module_path)
+				if machine_type == utils.IMAGE_FILE_MACHINE_IA64:
 					if (os.system(ida64_path + ' -c -A -Sida_uefi_re' + os.sep + scr_name + " " + module_path) != 0):
 						exit("[-] Error, check your config.json file")
-				if utils.get_machine_type(module_path) == utils.IMAGE_FILE_MACHINE_I386:
-					continue
+
+def clear(dirname):
+	for root, dirs, files in os.walk(dirname, topdown=False):
+		for name in files:
+			os.remove(os.path.join(root, name))
+		for name in dirs:
+			os.rmdir(os.path.join(root, name))
+
+def clear_all():
+	clear(config["DUMP_DIR"])
+	clear(config["PE_DIR"])
 
 def main():
 	click.echo(click.style("UEFI_RETool", fg="cyan"))
@@ -80,25 +90,27 @@ def main():
 		help="""update list of GUIDs from EDK2
 		(example: git clone https://github.com/tianocore/edk2,
 		python analyse_fw_ida.py --update_edk2_guids edk2)""")
+	
 	args = parser.parse_args()
-	help_msg = True
 
 	if (args.all and os.path.isfile(args.firmware_path)):
+		clear_all()
 		get_efi_images(args.firmware_path)
 		analyse_all("log_all.py")
 		print("Check .{sep}log{sep}ida_log_all.md file".format(sep=os.sep))
-		help_msg = False
+		clear_all()
 	
 	if (args.pp_guids and os.path.isfile(args.firmware_path)):
+		clear_all()
 		get_efi_images(args.firmware_path)
 		analyse_all("log_pp_guids.py")
 		print("Check .{sep}log{sep}ida_pp_guids.md file".format(sep=os.sep))
-		help_msg = False
+		clear_all()
 	
 	if (args.get_efi_images and os.path.isfile(args.firmware_path)):
+		clear_all()
 		get_efi_images(args.firmware_path)
 		print("Check .{sep}modules directory".format(sep=os.sep))
-		help_msg = False
 	
 	if (args.update_edk2_guids):
 		edk2_path = args.update_edk2_guids
@@ -106,10 +118,6 @@ def main():
 			data_path = "conf"
 			guids_path = "ida_uefi_re{sep}guids".format(sep=os.sep)
 			update(edk2_path, data_path, guids_path)
-			help_msg = False
-
-	if help_msg:
-		parser.print_help()
 	
 if __name__=="__main__":
 	main()

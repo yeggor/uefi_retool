@@ -4,6 +4,7 @@ import json
 import r2pipe
 import click
 import argparse
+import click
 
 import utils
 from guids import edk_guids, ami_guids, edk2_guids
@@ -248,6 +249,8 @@ class Analyser():
         .format(len(data)))
 
 if __name__=="__main__":
+    click.echo(click.style("UEFI_RETool", fg="cyan"))
+    click.echo(click.style("A tool for UEFI module analysis with radare2", fg="cyan"))
     program = "python " + os.path.basename(__file__)
     parser = argparse.ArgumentParser(description="UEFI module analyser",
 		prog=program)
