@@ -74,14 +74,14 @@ def main():
 		prog=program)
 	parser.add_argument("firmware_path", 
 		type=str, 
-		help="the path to your UEFI firmware")
+		help="path to your UEFI firmware")
 	parser.add_argument("--all_dir", 
 		type=str, 
-		help="the name of the directory containing all firmware items (default: 'all')", 
+		help="name of the directory containing all firmware items (default: 'all')", 
 		default=dir_name)
 	parser.add_argument("--pe_dir", 
 		type=str, 
-		help="the name of the directory containing all firmware PE-images (default: 'modules')", 
+		help="name of the directory containing all firmware PE-images (default: 'modules')", 
 		default=pe_dir)
 	args = parser.parse_args()
 	

@@ -26,7 +26,7 @@ if __name__=="__main__":
 		prog=program)
     parser.add_argument("module", 
 		type=str, 
-		help="the path to UEFI module")
+		help="path to UEFI module")
     args = parser.parse_args()
     if os.path.isfile(args.module):
         print_info(args.module)

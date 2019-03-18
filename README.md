@@ -11,7 +11,7 @@ Usage:
  * Open the UEFI module in IDA Pro
  * Run `pip install -r requirements.txt`
  * Run script from IDA
- * In output window run following commands:
+ * Run following commands in output window:
 
 ```
     Python>analyser = Analyser()
@@ -158,7 +158,7 @@ usage: python analyser.py [-h] module
 UEFI module analyser
 
 positional arguments:
-  module      the path to UEFI module
+  module      path to UEFI module
 
 optional arguments:
   -h, --help  show this help message and exit
@@ -201,15 +201,56 @@ Protocols:
 
 ```
 
+## `analyse_fw_ida.py`
+
+A script for finding proprietary protocols in UEFI firmware with IDA Pro
+
+Usage:
+
+ * Copy `ida_uefi_re` directory to <IDA_DIRECTORY>
+ * Edit `config.json` file
+    - "PE_DIR" is a folder that contains all executable images from the UEFI firmware file
+    - "DUMP_DIR" is a folder that contains all components from the firmware filesystem
+    - "IDA_PATH" and "IDA64_PATH" are paths to IDA Pro executable files
+ * Run `pip install -r requirements.txt`
+ * Run `python analyse_fw_ida.py -h` command to display the help message
+```
+UEFI_RETool
+A tool for UEFI firmware analysis with IDA Pro
+usage: python analyse_fw_ida.py [-h] [--all] [--pp_guids] [--get_efi_images]
+                                [--update_edk2_guids EDK2_PATH]
+                                firmware_path
+
+positional arguments:
+  firmware_path         path to UEFI firmware for analysis
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --all                 analyse of all UEFI firmware modules and output of
+                        information to .\log\ida_log_all.md file (example:
+                        python analyse_fw_ida.py --all <firmware_path>)
+  --pp_guids            analyse all UEFI firmware modules and save a table
+                        with proprietry protocols to .\log\ida_pp_guids.md
+                        file (example: python analyse_fw_ida.py --pp_guids
+                        <firmware_path>)
+  --get_efi_images      get all executable images from UEFI firmware (images
+                        are stored in .\modules directory, example: python
+                        analyse_fw_ida.py --get_efi_images <firmware_path>)
+  --update_edk2_guids EDK2_PATH
+                        update list of GUIDs from EDK2 (example: git clone
+                        https://github.com/tianocore/edk2, python
+                        analyse_fw_ida.py --update_edk2_guids edk2)
+```
+
 *Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpx1c.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpx1c.md)*
 
 ## `analyse_fw_r2.py`
 
-A similar tool for UEFI firmware analysis with radare2
+A similar script for UEFI firmware analysis with radare2
 
 Usage:
  * Run `pip install -r requirements.txt`
- * Run `python analyse_fw_r2.py -h`
+ * Run `python analyse_fw_r2.py -h` command to display the help message
 
 ```
 UEFI_RETool
@@ -220,22 +261,22 @@ usage: python analyse_fw_r2.py [-h] [--all] [--pp_guids] [--pp_guids_num]
                                firmware_path
 
 positional arguments:
-  firmware_path         the path to UEFI firmware for analysis
+  firmware_path         path to UEFI firmware for analysis
 
 optional arguments:
   -h, --help            show this help message and exit
-  --all                 analyse of all UEFI firmware modules and out
+  --all                 analyse of all UEFI firmware modules and output of
                         information to .\log\r2_log_all.md file (example:
                         python analyse_fw_r2.py --all <firmware_path>)
-  --pp_guids            analyse all UEFI firmware modules and write a table
-                        with proprietry protocols to .\log\r2_pp_guids.md file
-                        (example: python analyse_fw_r2.py --pp_guids
+  --pp_guids            analyse all UEFI firmware modules and save a table
+                        with proprietary protocols to .\log\r2_pp_guids.md
+                        file (example: python analyse_fw_r2.py --pp_guids
                         <firmware_path>)
   --pp_guids_num        analyse all UEFI firmware modules and get number of
-                        proprietry protocols (example: python analyse_fw_r2.py
-                        --pp_guids_num <firmware_path>)
+                        proprietary protocols (example: python
+                        analyse_fw_r2.py --pp_guids_num <firmware_path>)
   --get_efi_images      get all executable images from UEFI firmware (images
-                        are stores in .\modules directory, example: python
+                        are stored in .\modules directory, example: python
                         analyse_fw_r2.py --get_efi_images <firmware_path>)
   --update_edk2_guids EDK2_PATH
                         update list of GUIDs from EDK2 (example: git clone
@@ -245,8 +286,8 @@ optional arguments:
 
 ## Additional tools
 
- * `tools\get_efi_images.py` is a script to get all PE-images from firmware file
- * `tools\update_edk2_guids.py` is a script to update protocol GUIDs list from `conf` directory
+ * `tools\get_efi_images.py` is a script that gets all PE-images from the firmware file
+ * `tools\update_edk2_guids.py` is a script that updates protocol GUIDs list from the `conf` directory
 
 ## Contributors
 

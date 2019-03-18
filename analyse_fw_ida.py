@@ -64,24 +64,24 @@ def main():
 	parser = argparse.ArgumentParser(prog=program)
 	parser.add_argument("firmware_path",
 		type=str,
-		help="the path to UEFI firmware for analysis")
+		help="path to UEFI firmware for analysis")
 	parser.add_argument("--all",
 		action="store_true",
 		help="""analyse of all UEFI firmware modules
-		and out information to .{sep}log{sep}ida_log_all.md file
+		and output of information to .{sep}log{sep}ida_log_all.md file
 		(example: python analyse_fw_ida.py --all <firmware_path>)"""
 		.format(sep=os.sep))
 	parser.add_argument("--pp_guids", 
 		action="store_true",
 		help="""analyse all UEFI firmware modules
-		and write a table with proprietry protocols
+		and save a table with proprietry protocols
 		to .{sep}log{sep}ida_pp_guids.md file
 		(example: python analyse_fw_ida.py --pp_guids <firmware_path>)"""
 		.format(sep=os.sep))
 	parser.add_argument("--get_efi_images", 
 		action="store_true",
 		help="""get all executable images from UEFI firmware
-		(images are stores in .{sep}modules directory, 
+		(images are stored in .{sep}modules directory, 
 		example: python analyse_fw_ida.py --get_efi_images <firmware_path>)"""
 		.format(sep=os.sep))
 	parser.add_argument("--update_edk2_guids", 
