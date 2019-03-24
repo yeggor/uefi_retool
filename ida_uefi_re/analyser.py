@@ -73,6 +73,7 @@ class Analyser(object):
             # ...
         ]
         self.Protocols["PropGuids"] = []
+        self.Protocols["Data"] = []
 
     @staticmethod
     def help():
@@ -157,15 +158,61 @@ class Analyser(object):
             if not "protocol_name" in self.Protocols["All"][index]:
                 self.Protocols["All"][index]["protocol_name"] = "ProprietaryProtocol"
                 self.Protocols["All"][index]["protocol_place"] = "unknown"
+    
+    def rename_supposed_guids(self):
+        EFI_GUID = "EFI_GUID *"
+        for seg in idautils.Segments():
+            if idc.SegName(seg) == ".data":
+                seg_start = idc.SegStart(seg)
+                seg_end = idc.SegEnd(seg)
+                break
+        ea = seg_start
+        while (ea <= seg_end - 15):
+            prot_name = ""
+            if idc.Name(ea).find("unk_") != -1:
+                find = False
+                CurrentGuid = []
+                CurrentGuid.append(idc.Dword(ea))
+                CurrentGuid.append(idc.Word(ea + 4))
+                CurrentGuid.append(idc.Word(ea + 6))
+                for addr in range(ea + 8, ea + 16, 1):
+                    CurrentGuid.append(idc.Byte(addr))
+                for name in self.Protocols["Edk2Guids"]:
+                    if self.Protocols["Edk2Guids"][name] == CurrentGuid:
+                        prot_name = name + "_" + hex(ea)
+                        find = True
+                        break
+                for name in self.Protocols["EdkGuids"]:
+                    if self.Protocols["EdkGuids"][name] == CurrentGuid:
+                        prot_name = name + "_" + hex(ea)
+                        find = True
+                        break
+                for name in self.Protocols["AmiGuids"]:
+                    if self.Protocols["AmiGuids"][name] == CurrentGuid:
+                        prot_name = name + "_" + hex(ea)
+                        find = True
+                        break
+                if (find and \
+                    idc.Name(ea) != prot_name and \
+                    CurrentGuid[0] != 0
+                    ):
+                    idc.SetType(ea, EFI_GUID)
+                    idc.MakeName(ea, prot_name)
+            ea += 1
+        
 
     def make_comments(self):
         self.get_boot_services()
+        empty = True
         for service in self.gBServices:
             for address in self.gBServices[service]:
                 """ utils.set_hexrays_comment(address, "EFI_BOOT_SERVICES->{0}".format(service)) """
                 message = "EFI_BOOT_SERVICES->{0}".format(service)
                 idc.MakeComm(address, message)
+                empty = False
                 print("[{ea}] {message}".format(ea=hex(address), message=message))
+        if empty:
+            print(" * list is empty")
     
     def make_names(self):
         EFI_GUID = "EFI_GUID *"
@@ -173,14 +220,18 @@ class Analyser(object):
         self.get_protocols()
         self.get_prot_names()
         data = self.Protocols["All"]
+        empty = True
         for element in data:
             try:
                 idc.SetType(element["address"], EFI_GUID)
                 name = element["protocol_name"] + "_" + hex(element["address"])
                 idc.MakeName(element["address"], name)
+                empty = False
                 print("[{ea}] {name}".format(ea=hex(element["address"]), name=name))
             except:
                 continue
+        if empty:
+            print(" * list is empty")
 
     def set_types(self):
         """ handle (EFI_BOOT_SERVICES *) type """
@@ -188,6 +239,7 @@ class Analyser(object):
         O_REG = 1
         O_MEM = 2
         EFI_BOOT_SERVICES = "EFI_BOOT_SERVICES *"
+        empty = True
         for service in self.gBServices:
             for address in self.gBServices[service]:
                 ea = address
@@ -199,21 +251,26 @@ class Analyser(object):
                             gBs_var = idc.get_operand_value(ea, 1)
                             gBs_var_type = idc.get_type(gBs_var)
                             if (gBs_var_type == "EFI_BOOT_SERVICES *"):
+                                empty = False
                                 print("[{0}] EFI_BOOT_SERVICES->{1}".format(hex(address).replace("L", ""), service))
                                 print("\t [address] {0}".format(hex(gBs_var).replace("L", "")))
                                 print("\t [message] type already applied")
                                 break
                             if idc.SetType(gBs_var, EFI_BOOT_SERVICES):
+                                empty = False
                                 old_name = idc.Name(gBs_var)
                                 idc.MakeName(gBs_var, "gBs_" + old_name)
                                 print("[{0}] EFI_BOOT_SERVICES->{1}".format(hex(address).replace("L", ""), service))
                                 print("\t [address] {0}".format(hex(gBs_var).replace("L", "")))
                                 print("\t [message] type successfully applied")
                             else:
+                                empty = False
                                 print("[{0}] EFI_BOOT_SERVICES->{1}".format(hex(address).replace("L", ""), service))
                                 print("\t [address] {0}".format(hex(gBs_var).replace("L", "")))
                                 print("\t [message] type not applied")
                             break
+        if empty:
+            print(" * list is empty")
 
     def list_boot_services(self):
         self.get_boot_services()
@@ -268,6 +325,7 @@ class Analyser(object):
         self.make_names()
         print("Types:")
         self.set_types()
+        self.rename_supposed_guids()
 
 def main():
     print("Usage:")
