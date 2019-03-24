@@ -145,9 +145,9 @@ class Analyser(object):
                     fin = True
                     break
             if fin: continue
-            for prot_name in self.Protocols["Edk2Guids"].keys():
+            for prot_name in self.Protocols["AmiGuids"].keys():
                 guid_idb = self.Protocols["All"][index]["guid"]
-                guid_conf = self.Protocols["Edk2Guids"][prot_name]
+                guid_conf = self.Protocols["AmiGuids"][prot_name]
                 if (guid_idb == guid_conf):
                     self.Protocols["All"][index]["protocol_name"] = prot_name
                     self.Protocols["All"][index]["protocol_place"] = "ami_guids"
