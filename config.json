@@ -1,6 +1,6 @@
 {
     "DUMP_DIR" : "all",
     "PE_DIR" : "modules",
-    "IDA_PATH" : "C:\\Program Files\\IDA 7.2\\ida.exe",
-    "IDA64_PATH" : "C:\\Program Files\\IDA 7.2\\ida64.exe"
+    "IDA_PATH" : "C:\\Program Files\\IDA Pro 7.3\\ida.exe",
+    "IDA64_PATH" : "C:\\Program Files\\IDA Pro 7.3\\ida64.exe"
 }
