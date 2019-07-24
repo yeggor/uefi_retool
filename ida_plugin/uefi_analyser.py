@@ -4,7 +4,7 @@ import idautils
 import uefi_analyser.analyser as analyser
 from uefi_analyser.analyser import Analyser
 
-AUTHOR = "Vasilenko Yegor"
+AUTHOR = "yeggor"
 VERSION = "v1.0.0"
 
 IMAGE_FILE_MACHINE_IA64 = 0x8664
