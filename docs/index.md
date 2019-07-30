@@ -131,16 +131,6 @@ Types:
 	 [message] type already applied
 ```
 
-*In result*
-
- * Before analysis:
-
-    ![before_analysis](https://github.com/yeggor/UEFI_RETool/blob/master/img/before_analysis.png)
-
- * After analysis:
-
-    ![after_analysis](https://github.com/yeggor/UEFI_RETool/blob/master/img/after_analysis.png)
-
 ## `r2_uefi_re\analyser.py`
 
 A script with similar functionality based on r2pipe
