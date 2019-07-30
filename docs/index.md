@@ -153,6 +153,7 @@ positional arguments:
 optional arguments:
   -h, --help  show this help message and exit
 ```
+
 ```
 >python r2_uefi_re\analyser.py modules\DxeMain.efi
 UEFI_RETool
@@ -188,7 +189,6 @@ Protocols:
 │ [0x26baccb1-0x6f42-0x11d4-0xbc-0xe7-0x0-0x80-0xc7-0x3c-0x88-0x81]  │ gEfiCpuArchProtocolGuid       │ 0x11520 │ LocateProtocol           │ edk2_guids     │
 │ [0xffecffff-0x923c-0x14d2-0x9e-0x3f-0x22-0xa0-0xc9-0x69-0x56-0x3b] │ EFI_PERFORMANCE_PROTOCOL_GUID │ 0x11650 │ LocateProtocol           │ edk_guids      │
 └────────────────────────────────────────────────────────────────────┴───────────────────────────────┴─────────┴──────────────────────────┴────────────────┘
-
 ```
 
 ## `analyse_fw_ida.py`
@@ -204,6 +204,7 @@ Usage:
     - "IDA_PATH" and "IDA64_PATH" are paths to IDA Pro executable files
  * Run `pip install -r requirements.txt`
  * Run `python analyse_fw_ida.py -h` command to display the help message
+
 ```
 UEFI_RETool
 A tool for UEFI firmware analysis with IDA Pro
@@ -232,13 +233,14 @@ optional arguments:
                         analyse_fw_ida.py --update_edk2_guids edk2)
 ```
 
-*Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpx1c.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpx1c.md)*
+Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpx1c.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpx1c.md)
 
 ## `analyse_fw_r2.py`
 
 A similar script for UEFI firmware analysis with radare2
 
 Usage:
+
  * Run `pip install -r requirements.txt`
  * Run `python analyse_fw_r2.py -h` command to display the help message
 
