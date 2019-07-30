@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>README.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+	font-size: 14px;
+	padding: 0 12px;
+	line-height: 22px;
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	color: #4080D0;
+	text-decoration: none;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+h1 code,
+h2 code,
+h3 code,
+h4 code,
+h5 code,
+h6 code {
+	font-size: inherit;
+	line-height: auto;
+}
+
+a:hover {
+	color: #4080D0;
+	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left: 5px solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 14px;
+	line-height: 19px;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+.mac code {
+	font-size: 12px;
+	line-height: 18px;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+/** Theming */
+
+.vscode-light,
+.vscode-light pre code {
+	color: rgb(30, 30, 30);
+}
+
+.vscode-dark,
+.vscode-dark pre code {
+	color: #DDD;
+}
+
+.vscode-high-contrast,
+.vscode-high-contrast pre code {
+	color: white;
+}
+
+.vscode-light code {
+	color: #A31515;
+}
+
+.vscode-dark code {
+	color: #D7BA7D;
+}
+
+.vscode-light pre:not(.hljs),
+.vscode-light code > div {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre:not(.hljs),
+.vscode-dark code > div {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre:not(.hljs),
+.vscode-high-contrast code > div {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+.vscode-light blockquote,
+.vscode-dark blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.vscode-high-contrast blockquote {
+	background: transparent;
+	border-color: #fff;
+}
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family:  "Meiryo", "Segoe WPC", "Segoe UI", "SFUIText-Light", "HelveticaNeue-Light", sans-serif, "Droid Sans Fallback";
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+</head>
+<body>
+<h1 id="uefiretool">UEFI_RETool</h1>
+<p>A tool for finding proprietary protocols in UEFI firmware and UEFI modules analysing</p>
+<h2 id="idauefireanalyserpy"><code>ida_uefi_re\analyser.py</code></h2>
+<p>A script for simplifying reverse engineering of UEFI firmware modules with IDA Pro</p>
+<p>Usage:</p>
+<ul>
+<li>Open the UEFI module in IDA Pro</li>
+<li>Run <code>pip install -r requirements.txt</code></li>
+<li>Run script from IDA</li>
+<li>Run following commands in output window:</li>
+</ul>
+<pre class="hljs"><code><div>    Python&gt;analyser = Analyser()
+    Python&gt;analyser.help()
+</div></code></pre>
+<pre class="hljs"><code><div>    Methods:
+    * analyser.get_boot_services()
+        - check: analyser.gBServices[&lt;service_name&gt;]
+    * analyser.get_protocols()
+        - check: analyser.Protocols['All']
+    * analyser.get_prot_names()
+        - check: analyser.Protocols['All']
+    Commands:
+    * analyser.list_boot_services()
+    * analyser.list_protocols()
+    * analyser.make_comments()
+    * analyser.make_names()
+    * analyser.set_types()
+    * analyser.print_all()
+    * analyser.analyse_all()
+</div></code></pre>
+<ul>
+<li>Then run the necessary command from the list</li>
+</ul>
+<p><em>Example №1</em></p>
+<pre class="hljs"><code><div>Python&gt;analyser = Analyser()
+Python&gt;analyser.help()
+Methods:
+ * analyser.get_boot_services()
+   - check: analyser.gBServices[&lt;service_name&gt;]
+ * analyser.get_protocols()
+   - check: analyser.Protocols['All']
+ * analyser.get_prot_names()
+   - check: analyser.Protocols['All']
+Commands:
+ * analyser.list_boot_services()
+ * analyser.list_protocols()
+ * analyser.make_comments()
+ * analyser.make_names()
+ * analyser.set_types()
+ * analyser.print_all()
+ * analyser.analyse_all()
+Python&gt;analyser.print_all()
+Boot services:
+┌─────────┬──────────────────────────┐
+│ Address │ Service                  │
+├─────────┼──────────────────────────┤
+│ 0x250aL │ InstallProtocolInterface │
+│ 0xbabL  │ HandleProtocol           │
+│ 0xbcdL  │ HandleProtocol           │
+│ 0xbfbL  │ HandleProtocol           │
+│ 0xd84L  │ LocateProtocol           │
+│ 0xde7L  │ LocateProtocol           │
+│ 0xe05L  │ LocateProtocol           │
+│ 0xe23L  │ LocateProtocol           │
+│ 0xe4aL  │ LocateProtocol           │
+│ 0xed5L  │ LocateProtocol           │
+└─────────┴──────────────────────────┘
+Protocols:
+┌────────────────────────────────────────────────────────────────────┬─────────────────────────────┬─────────┬────────────────┬────────────────┐
+│ GUID                                                               │ Protocol name               │ Address │ Service        │ Protocol place │
+├────────────────────────────────────────────────────────────────────┼─────────────────────────────┼─────────┼────────────────┼────────────────┤
+│ [0x6378fef3-0xc89f-0x492f-0xbd-0xb1-0xbf-0xb4-0x43-0x19-0xcf-0xda] │ ProprietaryProtocol         │ 0x678L  │ HandleProtocol │ unknown        │
+│ [0x4c8a2451-0xc207-0x405b-0x96-0x94-0x99-0xea-0x13-0x25-0x13-0x41] │ gEfiDebugMaskProtocolGuid   │ 0x658L  │ HandleProtocol │ edk2_guids     │
+│ [0x5b1b31a1-0x9562-0x11d2-0x8e-0x3f-0x0-0xa0-0xc9-0x69-0x72-0x3b]  │ gEfiLoadedImageProtocolGuid │ 0x628L  │ HandleProtocol │ edk2_guids     │
+│ [0xcd2333d7-0x6a0a-0x4c76-0x83-0x50-0x24-0xa-0xda-0x36-0xa2-0xc7]  │ ProprietaryProtocol         │ 0x6f0L  │ LocateProtocol │ unknown        │
+│ [0xae80d021-0x618e-0x11d4-0xbc-0xd7-0x0-0x80-0xc7-0x3c-0x88-0x81]  │ gEfiDataHubProtocolGuid     │ 0x6c0L  │ LocateProtocol │ edk2_guids     │
+│ [0xe49d33ed-0x513d-0x4634-0xb6-0x98-0x6f-0x55-0xaa-0x75-0x1c-0x1b] │ gEfiSmbusHcProtocolGuid     │ 0x6b0L  │ LocateProtocol │ edk2_guids     │
+│ [0xef9fc172-0xa1b2-0x4693-0xb3-0x27-0x6d-0x32-0xfc-0x41-0x60-0x42] │ gEfiHiiDatabaseProtocolGuid │ 0x648L  │ LocateProtocol │ edk2_guids     │
+│ [0xfd96974-0x23aa-0x4cdc-0xb9-0xcb-0x98-0xd1-0x77-0x50-0x32-0x2a]  │ gEfiHiiStringProtocolGuid   │ 0x638L  │ LocateProtocol │ edk2_guids     │
+└────────────────────────────────────────────────────────────────────┴─────────────────────────────┴─────────┴────────────────┴────────────────┘
+</div></code></pre>
+<p><em>Example №2</em></p>
+<pre class="hljs"><code><div>Python&gt;analyser.analyse_all()
+Comments:
+[0x250aL] EFI_BOOT_SERVICES-&gt;InstallProtocolInterface
+[0xbabL] EFI_BOOT_SERVICES-&gt;HandleProtocol
+[0xbcdL] EFI_BOOT_SERVICES-&gt;HandleProtocol
+[0xbfbL] EFI_BOOT_SERVICES-&gt;HandleProtocol
+[0xd84L] EFI_BOOT_SERVICES-&gt;LocateProtocol
+[0xde7L] EFI_BOOT_SERVICES-&gt;LocateProtocol
+[0xe05L] EFI_BOOT_SERVICES-&gt;LocateProtocol
+[0xe23L] EFI_BOOT_SERVICES-&gt;LocateProtocol
+[0xe4aL] EFI_BOOT_SERVICES-&gt;LocateProtocol
+[0xed5L] EFI_BOOT_SERVICES-&gt;LocateProtocol
+Names:
+[0x678L] ProprietaryProtocol_0x678L
+[0x658L] gEfiDebugMaskProtocolGuid_0x658L
+[0x628L] gEfiLoadedImageProtocolGuid_0x628L
+[0x6f0L] ProprietaryProtocol_0x6f0L
+[0x6c0L] gEfiDataHubProtocolGuid_0x6c0L
+[0x6b0L] gEfiSmbusHcProtocolGuid_0x6b0L
+[0x648L] gEfiHiiDatabaseProtocolGuid_0x648L
+[0x638L] gEfiHiiStringProtocolGuid_0x638L
+Types:
+[0xde7] EFI_BOOT_SERVICES-&gt;LocateProtocol
+	 [address] 0x3170
+	 [message] type successfully applied
+[0xe05] EFI_BOOT_SERVICES-&gt;LocateProtocol
+	 [address] 0x3170
+	 [message] type already applied
+[0xe23] EFI_BOOT_SERVICES-&gt;LocateProtocol
+	 [address] 0x3170
+	 [message] type already applied
+[0xe4a] EFI_BOOT_SERVICES-&gt;LocateProtocol
+	 [address] 0x3170
+	 [message] type already applied
+[0xed5] EFI_BOOT_SERVICES-&gt;LocateProtocol
+	 [address] 0x3170
+	 [message] type already applied
+</div></code></pre>
+<p><em>In result</em></p>
+<ul>
+<li>
+<p>Before analysis:</p>
+<p><img src="https://github.com/yeggor/UEFI_RETool/blob/master/img/before_analysis.png" alt="before_analysis"></p>
+</li>
+<li>
+<p>After analysis:</p>
+<p><img src="https://github.com/yeggor/UEFI_RETool/blob/master/img/after_analysis.png" alt="after_analysis"></p>
+</li>
+</ul>
+<h2 id="r2uefireanalyserpy"><code>r2_uefi_re\analyser.py</code></h2>
+<p>A script with similar functionality based on r2pipe</p>
+<p>Usage:</p>
+<ul>
+<li>Run <code>pip install -r requirements.txt</code></li>
+<li>Run <code>python r2_uefi_re\analyser.py -h</code></li>
+</ul>
+<pre class="hljs"><code><div>UEFI_RETool
+A tool for UEFI module analysis with radare2
+usage: python analyser.py [-h] module
+
+UEFI module analyser
+
+positional arguments:
+  module      path to UEFI module
+
+optional arguments:
+  -h, --help  show this help message and exit
+</div></code></pre>
+<pre class="hljs"><code><div>&gt;python r2_uefi_re\analyser.py modules\DxeMain.efi
+UEFI_RETool
+A tool for UEFI module analysis with radare2
+Boot services:
+┌─────────┬──────────────────────────┐
+│ Address │ Service                  │
+├─────────┼──────────────────────────┤
+│ 0x15fef │ LocateHandleBuffer       │
+│ 0x1c30f │ OpenProtocol             │
+│ 0x1bec7 │ OpenProtocol             │
+│ 0x1603c │ OpenProtocol             │
+│ 0x1c9af │ InstallProtocolInterface │
+│ 0x1c2dd │ HandleProtocol           │
+│ 0x1c33a │ HandleProtocol           │
+│ 0x1bf98 │ HandleProtocol           │
+│ 0x1c9fd │ HandleProtocol           │
+│ 0x1be95 │ HandleProtocol           │
+│ 0x1bef2 │ HandleProtocol           │
+│ 0x12f2f │ LocateProtocol           │
+│ 0x1c7b0 │ LocateProtocol           │
+│ 0x1c744 │ LocateProtocol           │
+└─────────┴──────────────────────────┘
+Protocols:
+┌────────────────────────────────────────────────────────────────────┬───────────────────────────────┬─────────┬──────────────────────────┬────────────────┐
+│ GUID                                                               │ Protocol name                 │ Address │ Service                  │ Protocol place │
+├────────────────────────────────────────────────────────────────────┼───────────────────────────────┼─────────┼──────────────────────────┼────────────────┤
+│ [0x18a031ab-0xb443-0x4d1a-0xa5-0xc0-0xc-0x9-0x26-0x1e-0x9f-0x71]   │ gEfiDriverBindingProtocolGuid │ 0x11410 │ LocateHandleBuffer       │ edk2_guids     │
+│ [0x18a031ab-0xb443-0x4d1a-0xa5-0xc0-0xc-0x9-0x26-0x1e-0x9f-0x71]   │ gEfiDriverBindingProtocolGuid │ 0x11410 │ OpenProtocol             │ edk2_guids     │
+│ [0x83485340-0x30ec-0x8b48-0x44-0x24-0x60-0x4d-0x8b-0xd1-0x4d-0x8b] │ ProprietaryProtocol           │ 0x1c6d4 │ InstallProtocolInterface │ unknown        │
+│ [0x5b1b31a1-0x9562-0x11d2-0x8e-0x3f-0x0-0xa0-0xc9-0x69-0x72-0x3b]  │ gEfiLoadedImageProtocolGuid   │ 0x11440 │ HandleProtocol           │ edk2_guids     │
+│ [0x9576e91-0x6d3f-0x11d2-0x8e-0x39-0x0-0xa0-0xc9-0x69-0x72-0x3b]   │ gEfiDevicePathProtocolGuid    │ 0x11400 │ HandleProtocol           │ edk2_guids     │
+│ [0x26baccb1-0x6f42-0x11d4-0xbc-0xe7-0x0-0x80-0xc7-0x3c-0x88-0x81]  │ gEfiCpuArchProtocolGuid       │ 0x11520 │ LocateProtocol           │ edk2_guids     │
+│ [0xffecffff-0x923c-0x14d2-0x9e-0x3f-0x22-0xa0-0xc9-0x69-0x56-0x3b] │ EFI_PERFORMANCE_PROTOCOL_GUID │ 0x11650 │ LocateProtocol           │ edk_guids      │
+└────────────────────────────────────────────────────────────────────┴───────────────────────────────┴─────────┴──────────────────────────┴────────────────┘
+
+</div></code></pre>
+<h2 id="analysefwidapy"><code>analyse_fw_ida.py</code></h2>
+<p>A script for finding proprietary protocols in UEFI firmware with IDA Pro</p>
+<p>Usage:</p>
+<ul>
+<li>Copy <code>ida_uefi_re</code> directory to &lt;IDA_DIRECTORY&gt;</li>
+<li>Edit <code>config.json</code> file
+<ul>
+<li>&quot;PE_DIR&quot; is a folder that contains all executable images from the UEFI firmware file</li>
+<li>&quot;DUMP_DIR&quot; is a folder that contains all components from the firmware filesystem</li>
+<li>&quot;IDA_PATH&quot; and &quot;IDA64_PATH&quot; are paths to IDA Pro executable files</li>
+</ul>
+</li>
+<li>Run <code>pip install -r requirements.txt</code></li>
+<li>Run <code>python analyse_fw_ida.py -h</code> command to display the help message</li>
+</ul>
+<pre class="hljs"><code><div>UEFI_RETool
+A tool for UEFI firmware analysis with IDA Pro
+usage: python analyse_fw_ida.py [-h] [--all] [--pp_guids] [--get_efi_images]
+                                [--update_edk2_guids EDK2_PATH]
+                                firmware_path
+
+positional arguments:
+  firmware_path         path to UEFI firmware for analysis
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --all                 analyse of all UEFI firmware modules and output of
+                        information to .\log\ida_log_all.md file (example:
+                        python analyse_fw_ida.py --all &lt;firmware_path&gt;)
+  --pp_guids            analyse all UEFI firmware modules and save a table
+                        with proprietry protocols to .\log\ida_pp_guids.md
+                        file (example: python analyse_fw_ida.py --pp_guids
+                        &lt;firmware_path&gt;)
+  --get_efi_images      get all executable images from UEFI firmware (images
+                        are stored in .\modules directory, example: python
+                        analyse_fw_ida.py --get_efi_images &lt;firmware_path&gt;)
+  --update_edk2_guids EDK2_PATH
+                        update list of GUIDs from EDK2 (example: git clone
+                        https://github.com/tianocore/edk2, python
+                        analyse_fw_ida.py --update_edk2_guids edk2)
+</div></code></pre>
+<p><em>Examples of logs can be viewed at the following links: <a href="https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpx1c.md">log_all</a>, <a href="https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpx1c.md">log_pp_guids</a></em></p>
+<h2 id="analysefwr2py"><code>analyse_fw_r2.py</code></h2>
+<p>A similar script for UEFI firmware analysis with radare2</p>
+<p>Usage:</p>
+<ul>
+<li>Run <code>pip install -r requirements.txt</code></li>
+<li>Run <code>python analyse_fw_r2.py -h</code> command to display the help message</li>
+</ul>
+<pre class="hljs"><code><div>UEFI_RETool
+A tool for UEFI firmware analysis with radare2
+usage: python analyse_fw_r2.py [-h] [--all] [--pp_guids] [--pp_guids_num]
+                               [--get_efi_images]
+                               [--update_edk2_guids EDK2_PATH]
+                               firmware_path
+
+positional arguments:
+  firmware_path         path to UEFI firmware for analysis
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --all                 analyse of all UEFI firmware modules and output of
+                        information to .\log\r2_log_all.md file (example:
+                        python analyse_fw_r2.py --all &lt;firmware_path&gt;)
+  --pp_guids            analyse all UEFI firmware modules and save a table
+                        with proprietary protocols to .\log\r2_pp_guids.md
+                        file (example: python analyse_fw_r2.py --pp_guids
+                        &lt;firmware_path&gt;)
+  --pp_guids_num        analyse all UEFI firmware modules and get number of
+                        proprietary protocols (example: python
+                        analyse_fw_r2.py --pp_guids_num &lt;firmware_path&gt;)
+  --get_efi_images      get all executable images from UEFI firmware (images
+                        are stored in .\modules directory, example: python
+                        analyse_fw_r2.py --get_efi_images &lt;firmware_path&gt;)
+  --update_edk2_guids EDK2_PATH
+                        update list of GUIDs from EDK2 (example: git clone
+                        https://github.com/tianocore/edk2, python
+                        analyse_fw_r2.py --update_edk2_guids edk2)
+</div></code></pre>
+<h2 id="additional-tools">Additional tools</h2>
+<ul>
+<li><code>tools\get_efi_images.py</code> is a script that gets all PE-images from the firmware file</li>
+<li><code>tools\update_edk2_guids.py</code> is a script that updates protocol GUIDs list from the <code>conf</code> directory</li>
+</ul>
+<h2 id="todo">TODO</h2>
+<ul>
+<li>Add support for 32-bit executable images</li>
+</ul>
+<h2 id="contributors">Contributors</h2>
+<ul>
+<li>yeggor (vasilenko.yegor@gmail.com)</li>
+<li>p41l (philka9498@gmail.com)</li>
+</ul>
+
+</body>
+</html>
