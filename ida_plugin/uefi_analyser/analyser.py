@@ -1,45 +1,38 @@
-import idautils
-import idaapi
-import idc
 import json
+import idaapi
+import idautils
+import idc
 from terminaltables import SingleTable
 
 import utils
-from guids import edk_guids, ami_guids, edk2_guids
+from guids import ami_guids, edk2_guids, edk_guids
+from tables import (
+    BOOT_SERVICES_OFFSET_x64, 
+    BOOT_SERVICES_OFFSET_x86
+)
 
-OFFSET = {
-    "InstallProtocolInterface": 0x80,
-    "ReinstallProtocolInterface": 0x88,
-    "UninstallProtocolInterface": 0x90,
-    "HandleProtocol": 0x98,
-    "RegisterProtocolNotify": 0xA8,
-    "OpenProtocol": 0x118,
-    "CloseProtocol": 0x120,
-    "OpenProtocolInformation": 0x128,
-    "ProtocolsPerHandle": 0x130,
-    "LocateHandleBuffer": 0x138,
-    "LocateProtocol": 0x140,
-    "InstallMultipleProtocolInterfaces": 0x148,
-    "UninstallMultipleProtocolInterfaces": 0x150,
-}
-
-LEA_NUM = {
-    "InstallProtocolInterface": 2,
-    "ReinstallProtocolInterface": 1,
-    "UninstallProtocolInterface": 1,
-    "HandleProtocol": 1,
-    "RegisterProtocolNotify": 1,
-    "OpenProtocol": 1,
-    "CloseProtocol": 1,
-    "OpenProtocolInformation": 1,
-    "LocateHandleBuffer": 2,
-    "LocateProtocol": 1,
-#   "InstallMultipleProtocolInterfaces": 2,
-#   "UninstallMultipleProtocolInterfaces": x,
-}
-
-class Analyser(object):
+class Analyser():
     def __init__(self):
+        path = idaapi.get_input_file_path()
+        with open(path, "rb") as f:
+            header = bytearray(f.read(1024))
+        self.arch = utils.get_machine_type(header)
+        self.subsystem = utils.check_subsystem(header)
+        self.valid = True
+        if not self.subsystem:
+            print("[ERROR] Wrong subsystem")
+            self.valid = False
+        # define the architecture of the investigated image
+        if not (self.arch == "x86" or self.arch == "x64"):
+            print("[ERROR] Wrong architecture")
+            self.valid = False
+        if self.arch == "x86":
+            self.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x86
+        if self.arch == "x64":
+            self.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x64
+        self.base = idaapi.get_imagebase()
+
+        # define required structures in the IDA
         idc.Til2Idb(-1, "EFI_GUID")
         idc.Til2Idb(-1, "EFI_SYSTEM_TABLE")
         idc.Til2Idb(-1, "EFI_RUNTIME_SERVICES")
@@ -96,34 +89,41 @@ class Analyser(object):
     def get_boot_services(self):
         for ea_start in idautils.Functions():
             for ea in idautils.FuncItems(ea_start):
-                for service_name in OFFSET:
+                for service_name in self.BOOT_SERVICES_OFFSET:
                     if (idc.GetMnem(ea) == "call" and \
-                        idc.get_operand_value(ea, 0) == OFFSET[service_name]
+                        idc.get_operand_value(ea, 0) == self.BOOT_SERVICES_OFFSET[service_name]
                         ):
                         if self.gBServices[service_name].count(ea) == 0:
                             self.gBServices[service_name].append(ea)
 
+
     def get_protocols(self):
         for service_name in self.gBServices:
-            if service_name in LEA_NUM.keys():
-                for address in self.gBServices[service_name]:
-                    ea = address
-                    lea_counter = 0
-                    while (True):
-                        ea = idc.prev_head(ea)
-                        if (idc.GetMnem(ea) == "lea"):
-                            lea_counter += 1
-                            if (lea_counter == LEA_NUM[service_name]):
-                                break
-                    for xref in idautils.DataRefsFrom(ea):
-                        if (idc.GetMnem(xref) == ""):
-                            CurrentGUID = utils.get_guid(xref)
-                            protocol_record = {}
-                            protocol_record["address"] = xref
-                            protocol_record["service"] = service_name
-                            protocol_record["guid"] = CurrentGUID
-                            if self.Protocols["All"].count(protocol_record) == 0:
-                                self.Protocols["All"].append(protocol_record)
+            for address in self.gBServices[service_name]:
+                ea, found = 0, False
+                if self.arch == "x86":
+                    for i in range(1, 25):
+                        ea = address - i
+                        if (idc.get_operand_value(ea, 0) > self.base and idc.GetMnem(ea) == "push"):
+                            found = True
+                            break
+                if self.arch == "x64":
+                    for i in range(1, 10):
+                        ea = address - i
+                        if (idc.get_operand_value(ea, 1) > self.base and idc.GetMnem(ea) == "lea"):
+                            found = True
+                            break
+                if not found:
+                    continue
+                for xref in idautils.DataRefsFrom(ea):
+                    if (idc.GetMnem(xref) == ""):
+                        CurrentGUID = utils.get_guid(xref)
+                        protocol_record = {}
+                        protocol_record["address"] = xref
+                        protocol_record["service"] = service_name
+                        protocol_record["guid"] = CurrentGUID
+                        if not self.Protocols["All"].count(protocol_record):
+                            self.Protocols["All"].append(protocol_record)
 
     def get_prot_names(self):
         for index in range(len(self.Protocols["All"])):
@@ -158,48 +158,53 @@ class Analyser(object):
             if not "protocol_name" in self.Protocols["All"][index]:
                 self.Protocols["All"][index]["protocol_name"] = "ProprietaryProtocol"
                 self.Protocols["All"][index]["protocol_place"] = "unknown"
-    
+
     def rename_supposed_guids(self):
         EFI_GUID = "EFI_GUID *"
-        for seg in idautils.Segments():
-            if idc.SegName(seg) == ".data":
-                seg_start = idc.SegStart(seg)
-                seg_end = idc.SegEnd(seg)
-                break
-        ea = seg_start
-        while (ea <= seg_end - 15):
-            prot_name = ""
-            if idc.Name(ea).find("unk_") != -1:
-                find = False
-                CurrentGuid = []
-                CurrentGuid.append(idc.Dword(ea))
-                CurrentGuid.append(idc.Word(ea + 4))
-                CurrentGuid.append(idc.Word(ea + 6))
-                for addr in range(ea + 8, ea + 16, 1):
-                    CurrentGuid.append(idc.Byte(addr))
-                for name in self.Protocols["Edk2Guids"]:
-                    if self.Protocols["Edk2Guids"][name] == CurrentGuid:
-                        prot_name = name + "_" + hex(ea)
-                        find = True
-                        break
-                for name in self.Protocols["EdkGuids"]:
-                    if self.Protocols["EdkGuids"][name] == CurrentGuid:
-                        prot_name = name + "_" + hex(ea)
-                        find = True
-                        break
-                for name in self.Protocols["AmiGuids"]:
-                    if self.Protocols["AmiGuids"][name] == CurrentGuid:
-                        prot_name = name + "_" + hex(ea)
-                        find = True
-                        break
-                if (find and \
-                    idc.Name(ea) != prot_name and \
-                    CurrentGuid[0] != 0
-                    ):
-                    idc.SetType(ea, EFI_GUID)
-                    idc.MakeName(ea, prot_name)
-            ea += 1
-        
+        segments = [
+            ".text", 
+            ".data"
+        ]
+        for segment in segments:
+            seg_start, seg_end = 0, 0
+            for seg in idautils.Segments():
+                if idc.SegName(seg) == segment:
+                    seg_start = idc.SegStart(seg)
+                    seg_end = idc.SegEnd(seg)
+                    break
+            ea = seg_start
+            while (ea <= seg_end - 15):
+                prot_name = ""
+                if idc.Name(ea).find("unk_") != -1:
+                    find = False
+                    CurrentGuid = []
+                    CurrentGuid.append(idc.Dword(ea))
+                    CurrentGuid.append(idc.Word(ea + 4))
+                    CurrentGuid.append(idc.Word(ea + 6))
+                    for addr in range(ea + 8, ea + 16, 1):
+                        CurrentGuid.append(idc.Byte(addr))
+                    for name in self.Protocols["Edk2Guids"]:
+                        if self.Protocols["Edk2Guids"][name] == CurrentGuid:
+                            prot_name = name + "_" + hex(ea)
+                            find = True
+                            break
+                    for name in self.Protocols["EdkGuids"]:
+                        if self.Protocols["EdkGuids"][name] == CurrentGuid:
+                            prot_name = name + "_" + hex(ea)
+                            find = True
+                            break
+                    for name in self.Protocols["AmiGuids"]:
+                        if self.Protocols["AmiGuids"][name] == CurrentGuid:
+                            prot_name = name + "_" + hex(ea)
+                            find = True
+                            break
+                    if (find and \
+                        idc.Name(ea) != prot_name and \
+                        CurrentGuid[0] != 0
+                        ):
+                        idc.SetType(ea, EFI_GUID)
+                        idc.MakeName(ea, prot_name)
+                ea += 1
 
     def make_comments(self):
         self.get_boot_services()
@@ -329,8 +334,9 @@ class Analyser(object):
 
 def main():
     analyser = Analyser()
-    analyser.print_all()
-    analyser.analyse_all()
+    if analyser.valid:
+        analyser.print_all()
+        analyser.analyse_all()
 
 if __name__=="__main__":
     main()

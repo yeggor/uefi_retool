@@ -40,11 +40,8 @@ def analyse_all(scr_name):
 				module.find(".nam") == -1 and module.find(".til") == -1
 			):
 				module_path = pe_dir + os.sep + module
-				""" x64 only """
-				machine_type = utils.get_machine_type(module_path)
-				if machine_type == utils.IMAGE_FILE_MACHINE_IA64:
-					if (os.system(ida64_path + ' -c -A -Sida_uefi_re' + os.sep + scr_name + " " + module_path) != 0):
-						exit("[-] Error, check your config.json file")
+				if (os.system(ida64_path + ' -c -A -Sida_uefi_re' + os.sep + scr_name + " " + module_path) != 0):
+					exit("[-] Error, check your config.json file or move ida_uefi_re directory to IDA directory")
 
 def clear(dirname):
 	for root, dirs, files in os.walk(dirname, topdown=False):

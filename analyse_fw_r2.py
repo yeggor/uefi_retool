@@ -70,8 +70,8 @@ def analyse_all():
 								log.write("\t - [protocol_name] " + element["protocol_name"] + "\r\n")
 								log.write("\t - [protocol_place] " + element["protocol_place"] + "\r\n")
 								log.write("\t - " + guid_str + "\r\n")
-						except:
-							log.write("### ERROR\r\n")
+						except Exception as e:
+							log.write("### ERROR: {desc}\r\n".format(desc=e))
 							continue
 	log.close()
 
@@ -167,8 +167,8 @@ def clear_all():
 	try:
 		clear(config["DUMP_DIR"])
 		clear(config["PE_DIR"])
-	except:
-		print("Error while cleaning directories")
+	except Exception as e:
+		print("Error while cleaning directories: {desc}".format(desc=e))
 
 def main():
 	click.echo(click.style("UEFI_RETool", fg="cyan"))

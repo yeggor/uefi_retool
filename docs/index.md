@@ -281,9 +281,6 @@ optional arguments:
  * `tools\get_efi_images.py` is a script that gets all PE-images from the firmware file
  * `tools\update_edk2_guids.py` is a script that updates protocol GUIDs list from the `conf` directory
 
-## TODO
- * Add support for 32-bit executable images
-
 ## Contributors
 
  * yeggor (vasilenko.yegor@gmail.com)
