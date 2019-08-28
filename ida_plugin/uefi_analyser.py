@@ -1,6 +1,8 @@
 import idc
 import idaapi
 import idautils
+
+import uefi_analyser.prot_wind as pw
 import uefi_analyser.analyser as analyser
 from uefi_analyser.analyser import Analyser
 
@@ -45,7 +47,7 @@ class UefiAnalyserPlugin(idaapi.plugin_t):
 
     @staticmethod
     def _analyse_all():
-        analyser.main()
+        pw.run()
     
     @staticmethod
     def _get_num_le(bytearr):
