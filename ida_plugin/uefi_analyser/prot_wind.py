@@ -42,7 +42,6 @@ class ProtsWindow(Choose2):
         )
         self.n = 0
         self.items = self._get_lines(analyser)
-        self.icon = 5
         self.selcount = 0
         self.modal = False
         self.popup_names = []
@@ -95,12 +94,18 @@ class ProtsWindow(Choose2):
                 self._get_guid(prot["guid"])
             ])
         return lines
-    
+
     def _make_item(self):
         """
-        make empty item
+        make custom element
         """
-        item = []
+        item = [
+            idaapi.askstr(0, "", "Address"),
+            idaapi.askstr(0, "", "Name"),
+            idaapi.askstr(0, "", "Service"),
+            idaapi.askstr(0, "", "Place"),
+            idaapi.askstr(0, "", "GUID")
+        ]
         self.n += 1
         return item
 
@@ -108,15 +113,18 @@ class ProtsWindow(Choose2):
         print("[info] protocols window was closed")
 
     def OnEditLine(self, n):
-        self.items[n][1] = self.items[n][1] + "*"
+        return n
 
     def OnInsertLine(self):
         self.items.append(self._make_item())
+        print("[info] element was insert")
 
     def OnSelectLine(self, n):
         self.selcount += 1
         ea = int(self.items[n][0], 16)
         idc.jumpto(ea)
+        print("[info] jump to {addr:#x}".format(addr=ea))
+        return n
 
     def OnGetLine(self, n):
         return self.items[n]
@@ -127,21 +135,17 @@ class ProtsWindow(Choose2):
 
     def OnDeleteLine(self, n):
         del self.items[n]
+        print("[info] element was deleted")
         return n
 
     def OnRefresh(self, n):
         return n
 
-    def OnGetIcon(self, n):
-        r = self.items[n]
-        t = self.icon + r[1].count("*")
-        return t
+    def OnGetLineAttr(self, n):
+        return n
 
     def show(self):
         return self.Show(self.modal) >= 0
-
-    def OnGetLineAttr(self, n):
-        pass
 
 def run():
     analyser = Analyser()
