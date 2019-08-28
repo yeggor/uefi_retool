@@ -2,6 +2,10 @@
 
 A tool for finding proprietary protocols in UEFI firmware and UEFI modules analysing
 
+## `ida_plugin`
+
+[IDA plugin for UEFI analysis](https://github.com/yeggor/UEFI_RETool/tree/master/ida_plugin)
+
 ## `ida_uefi_re\analyser.py`
 
 A script for simplifying reverse engineering of UEFI firmware modules with IDA Pro
