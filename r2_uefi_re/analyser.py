@@ -1,3 +1,7 @@
+"""
+Currently incompatible with latest radare2
+"""
+
 import os
 import sys
 import json
