@@ -12,6 +12,41 @@ IMAGE_SUBSYSTEM_EFI_APPLICATION = 0xa
 IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER = 0xb
 IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER = 0xc
 
+class Table():
+    """
+    class to build table from array
+    """
+    def __init__(self, table_data):
+        self.table_data = table_data
+        self.max_sizes = self._get_max_sizes()
+    
+    def _get_max_sizes(self):
+        num = len(self.table_data[0])
+        sizes = [0 for _ in range(num)]
+        for i in range(len(self.table_data[0])):
+            for j in range(len(self.table_data)):
+              if len(self.table_data[j][i]) > sizes[i]:
+                  sizes[i] = len(self.table_data[j][i])
+        return sizes
+    
+    @classmethod
+    def display(cls, table_data):
+        cl = Table(table_data)
+        gl = "-"
+        vl = "|"
+        angle = "+"
+        table = angle + "{angle}".join([((gl * (size + 2))) for size in cl.max_sizes]).format(angle=angle) + "{angle}\n".format(angle=angle)
+        table += "{vl} ".format(vl=vl) + \
+            "{vl} ".join([((cl.table_data[0][i] + " " * (cl.max_sizes[i] - len(cl.table_data[0][i]) + 1))) for i in range(len(cl.table_data[0]))]).format(vl=vl) + \
+            "{vl}\n".format(vl=vl)
+        table += angle + "{angle}".join([((gl * (size + 2))) for size in cl.max_sizes]).format(angle=angle) + "{angle}\n".format(angle=angle)
+        for j in range(1, len(cl.table_data)):
+            table += "{vl} ".format(vl=vl) + \
+            "{vl} ".join([((cl.table_data[j][i] + " " * (cl.max_sizes[i] - len(cl.table_data[j][i]) + 1))) for i in range(len(cl.table_data[j]))]).format(vl=vl) + \
+            "{vl}\n".format(vl=vl)
+        table += angle + "{angle}".join([((gl * (size + 2))) for size in cl.max_sizes]).format(angle=angle) + "{angle}".format(angle=angle)
+        return table
+
 def set_hexrays_comment(address, text):
     """
     set comment in decompiled code

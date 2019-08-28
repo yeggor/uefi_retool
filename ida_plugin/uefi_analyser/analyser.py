@@ -2,9 +2,9 @@ import json
 import idaapi
 import idautils
 import idc
-from terminaltables import SingleTable
 
 import utils
+from utils import Table
 from guids import ami_guids, edk2_guids, edk_guids
 from tables import (
     BOOT_SERVICES_OFFSET_x64, 
@@ -300,7 +300,6 @@ class Analyser():
         self.get_boot_services()
         empty = True
         table_data = []
-        table_instance = SingleTable(table_data)
         table_data.append(["Address", "Service"])
         print("Boot services:")
         for service in self.gBServices:
@@ -310,7 +309,7 @@ class Analyser():
         if empty:
             print(" * list is empty")
         else:
-            print(table_instance.table)
+            print(Table.display(table_data))
 
     def list_protocols(self):
         """
@@ -325,7 +324,6 @@ class Analyser():
             print(" * list is empty")
         else:
             table_data = []
-            table_instance = SingleTable(table_data)
             table_data.append(["GUID", "Protocol name", "Address", "Service", "Protocol place"])
             for element in data:
                 guid = str(map(hex, element["guid"]))
@@ -339,7 +337,7 @@ class Analyser():
                     element["service"],
                     element["protocol_place"]
                     ])
-            print(table_instance.table)
+            print(Table.display(table_data))
 
     def print_all(self):
         self.list_boot_services()

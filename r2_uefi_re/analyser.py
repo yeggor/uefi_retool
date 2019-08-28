@@ -25,7 +25,7 @@ OFFSET = {
     "LocateHandleBuffer": 0x138,
     "LocateProtocol": 0x140,
     "InstallMultipleProtocolInterfaces": 0x148,
-    "UninstallMultipleProtocolInterfaces": 0x150,
+    "UninstallMultipleProtocolInterfaces": 0x150
 }
 
 LEA_NUM = {
@@ -38,15 +38,15 @@ LEA_NUM = {
     "CloseProtocol": 1,
     "OpenProtocolInformation": 1,
     "LocateHandleBuffer": 2,
-    "LocateProtocol": 1,
-#   "InstallMultipleProtocolInterfaces": x,
-#   "UninstallMultipleProtocolInterfaces": x,
+    "LocateProtocol": 1
 }
 
 class Analyser():
     def __init__(self, module_path):
         self.module_path = module_path
-        """ '-2' for disabling warnings """
+        """
+        '-2' for disabling warnings
+        """
         self.r2 = r2pipe.open(module_path, ["-2"])
         self.r2.cmd("aaa")
         
@@ -78,6 +78,7 @@ class Analyser():
             # ...
         ]
         self.Protocols["PropGuids"] = []
+        self.info = self.get_info()
 
 
     def get_info(self):
@@ -113,7 +114,7 @@ class Analyser():
                         "type"   in line and \
                         "offset" in line and \
                         "disasm" in line
-                        ):
+                    ):
                         if (line["type"] == "ucall" and line["disasm"].find("call qword [") > -1):
                             for service_name in OFFSET:
                                 ea = line["offset"]
@@ -145,9 +146,11 @@ class Analyser():
         CurrentGUID.append(utils.get_word(bytearray(guid_bytes[6:8:])))
         CurrentGUID += guid_bytes[8:16:]
         return CurrentGUID
-        
+
     def get_protocols(self):
-        baddr = self.get_info()["bin"]["baddr"]
+        baddr = 0
+        if "baddr" in self.info["bin"]:
+            baddr = self.get_info()["bin"]["baddr"]
         for service_name in self.gBServices:
             if service_name in LEA_NUM.keys():
                 for address in self.gBServices[service_name]:
@@ -175,7 +178,7 @@ class Analyser():
                         protocol_record["guid"] = CurrentGUID
                         if self.Protocols["All"].count(protocol_record) == 0:
                             self.Protocols["All"].append(protocol_record)
-    
+
     def get_prot_names(self):
         for index in range(len(self.Protocols["All"])):
             fin = False
@@ -210,7 +213,7 @@ class Analyser():
                 self.Protocols["All"][index]["protocol_name"] = "ProprietaryProtocol"
                 self.Protocols["All"][index]["protocol_place"] = "unknown"
                 self.Protocols["PropGuids"].append(guid_r2)
-    
+
     def list_boot_services(self):
         self.get_boot_services()
         empty = True
@@ -226,7 +229,7 @@ class Analyser():
             print(" * list is empty")
         else:
             print(table_instance.table)
-    
+
     def list_protocols(self):
         self.get_boot_services()
         self.get_protocols()
