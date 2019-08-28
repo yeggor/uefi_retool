@@ -13,16 +13,13 @@ from tables import (
 
 class Analyser():
     def __init__(self):
-        path = idaapi.get_input_file_path()
-        with open(path, "rb") as f:
-            header = bytearray(f.read(1024))
+        header = utils.get_header_idb()
         self.arch = utils.get_machine_type(header)
         self.subsystem = utils.check_subsystem(header)
         self.valid = True
         if not self.subsystem:
             print("[ERROR] Wrong subsystem")
             self.valid = False
-        # define the architecture of the investigated image
         if not (self.arch == "x86" or self.arch == "x64"):
             print("[ERROR] Wrong architecture")
             self.valid = False
@@ -31,8 +28,6 @@ class Analyser():
         if self.arch == "x64":
             self.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x64
         self.base = idaapi.get_imagebase()
-
-        # define required structures in the IDA
         idc.Til2Idb(-1, "EFI_GUID")
         idc.Til2Idb(-1, "EFI_SYSTEM_TABLE")
         idc.Til2Idb(-1, "EFI_RUNTIME_SERVICES")
@@ -62,6 +57,8 @@ class Analyser():
             #   address: ...
             #   service: ...
             #   guid: ...
+            #   protocol_name: ...
+            #   protocol_place: ...
             # }, 
             # ...
         ]
@@ -87,6 +84,9 @@ class Analyser():
         print(" * analyser.analyse_all()")
 
     def get_boot_services(self):
+        """
+        found boot services in idb
+        """
         for ea_start in idautils.Functions():
             for ea in idautils.FuncItems(ea_start):
                 for service_name in self.BOOT_SERVICES_OFFSET:
@@ -96,8 +96,10 @@ class Analyser():
                         if self.gBServices[service_name].count(ea) == 0:
                             self.gBServices[service_name].append(ea)
 
-
     def get_protocols(self):
+        """
+        found UEFI protocols information in idb
+        """
         for service_name in self.gBServices:
             for address in self.gBServices[service_name]:
                 ea, found = 0, False
@@ -126,6 +128,10 @@ class Analyser():
                             self.Protocols["All"].append(protocol_record)
 
     def get_prot_names(self):
+        """
+        match UEFI protocols GUIDs with known GUIDs
+        if protocol GUID is not found in a lists of known GUIDs, the protocol is considered proprietary
+        """
         for index in range(len(self.Protocols["All"])):
             fin = False
             for prot_name in self.Protocols["Edk2Guids"].keys():
@@ -160,6 +166,9 @@ class Analyser():
                 self.Protocols["All"][index]["protocol_place"] = "unknown"
 
     def rename_supposed_guids(self):
+        """
+        rename GUIDs in idb
+        """
         EFI_GUID = "EFI_GUID *"
         segments = [
             ".text", 
@@ -207,19 +216,24 @@ class Analyser():
                 ea += 1
 
     def make_comments(self):
+        """
+        make comments in idb
+        """
         self.get_boot_services()
         empty = True
         for service in self.gBServices:
             for address in self.gBServices[service]:
-                """ utils.set_hexrays_comment(address, "EFI_BOOT_SERVICES->{0}".format(service)) """
                 message = "EFI_BOOT_SERVICES->{0}".format(service)
                 idc.MakeComm(address, message)
                 empty = False
                 print("[{ea}] {message}".format(ea=hex(address), message=message))
         if empty:
             print(" * list is empty")
-    
+
     def make_names(self):
+        """
+        make names in idb
+        """
         EFI_GUID = "EFI_GUID *"
         self.get_boot_services()
         self.get_protocols()
@@ -239,7 +253,9 @@ class Analyser():
             print(" * list is empty")
 
     def set_types(self):
-        """ handle (EFI_BOOT_SERVICES *) type """
+        """
+        handle (EFI_BOOT_SERVICES *) type
+        """
         RAX = 0
         O_REG = 1
         O_MEM = 2
@@ -278,6 +294,9 @@ class Analyser():
             print(" * list is empty")
 
     def list_boot_services(self):
+        """
+        display boot services information to the IDAPython output window
+        """
         self.get_boot_services()
         empty = True
         table_data = []
@@ -292,8 +311,11 @@ class Analyser():
             print(" * list is empty")
         else:
             print(table_instance.table)
-    
+
     def list_protocols(self):
+        """
+        display protocols information to the IDAPython output window
+        """
         self.get_boot_services()
         self.get_protocols()
         self.get_prot_names()
@@ -322,7 +344,7 @@ class Analyser():
     def print_all(self):
         self.list_boot_services()
         self.list_protocols()
-    
+
     def analyse_all(self):
         print("Comments:")
         self.make_comments()

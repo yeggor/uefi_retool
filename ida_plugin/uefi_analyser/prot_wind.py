@@ -20,6 +20,9 @@ class chooser_handler_t(idaapi.action_handler_t):
         return idaapi.AST_DISABLE_FOR_FORM
 
 class ProtsWindow(Choose2):
+    """
+    class to display protocols information output window
+    """
     def __init__(self, title, analyser, nb=5):
         sizes = self._get_sizes(analyser)
         Choose2.__init__(
@@ -43,8 +46,11 @@ class ProtsWindow(Choose2):
         self.selcount = 0
         self.modal = False
         self.popup_names = []
-    
+
     def _get_sizes(self, analyser):
+        """
+        get maximum field sizes
+        """
         sizes = {
             "Address": 0,
             "Name": 0,
@@ -66,6 +72,9 @@ class ProtsWindow(Choose2):
         return sizes
 
     def _get_guid(self, guid_struct):
+        """
+        get GUID string
+        """
         guid = str(map(hex, guid_struct))
         guid = guid.replace(", ", "-")
         guid = guid.replace("L", "")
@@ -73,6 +82,9 @@ class ProtsWindow(Choose2):
         return guid
 
     def _get_lines(self, analyser):
+        """
+        to fill line in the table
+        """
         lines = []
         for prot in analyser.Protocols["All"]:
             lines.append([
@@ -83,15 +95,23 @@ class ProtsWindow(Choose2):
                 self._get_guid(prot["guid"])
             ])
         return lines
+    
+    def _make_item(self):
+        """
+        make empty item
+        """
+        item = []
+        self.n += 1
+        return item
 
     def OnClose(self):
-        print("Protocols window was closed")
+        print("[info] protocols window was closed")
 
     def OnEditLine(self, n):
         self.items[n][1] = self.items[n][1] + "*"
 
     def OnInsertLine(self):
-        self.items.append(self.make_item())
+        self.items.append(self._make_item())
 
     def OnSelectLine(self, n):
         self.selcount += 1
@@ -119,11 +139,6 @@ class ProtsWindow(Choose2):
 
     def show(self):
         return self.Show(self.modal) >= 0
-
-    def make_item(self):
-        item = []
-        self.n += 1
-        return item
 
     def OnGetLineAttr(self, n):
         pass

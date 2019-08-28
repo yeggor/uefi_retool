@@ -54,8 +54,12 @@ def get_machine_type(header):
     """
     get the architecture of the investigated file
     """
+    if len(header) < PE_OFFSET + 1:
+        return "unknown"
     PE_POINTER = header[PE_OFFSET]
     FH_POINTER = PE_POINTER + 4
+    if len(header) < FH_POINTER + 3:
+        return "unknown"
     machine_type = header[FH_POINTER:FH_POINTER+2:]
     type_value = get_num_le(machine_type)
     if type_value == IMAGE_FILE_MACHINE_I386:
@@ -68,8 +72,21 @@ def check_subsystem(header):
     """
     get the subsystem of the investigated file
     """
+    if len(header) < PE_OFFSET + 1:
+        return False
     PE_POINTER = header[PE_OFFSET]
+    if len(header) < PE_POINTER + 0x5d:
+        return False
     subsystem = header[PE_POINTER + 0x5c]
     return (subsystem == IMAGE_SUBSYSTEM_EFI_APPLICATION or \
             subsystem == IMAGE_SUBSYSTEM_EFI_BOOT_SERVICE_DRIVER or \
             subsystem == IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER)
+
+def get_header_idb():
+    """
+    get file header from idb
+    """
+    if idc.SegName(0) == "HEADER":
+        header = bytearray([idc.Byte(ea) for ea in range(0, idc.SegEnd(0))])
+        return header
+    return bytearray(b"")
