@@ -58,7 +58,7 @@ class ProtsWindow(Choose2):
             "Place": 0,
             "GUID": 0
         }
-        for prot in analyser.Protocols["All"]:
+        for prot in analyser.Protocols["All"] + analyser.Protocols["Data"]:
             if len("{addr:#010x}".format(addr=prot["address"])) > sizes["Address"]:
                 sizes["Address"] = len("{addr:#010x}".format(addr=prot["address"]))
             if len(prot["protocol_name"]) > sizes["Name"]:
@@ -76,7 +76,7 @@ class ProtsWindow(Choose2):
         to fill line in the table
         """
         lines = []
-        for prot in analyser.Protocols["All"]:
+        for prot in analyser.Protocols["All"] + analyser.Protocols["Data"]:
             item = [
                 "{addr:#010x}".format(addr=prot["address"]),
                 prot["protocol_name"],

@@ -110,7 +110,7 @@ class Analyser():
                             found = True
                             break
                 if self.arch == "x64":
-                    for i in range(1, 10):
+                    for i in range(1, 16):
                         ea = address - i
                         if (idc.get_operand_value(ea, 1) > self.base and idc.GetMnem(ea) == "lea"):
                             found = True
@@ -120,12 +120,17 @@ class Analyser():
                 for xref in idautils.DataRefsFrom(ea):
                     if (idc.GetMnem(xref) == ""):
                         cur_guid = utils.get_guid(xref)
-                        protocol_record = {}
-                        protocol_record["address"] = xref
-                        protocol_record["service"] = service_name
-                        protocol_record["guid"] = cur_guid
-                        if not self.Protocols["All"].count(protocol_record):
-                            self.Protocols["All"].append(protocol_record)
+                        if cur_guid != [0] * 11:
+                            record = {
+                                "address": xref,
+                                "service": service_name,
+                                "guid": cur_guid,
+                            }
+                            record["address"] = xref
+                            record["service"] = service_name
+                            record["guid"] = cur_guid
+                            if not self.Protocols["All"].count(record):
+                                self.Protocols["All"].append(record)
 
     def get_prot_names(self):
         """
@@ -165,7 +170,7 @@ class Analyser():
                 self.Protocols["All"][index]["protocol_name"] = "ProprietaryProtocol"
                 self.Protocols["All"][index]["protocol_place"] = "unknown"
 
-    def rename_supposed_guids(self):
+    def get_data_guids(self):
         """
         rename GUIDs in idb
         """
@@ -192,27 +197,51 @@ class Analyser():
                     cur_guid.append(idc.Word(ea + 6))
                     for addr in range(ea + 8, ea + 16, 1):
                         cur_guid.append(idc.Byte(addr))
+                    if cur_guid == [0] * 11:
+                        ea += 1
+                        continue
                     for name in self.Protocols["Edk2Guids"]:
                         if self.Protocols["Edk2Guids"][name] == cur_guid:
                             prot_name = name + "_" + "{addr:#x}".format(addr=ea)
+                            record = {
+                                "address": ea, 
+                                "service": "unknown", 
+                                "guid": cur_guid, 
+                                "protocol_name": name, 
+                                "protocol_place": "edk2_guids"
+                            }
                             find = True
                             break
                     for name in self.Protocols["EdkGuids"]:
                         if self.Protocols["EdkGuids"][name] == cur_guid:
                             prot_name = name + "_" + "{addr:#x}".format(addr=ea)
+                            prot_name = name + "_" + "{addr:#x}".format(addr=ea)
+                            record = {
+                                "address": ea, 
+                                "service": "unknown", 
+                                "guid": cur_guid, 
+                                "protocol_name": name, 
+                                "protocol_place": "edk_guids"
+                            }
                             find = True
                             break
                     for name in self.Protocols["AmiGuids"]:
                         if self.Protocols["AmiGuids"][name] == cur_guid:
                             prot_name = name + "_" + "{addr:#x}".format(addr=ea)
+                            prot_name = name + "_" + "{addr:#x}".format(addr=ea)
+                            record = {
+                                "address": ea, 
+                                "service": "unknown", 
+                                "guid": cur_guid, 
+                                "protocol_name": name, 
+                                "protocol_place": "ami_guids"
+                            }
                             find = True
                             break
-                    if (find and \
-                        idc.Name(ea) != prot_name and \
-                        cur_guid[0] != 0
-                    ):
+                    if (find and (idc.Name(ea) != prot_name)):
                         idc.SetType(ea, EFI_GUID)
                         idc.MakeName(ea, prot_name)
+                        self.Protocols["Data"].append(record)
                 ea += 1
 
     def make_comments(self):
@@ -320,7 +349,7 @@ class Analyser():
         self.get_boot_services()
         self.get_protocols()
         self.get_prot_names()
-        data = self.Protocols["All"]
+        data = self.Protocols["All"] + self.Protocols["Data"]
         print("Protocols:")
         if len(data) == 0:
             print(" * list is empty")
@@ -349,7 +378,7 @@ class Analyser():
         self.make_names()
         print("Types:")
         self.set_types()
-        self.rename_supposed_guids()
+        self.get_data_guids()
 
 def main():
     analyser = Analyser()
