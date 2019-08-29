@@ -4,6 +4,7 @@ import idautils
 import ida_kernwin
 from idaapi import Choose2
 
+import utils
 from analyser import Analyser
 
 class chooser_handler_t(idaapi.action_handler_t):
@@ -58,27 +59,17 @@ class ProtsWindow(Choose2):
             "GUID": 0
         }
         for prot in analyser.Protocols["All"]:
-            if len("{addr:#x}".format(addr=prot["address"])) > sizes["Address"]:
-                sizes["Address"] = len("{addr:#x}".format(addr=prot["address"]))
+            if len("{addr:#010x}".format(addr=prot["address"])) > sizes["Address"]:
+                sizes["Address"] = len("{addr:#010x}".format(addr=prot["address"]))
             if len(prot["protocol_name"]) > sizes["Name"]:
                 sizes["Name"] = len(prot["protocol_name"])
             if len(prot["service"]) > sizes["Service"]:
                 sizes["Service"] = len(prot["service"])
             if len(prot["protocol_place"]) > sizes["Place"]:
                 sizes["Place"] = len(prot["protocol_place"])
-            if len(self._get_guid(prot["guid"])) > sizes["GUID"]:
-                sizes["GUID"] = len(self._get_guid(prot["guid"]))
+            if len(utils.get_guid_str(prot["guid"])) > sizes["GUID"]:
+                sizes["GUID"] = len(utils.get_guid_str(prot["guid"]))
         return sizes
-
-    def _get_guid(self, guid_struct):
-        """
-        get GUID string
-        """
-        guid = str(map(hex, guid_struct))
-        guid = guid.replace(", ", "-")
-        guid = guid.replace("L", "")
-        guid = guid.replace("'", "")
-        return guid
 
     def _get_lines(self, analyser):
         """
@@ -87,11 +78,11 @@ class ProtsWindow(Choose2):
         lines = []
         for prot in analyser.Protocols["All"]:
             lines.append([
-                "{addr:#x}".format(addr=prot["address"]),
+                "{addr:#010x}".format(addr=prot["address"]),
                 prot["protocol_name"],
                 prot["service"],
                 prot["protocol_place"],
-                self._get_guid(prot["guid"])
+                utils.get_guid_str(prot["guid"])
             ])
         return lines
 
@@ -123,7 +114,7 @@ class ProtsWindow(Choose2):
         self.selcount += 1
         ea = int(self.items[n][0], 16)
         idc.jumpto(ea)
-        print("[info] jump to {addr:#x}".format(addr=ea))
+        print("[info] jump to {addr:#010x}".format(addr=ea))
         return n
 
     def OnGetLine(self, n):
@@ -153,7 +144,7 @@ def run():
         analyser.print_all()
         analyser.analyse_all()
         if len(analyser.Protocols["All"]):
-            wind = ProtsWindow("Protocols", analyser, nb=10)
+            wind = ProtsWindow("Protocols", analyser)
             wind.show()
 
 if __name__=="__main__":
