@@ -13,4 +13,6 @@ Based on the [analysis.py](https://github.com/yeggor/UEFI_RETool/blob/master/ida
 
 ### Example:
     
-![example](https://github.com/yeggor/UEFI_RETool/blob/master/ida_plugin/rsrc/usage.gif)
+![usage](https://github.com/yeggor/UEFI_RETool/blob/master/ida_plugin/rsrc/usage.gif)
+
+![prots](https://github.com/yeggor/UEFI_RETool/blob/master/ida_plugin/rsrc/prots.png)
