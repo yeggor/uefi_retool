@@ -28,7 +28,7 @@ class UefiAnalyserPlugin(idaapi.plugin_t):
 
     def run(self, arg):
         self._analyse_all()
-    
+
     def term(self):
         pass
 

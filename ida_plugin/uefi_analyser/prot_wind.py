@@ -77,13 +77,15 @@ class ProtsWindow(Choose2):
         """
         lines = []
         for prot in analyser.Protocols["All"]:
-            lines.append([
+            item = [
                 "{addr:#010x}".format(addr=prot["address"]),
                 prot["protocol_name"],
                 prot["service"],
                 prot["protocol_place"],
                 utils.get_guid_str(prot["guid"])
-            ])
+            ]
+            if not lines.count(item):
+                lines.append(item)
         return lines
 
     def _make_item(self):
@@ -144,7 +146,7 @@ def run():
         analyser.print_all()
         analyser.analyse_all()
         if len(analyser.Protocols["All"]):
-            wind = ProtsWindow("Protocols", analyser)
+            wind = ProtsWindow("Protocols", analyser, nb=10)
             wind.show()
 
 if __name__=="__main__":

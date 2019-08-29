@@ -92,7 +92,7 @@ class Analyser():
                 for service_name in self.BOOT_SERVICES_OFFSET:
                     if (idc.GetMnem(ea) == "call" and \
                         idc.get_operand_value(ea, 0) == self.BOOT_SERVICES_OFFSET[service_name]
-                        ):
+                    ):
                         if self.gBServices[service_name].count(ea) == 0:
                             self.gBServices[service_name].append(ea)
 
@@ -119,11 +119,11 @@ class Analyser():
                     continue
                 for xref in idautils.DataRefsFrom(ea):
                     if (idc.GetMnem(xref) == ""):
-                        CurrentGUID = utils.get_guid(xref)
+                        cur_guid = utils.get_guid(xref)
                         protocol_record = {}
                         protocol_record["address"] = xref
                         protocol_record["service"] = service_name
-                        protocol_record["guid"] = CurrentGUID
+                        protocol_record["guid"] = cur_guid
                         if not self.Protocols["All"].count(protocol_record):
                             self.Protocols["All"].append(protocol_record)
 
@@ -186,31 +186,31 @@ class Analyser():
                 prot_name = ""
                 if idc.Name(ea).find("unk_") != -1:
                     find = False
-                    CurrentGuid = []
-                    CurrentGuid.append(idc.Dword(ea))
-                    CurrentGuid.append(idc.Word(ea + 4))
-                    CurrentGuid.append(idc.Word(ea + 6))
+                    cur_guid = []
+                    cur_guid.append(idc.Dword(ea))
+                    cur_guid.append(idc.Word(ea + 4))
+                    cur_guid.append(idc.Word(ea + 6))
                     for addr in range(ea + 8, ea + 16, 1):
-                        CurrentGuid.append(idc.Byte(addr))
+                        cur_guid.append(idc.Byte(addr))
                     for name in self.Protocols["Edk2Guids"]:
-                        if self.Protocols["Edk2Guids"][name] == CurrentGuid:
-                            prot_name = name + "_" + hex(ea)
+                        if self.Protocols["Edk2Guids"][name] == cur_guid:
+                            prot_name = name + "_" + "{addr:#x}".format(addr=ea)
                             find = True
                             break
                     for name in self.Protocols["EdkGuids"]:
-                        if self.Protocols["EdkGuids"][name] == CurrentGuid:
-                            prot_name = name + "_" + hex(ea)
+                        if self.Protocols["EdkGuids"][name] == cur_guid:
+                            prot_name = name + "_" + "{addr:#x}".format(addr=ea)
                             find = True
                             break
                     for name in self.Protocols["AmiGuids"]:
-                        if self.Protocols["AmiGuids"][name] == CurrentGuid:
-                            prot_name = name + "_" + hex(ea)
+                        if self.Protocols["AmiGuids"][name] == cur_guid:
+                            prot_name = name + "_" + "{addr:#x}".format(addr=ea)
                             find = True
                             break
                     if (find and \
                         idc.Name(ea) != prot_name and \
-                        CurrentGuid[0] != 0
-                        ):
+                        cur_guid[0] != 0
+                    ):
                         idc.SetType(ea, EFI_GUID)
                         idc.MakeName(ea, prot_name)
                 ea += 1
@@ -226,7 +226,7 @@ class Analyser():
                 message = "EFI_BOOT_SERVICES->{0}".format(service)
                 idc.MakeComm(address, message)
                 empty = False
-                print("[{ea}] {message}".format(ea=hex(address), message=message))
+                print("[{ea}] {message}".format(ea="{addr:#010x}".format(addr=address), message=message))
         if empty:
             print(" * list is empty")
 
@@ -243,10 +243,13 @@ class Analyser():
         for element in data:
             try:
                 idc.SetType(element["address"], EFI_GUID)
-                name = element["protocol_name"] + "_" + hex(element["address"])
+                name = element["protocol_name"] + "_" + "{addr:#x}".format(addr=element["address"])
                 idc.MakeName(element["address"], name)
                 empty = False
-                print("[{ea}] {name}".format(ea=hex(element["address"]), name=name))
+                print("[{ea}] {name}".format(
+                    ea="{addr:#010x}".format(addr=element["address"]),
+                    name=name
+                ))
             except:
                 continue
         if empty:
@@ -273,21 +276,20 @@ class Analyser():
                             gBs_var_type = idc.get_type(gBs_var)
                             if (gBs_var_type == "EFI_BOOT_SERVICES *"):
                                 empty = False
-                                print("[{0}] EFI_BOOT_SERVICES->{1}".format(hex(address).replace("L", ""), service))
-                                print("\t [address] {0}".format(hex(gBs_var).replace("L", "")))
+                                print("[{0}] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
+                                print("\t [address] {0}".format("{addr:#010x}".format(addr=gBs_var)))
                                 print("\t [message] type already applied")
                                 break
                             if idc.SetType(gBs_var, EFI_BOOT_SERVICES):
                                 empty = False
-                                old_name = idc.Name(gBs_var)
-                                idc.MakeName(gBs_var, "gBs_" + old_name)
-                                print("[{0}] EFI_BOOT_SERVICES->{1}".format(hex(address).replace("L", ""), service))
-                                print("\t [address] {0}".format(hex(gBs_var).replace("L", "")))
+                                idc.MakeName(gBs_var, "gBs_{addr:#x}".format(addr=gBs_var))
+                                print("[{0}] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
+                                print("\t [address] {0}".format("{addr:#010x}".format(addr=gBs_var)))
                                 print("\t [message] type successfully applied")
                             else:
                                 empty = False
-                                print("[{0}] EFI_BOOT_SERVICES->{1}".format(hex(address).replace("L", ""), service))
-                                print("\t [address] {0}".format(hex(gBs_var).replace("L", "")))
+                                print("[{0}] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
+                                print("\t [address] {0}".format("{addr:#010x}".format(addr=gBs_var)))
                                 print("\t [message] type not applied")
                             break
         if empty:
@@ -326,17 +328,14 @@ class Analyser():
             table_data = []
             table_data.append(["GUID", "Protocol name", "Address", "Service", "Protocol place"])
             for element in data:
-                guid = str(map(hex, element["guid"]))
-                guid = guid.replace(", ", "-")
-                guid = guid.replace("L", "")
-                guid = guid.replace("'", "")
+                guid = utils.get_guid_str(element["guid"])
                 table_data.append([
                     guid,
                     element["protocol_name"],
                     hex(element["address"]),
                     element["service"],
                     element["protocol_place"]
-                    ])
+                ])
             print(Table.display(table_data))
 
     def print_all(self):

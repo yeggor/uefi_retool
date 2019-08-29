@@ -68,13 +68,20 @@ def get_guid(address):
     """
     get GUID located by address
     """
-    CurrentGUID = []
-    CurrentGUID.append(idc.Dword(address))
-    CurrentGUID.append(idc.Word(address + 4))
-    CurrentGUID.append(idc.Word(address + 6))
+    guid = []
+    guid.append(idc.Dword(address))
+    guid.append(idc.Word(address + 4))
+    guid.append(idc.Word(address + 6))
     for addr in range(address + 8, address + 16, 1):
-        CurrentGUID.append(idc.Byte(addr))
-    return CurrentGUID
+        guid.append(idc.Byte(addr))
+    return guid
+
+def get_guid_str(guid_struct):
+    guid = "{dw:08X}-".format(dw=(rev_endian(guid_struct[0])))
+    guid += "{w:04X}-".format(w=(rev_endian(guid_struct[1])))
+    guid += "{w:04X}-".format(w=(rev_endian(guid_struct[2])))
+    guid += "-".join(["{b:02X}".format(b=(rev_endian(guid_struct[i]))) for i in range(3, 11)])
+    return guid
 
 def get_num_le(bytearr):
     """
@@ -84,6 +91,14 @@ def get_num_le(bytearr):
     for i in range(len(bytearr)):
         num_le += bytearr[i] * pow(256, i)
     return num_le
+
+def rev_endian(num):
+    """
+    reorders bytes in number
+    """
+    num_str = hex(num).replace("0x", "").replace("L", "")
+    num_ba = ([int("0x" + num_str[i:i+2], 16) for i in range(0, len(num_str)-1, 2)])
+    return get_num_le(num_ba)
 
 def get_machine_type(header):
     """

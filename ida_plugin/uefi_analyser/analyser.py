@@ -306,7 +306,7 @@ class Analyser():
         print("Boot services:")
         for service in self.gBServices:
             for address in self.gBServices[service]:
-                table_data.append([hex(address), service])
+                table_data.append(["{addr:#010x}".format(addr=address), service])
                 empty = False
         if empty:
             print(" * list is empty")
@@ -332,7 +332,7 @@ class Analyser():
                 table_data.append([
                     guid,
                     element["protocol_name"],
-                    hex(element["address"]),
+                    "{addr:#010x}".format(addr=element["address"]),
                     element["service"],
                     element["protocol_place"]
                 ])
