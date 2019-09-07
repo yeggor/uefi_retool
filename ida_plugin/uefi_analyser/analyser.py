@@ -2,7 +2,6 @@ import json
 import idaapi
 import idautils
 import idc
-from PyQt5 import QtCore, QtWidgets
 
 import utils
 from utils import Table
