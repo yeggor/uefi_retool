@@ -40,8 +40,11 @@ def analyse_all(scr_name):
 				module.find(".nam") == -1 and module.find(".til") == -1
 			):
 				module_path = pe_dir + os.sep + module
-				if (os.system(ida64_path + ' -c -A -Sida_uefi_re' + os.sep + scr_name + " " + module_path) != 0):
-					exit("[-] Error, check your config.json file or move ida_uefi_re directory to IDA directory")
+				if (os.system(ida64_path + " -c -A -Splugins" + os.sep + "uefi_analyser" + os.sep + scr_name + " " + module_path) != 0):
+					exit("[-] Error during {module} module processing\n\t{hint}".format(
+						module=module_path,
+						hint="check your config.json file or move ida_plugin/uefi_analyser directory to IDA plugins directory"
+					))
 
 def clear(dirname):
 	for root, dirs, files in os.walk(dirname, topdown=False):

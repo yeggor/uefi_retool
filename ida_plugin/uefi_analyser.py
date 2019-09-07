@@ -4,14 +4,9 @@ import idautils
 
 import uefi_analyser.prot_wind as pw
 import uefi_analyser.analyser as analyser
-from uefi_analyser.analyser import Analyser
 
 AUTHOR = "yeggor"
 VERSION = "v1.0.0"
-
-IMAGE_FILE_MACHINE_IA64 = 0x8664
-IMAGE_FILE_MACHINE_I386 = 0x014c
-PE_OFFSET = 0x3c
 
 class UefiAnalyserPlugin(idaapi.plugin_t):
     flags = (idaapi.PLUGIN_MOD | idaapi.PLUGIN_PROC | idaapi.PLUGIN_FIX)
@@ -48,18 +43,11 @@ class UefiAnalyserPlugin(idaapi.plugin_t):
     @staticmethod
     def _analyse_all():
         pw.run()
-    
-    @staticmethod
-    def _get_num_le(bytearr):
-        num_le = 0
-        for i in range(len(bytearr)):
-            num_le += ord(bytearr[i]) * pow(256, i)
-        return num_le
 
 def PLUGIN_ENTRY():
     try:
         return UefiAnalyserPlugin()
-    except Exception, err:
+    except Exception as err:
         import traceback
-        print("Error: %s\n%s" % str((err), traceback.format_exc()))
+        print("[Error] %s\n%s" % str((err), traceback.format_exc()))
         raise

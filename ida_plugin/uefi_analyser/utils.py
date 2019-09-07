@@ -140,3 +140,11 @@ def get_header_idb():
         header = bytearray([idc.Byte(ea) for ea in range(0, idc.SegEnd(0))])
         return header
     return bytearray(b"")
+
+def get_header_file():
+    """
+    get file header from analysing file
+    """
+    with open(idaapi.get_input_file_path(), "rb") as f:
+        buf = f.read(512)
+    return bytearray(buf)

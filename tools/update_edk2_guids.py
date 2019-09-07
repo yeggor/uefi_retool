@@ -6,7 +6,7 @@ import shutil
 import click
 
 DATA_PATH = "..{sep}conf".format(sep=os.sep)
-IDA_GUIDS = "..{sep}ida_uefi_re{sep}guids".format(sep=os.sep)
+IDA_GUIDS = "..{sep}ida_plugin{sep}uefi_analyser{sep}guids".format(sep=os.sep)
 R2_GUIDS = "..{sep}r2_uefi_re{sep}guids".format(sep=os.sep)
 
 def get_py(string):

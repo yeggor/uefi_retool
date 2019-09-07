@@ -1,8 +1,12 @@
-# UEFI_RETool
+# [UEFI_RETool](https://yeggor.github.io/UEFI_RETool/)
 
 A tool for finding proprietary protocols in UEFI firmware and UEFI modules analysing
 
-## `ida_uefi_re\analyser.py`
+## `ida_plugin`
+
+[IDA plugin for UEFI analysis](https://github.com/yeggor/UEFI_RETool/tree/master/ida_plugin)
+
+## `ida_plugin\uefi_analyser\analyser.py`
 
 A script for simplifying reverse engineering of UEFI firmware modules with IDA Pro
 
@@ -60,33 +64,67 @@ Commands:
  * analyser.analyse_all()
 Python>analyser.print_all()
 Boot services:
-┌─────────┬──────────────────────────┐
-│ Address │ Service                  │
-├─────────┼──────────────────────────┤
-│ 0x250aL │ InstallProtocolInterface │
-│ 0xbabL  │ HandleProtocol           │
-│ 0xbcdL  │ HandleProtocol           │
-│ 0xbfbL  │ HandleProtocol           │
-│ 0xd84L  │ LocateProtocol           │
-│ 0xde7L  │ LocateProtocol           │
-│ 0xe05L  │ LocateProtocol           │
-│ 0xe23L  │ LocateProtocol           │
-│ 0xe4aL  │ LocateProtocol           │
-│ 0xed5L  │ LocateProtocol           │
-└─────────┴──────────────────────────┘
++------------+-------------------------------------+
+| Address    | Service                             |
++------------+-------------------------------------+
+| 0x000002c8 | LocateHandleBuffer                  |
+| 0x000005a0 | OpenProtocol                        |
+| 0x00000856 | OpenProtocol                        |
+| 0x00000a07 | OpenProtocol                        |
+| 0x00000c74 | OpenProtocol                        |
+| 0x00000d63 | OpenProtocol                        |
+| 0x00003520 | OpenProtocol                        |
+| 0x00003eba | OpenProtocol                        |
+| 0x0000506e | OpenProtocol                        |
+| 0x000050bd | OpenProtocol                        |
+| 0x00005dbb | OpenProtocol                        |
+| 0x00000368 | UninstallProtocolInterface          |
+| 0x000003b1 | UninstallProtocolInterface          |
+| 0x000003fa | UninstallProtocolInterface          |
+| 0x00000a9a | UninstallProtocolInterface          |
+| 0x00000e04 | UninstallProtocolInterface          |
+| 0x00000c9b | UninstallMultipleProtocolInterfaces |
+| 0x00000565 | InstallMultipleProtocolInterfaces   |
+| 0x000008f0 | InstallMultipleProtocolInterfaces   |
+| 0x00000c17 | InstallMultipleProtocolInterfaces   |
+| 0x00000300 | HandleProtocol                      |
+| 0x0000038a | HandleProtocol                      |
+| 0x000003d3 | HandleProtocol                      |
+| 0x0000048d | HandleProtocol                      |
+| 0x00000470 | LocateProtocol                      |
+| 0x0000098b | OpenProtocolInformation             |
+| 0x00003e37 | OpenProtocolInformation             |
+| 0x00000dda | CloseProtocol                       |
+| 0x00000e9f | CloseProtocol                       |
+| 0x00003783 | CloseProtocol                       |
+| 0x00003b35 | CloseProtocol                       |
+| 0x0000511b | CloseProtocol                       |
+| 0x00005213 | CloseProtocol                       |
+| 0x00005252 | CloseProtocol                       |
++------------+-------------------------------------+
 Protocols:
-┌────────────────────────────────────────────────────────────────────┬─────────────────────────────┬─────────┬────────────────┬────────────────┐
-│ GUID                                                               │ Protocol name               │ Address │ Service        │ Protocol place │
-├────────────────────────────────────────────────────────────────────┼─────────────────────────────┼─────────┼────────────────┼────────────────┤
-│ [0x6378fef3-0xc89f-0x492f-0xbd-0xb1-0xbf-0xb4-0x43-0x19-0xcf-0xda] │ ProprietaryProtocol         │ 0x678L  │ HandleProtocol │ unknown        │
-│ [0x4c8a2451-0xc207-0x405b-0x96-0x94-0x99-0xea-0x13-0x25-0x13-0x41] │ gEfiDebugMaskProtocolGuid   │ 0x658L  │ HandleProtocol │ edk2_guids     │
-│ [0x5b1b31a1-0x9562-0x11d2-0x8e-0x3f-0x0-0xa0-0xc9-0x69-0x72-0x3b]  │ gEfiLoadedImageProtocolGuid │ 0x628L  │ HandleProtocol │ edk2_guids     │
-│ [0xcd2333d7-0x6a0a-0x4c76-0x83-0x50-0x24-0xa-0xda-0x36-0xa2-0xc7]  │ ProprietaryProtocol         │ 0x6f0L  │ LocateProtocol │ unknown        │
-│ [0xae80d021-0x618e-0x11d4-0xbc-0xd7-0x0-0x80-0xc7-0x3c-0x88-0x81]  │ gEfiDataHubProtocolGuid     │ 0x6c0L  │ LocateProtocol │ edk2_guids     │
-│ [0xe49d33ed-0x513d-0x4634-0xb6-0x98-0x6f-0x55-0xaa-0x75-0x1c-0x1b] │ gEfiSmbusHcProtocolGuid     │ 0x6b0L  │ LocateProtocol │ edk2_guids     │
-│ [0xef9fc172-0xa1b2-0x4693-0xb3-0x27-0x6d-0x32-0xfc-0x41-0x60-0x42] │ gEfiHiiDatabaseProtocolGuid │ 0x648L  │ LocateProtocol │ edk2_guids     │
-│ [0xfd96974-0x23aa-0x4cdc-0xb9-0xcb-0x98-0xd1-0x77-0x50-0x32-0x2a]  │ gEfiHiiStringProtocolGuid   │ 0x638L  │ LocateProtocol │ edk2_guids     │
-└────────────────────────────────────────────────────────────────────┴─────────────────────────────┴─────────┴────────────────┴────────────────┘
++--------------------------------------------+-------------------------------------+------------+-------------------------------------+----------------+
+| GUID                                       | Protocol name                       | Address    | Service                             | Protocol place |
++--------------------------------------------+-------------------------------------+------------+-------------------------------------+----------------+
+| 6414F083-BD99-E545-B3-83-AF-63-00-D8-E9-E6 | gEfiUdp4ServiceBindingProtocolGuid  | 0x000067a0 | OpenProtocol                        | edk2_guids     |
+| D8399A9D-42BD-734A-A4-D5-8E-E9-4B-E1-13-80 | gEfiDhcp4ServiceBindingProtocolGuid | 0x00006790 | OpenProtocol                        | edk2_guids     |
+| 29DFD93A-0145-8D47-B1-F8-7F-7F-E7-00-50-F3 | gEfiUdp4ProtocolGuid                | 0x000067c0 | OpenProtocol                        | edk2_guids     |
+| 1897218A-F54E-6147-91-C8-C0-F0-4B-DA-9E-56 | gEfiDhcp4ProtocolGuid               | 0x000067b0 | OpenProtocol                        | edk2_guids     |
+| AB31A018-43B4-1A4D-A5-C0-00-00-26-1E-9F-71 | gEfiDriverBindingProtocolGuid       | 0x00006800 | UninstallProtocolInterface          | edk2_guids     |
+| 2C777A10-E1D5-D411-9A-46-00-90-27-3F-C1-4D | gEfiComponentNameProtocolGuid       | 0x00006810 | UninstallProtocolInterface          | edk2_guids     |
+| FF5C7A6A-D9E8-704F-BA-DA-75-AB-30-25-CE-14 | gEfiComponentName2ProtocolGuid      | 0x00006820 | UninstallProtocolInterface          | edk2_guids     |
+| D8399A9D-42BD-734A-A4-D5-8E-E9-4B-E1-13-80 | gEfiDhcp4ServiceBindingProtocolGuid | 0x00006790 | UninstallProtocolInterface          | edk2_guids     |
+| 1897218A-F54E-6147-91-C8-C0-F0-4B-DA-9E-56 | gEfiDhcp4ProtocolGuid               | 0x000067b0 | UninstallProtocolInterface          | edk2_guids     |
+| 1897218A-F54E-6147-91-C8-C0-F0-4B-DA-9E-56 | gEfiDhcp4ProtocolGuid               | 0x000067b0 | UninstallMultipleProtocolInterfaces | edk2_guids     |
+| 1897218A-F54E-6147-91-C8-C0-F0-4B-DA-9E-56 | gEfiDhcp4ProtocolGuid               | 0x000067b0 | InstallMultipleProtocolInterfaces   | edk2_guids     |
+| AB31A018-43B4-1A4D-A5-C0-00-00-26-1E-9F-71 | gEfiDriverBindingProtocolGuid       | 0x00006800 | HandleProtocol                      | edk2_guids     |
+| 2C777A10-E1D5-D411-9A-46-00-90-27-3F-C1-4D | gEfiComponentNameProtocolGuid       | 0x00006810 | HandleProtocol                      | edk2_guids     |
+| FF5C7A6A-D9E8-704F-BA-DA-75-AB-30-25-CE-14 | gEfiComponentName2ProtocolGuid      | 0x00006820 | HandleProtocol                      | edk2_guids     |
+| A1311B5B-6295-D211-8E-3F-00-A0-C9-69-72-3B | gEfiLoadedImageProtocolGuid         | 0x00006830 | HandleProtocol                      | edk2_guids     |
+| 29DFD93A-0145-8D47-B1-F8-7F-7F-E7-00-50-F3 | gEfiUdp4ProtocolGuid                | 0x000067c0 | OpenProtocolInformation             | edk2_guids     |
+| 29DFD93A-0145-8D47-B1-F8-7F-7F-E7-00-50-F3 | gEfiUdp4ProtocolGuid                | 0x000067c0 | CloseProtocol                       | edk2_guids     |
+| 1588944F-B9B4-CB43-8A-33-90-E0-60-B3-49-55 | gEfiUdp6ProtocolGuid                | 0x000067e0 | CloseProtocol                       | edk2_guids     |
++--------------------------------------------+-------------------------------------+------------+-------------------------------------+----------------+
 ```
 
 *Example №2*
@@ -94,42 +132,182 @@ Protocols:
 ```
 Python>analyser.analyse_all()
 Comments:
-[0x250aL] EFI_BOOT_SERVICES->InstallProtocolInterface
-[0xbabL] EFI_BOOT_SERVICES->HandleProtocol
-[0xbcdL] EFI_BOOT_SERVICES->HandleProtocol
-[0xbfbL] EFI_BOOT_SERVICES->HandleProtocol
-[0xd84L] EFI_BOOT_SERVICES->LocateProtocol
-[0xde7L] EFI_BOOT_SERVICES->LocateProtocol
-[0xe05L] EFI_BOOT_SERVICES->LocateProtocol
-[0xe23L] EFI_BOOT_SERVICES->LocateProtocol
-[0xe4aL] EFI_BOOT_SERVICES->LocateProtocol
-[0xed5L] EFI_BOOT_SERVICES->LocateProtocol
+[0x000002c8] EFI_BOOT_SERVICES->LocateHandleBuffer
+[0x000005a0] EFI_BOOT_SERVICES->OpenProtocol
+[0x00000856] EFI_BOOT_SERVICES->OpenProtocol
+[0x00000a07] EFI_BOOT_SERVICES->OpenProtocol
+[0x00000c74] EFI_BOOT_SERVICES->OpenProtocol
+[0x00000d63] EFI_BOOT_SERVICES->OpenProtocol
+[0x00003520] EFI_BOOT_SERVICES->OpenProtocol
+[0x00003eba] EFI_BOOT_SERVICES->OpenProtocol
+[0x0000506e] EFI_BOOT_SERVICES->OpenProtocol
+[0x000050bd] EFI_BOOT_SERVICES->OpenProtocol
+[0x00005dbb] EFI_BOOT_SERVICES->OpenProtocol
+[0x00000368] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[0x000003b1] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[0x000003fa] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[0x00000a9a] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[0x00000e04] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[0x00000c9b] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
+[0x00000565] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+[0x000008f0] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+[0x00000c17] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+[0x00000300] EFI_BOOT_SERVICES->HandleProtocol
+[0x0000038a] EFI_BOOT_SERVICES->HandleProtocol
+[0x000003d3] EFI_BOOT_SERVICES->HandleProtocol
+[0x0000048d] EFI_BOOT_SERVICES->HandleProtocol
+[0x00000470] EFI_BOOT_SERVICES->LocateProtocol
+[0x0000098b] EFI_BOOT_SERVICES->OpenProtocolInformation
+[0x00003e37] EFI_BOOT_SERVICES->OpenProtocolInformation
+[0x00000dda] EFI_BOOT_SERVICES->CloseProtocol
+[0x00000e9f] EFI_BOOT_SERVICES->CloseProtocol
+[0x00003783] EFI_BOOT_SERVICES->CloseProtocol
+[0x00003b35] EFI_BOOT_SERVICES->CloseProtocol
+[0x0000511b] EFI_BOOT_SERVICES->CloseProtocol
+[0x00005213] EFI_BOOT_SERVICES->CloseProtocol
+[0x00005252] EFI_BOOT_SERVICES->CloseProtocol
 Names:
-[0x678L] ProprietaryProtocol_0x678L
-[0x658L] gEfiDebugMaskProtocolGuid_0x658L
-[0x628L] gEfiLoadedImageProtocolGuid_0x628L
-[0x6f0L] ProprietaryProtocol_0x6f0L
-[0x6c0L] gEfiDataHubProtocolGuid_0x6c0L
-[0x6b0L] gEfiSmbusHcProtocolGuid_0x6b0L
-[0x648L] gEfiHiiDatabaseProtocolGuid_0x648L
-[0x638L] gEfiHiiStringProtocolGuid_0x638L
+[0x000067a0] gEfiUdp4ServiceBindingProtocolGuid_0x67a0
+[0x00006790] gEfiDhcp4ServiceBindingProtocolGuid_0x6790
+[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
+[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
+[0x00006800] gEfiDriverBindingProtocolGuid_0x6800
+[0x00006810] gEfiComponentNameProtocolGuid_0x6810
+[0x00006820] gEfiComponentName2ProtocolGuid_0x6820
+[0x00006790] gEfiDhcp4ServiceBindingProtocolGuid_0x6790
+[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
+[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
+[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
+[0x00006800] gEfiDriverBindingProtocolGuid_0x6800
+[0x00006810] gEfiComponentNameProtocolGuid_0x6810
+[0x00006820] gEfiComponentName2ProtocolGuid_0x6820
+[0x00006830] gEfiLoadedImageProtocolGuid_0x6830
+[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
+[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
+[0x000067e0] gEfiUdp6ProtocolGuid_0x67e0
+[0x000067a0] gEfiUdp4ServiceBindingProtocolGuid_0x67a0
+[0x00006790] gEfiDhcp4ServiceBindingProtocolGuid_0x6790
+[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
+[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
+[0x00006800] gEfiDriverBindingProtocolGuid_0x6800
+[0x00006810] gEfiComponentNameProtocolGuid_0x6810
+[0x00006820] gEfiComponentName2ProtocolGuid_0x6820
+[0x00006790] gEfiDhcp4ServiceBindingProtocolGuid_0x6790
+[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
+[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
+[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
+[0x00006800] gEfiDriverBindingProtocolGuid_0x6800
+[0x00006810] gEfiComponentNameProtocolGuid_0x6810
+[0x00006820] gEfiComponentName2ProtocolGuid_0x6820
+[0x00006830] gEfiLoadedImageProtocolGuid_0x6830
+[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
+[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
+[0x000067e0] gEfiUdp6ProtocolGuid_0x67e0
 Types:
-[0xde7] EFI_BOOT_SERVICES->LocateProtocol
-	 [address] 0x3170
-	 [message] type successfully applied
-[0xe05] EFI_BOOT_SERVICES->LocateProtocol
-	 [address] 0x3170
+[0x000002c8] EFI_BOOT_SERVICES->LocateHandleBuffer
+	 [address] 0x000078f8
 	 [message] type already applied
-[0xe23] EFI_BOOT_SERVICES->LocateProtocol
-	 [address] 0x3170
+[0x000005a0] EFI_BOOT_SERVICES->OpenProtocol
+	 [address] 0x000078f8
 	 [message] type already applied
-[0xe4a] EFI_BOOT_SERVICES->LocateProtocol
-	 [address] 0x3170
+[0x00000856] EFI_BOOT_SERVICES->OpenProtocol
+	 [address] 0x000078f8
 	 [message] type already applied
-[0xed5] EFI_BOOT_SERVICES->LocateProtocol
-	 [address] 0x3170
+[0x00000a07] EFI_BOOT_SERVICES->OpenProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00000c74] EFI_BOOT_SERVICES->OpenProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00000d63] EFI_BOOT_SERVICES->OpenProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00003520] EFI_BOOT_SERVICES->OpenProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00003eba] EFI_BOOT_SERVICES->OpenProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x0000506e] EFI_BOOT_SERVICES->OpenProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x000050bd] EFI_BOOT_SERVICES->OpenProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00005dbb] EFI_BOOT_SERVICES->OpenProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00000368] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x000003b1] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x000003fa] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00000a9a] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00000e04] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00000565] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x000008f0] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00000c17] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00000300] EFI_BOOT_SERVICES->HandleProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x0000038a] EFI_BOOT_SERVICES->HandleProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x000003d3] EFI_BOOT_SERVICES->HandleProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x0000048d] EFI_BOOT_SERVICES->HandleProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x0000098b] EFI_BOOT_SERVICES->OpenProtocolInformation
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00003e37] EFI_BOOT_SERVICES->OpenProtocolInformation
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00000e9f] EFI_BOOT_SERVICES->CloseProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00003783] EFI_BOOT_SERVICES->CloseProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00003b35] EFI_BOOT_SERVICES->CloseProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x0000511b] EFI_BOOT_SERVICES->CloseProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00005213] EFI_BOOT_SERVICES->CloseProtocol
+	 [address] 0x000078f8
+	 [message] type already applied
+[0x00005252] EFI_BOOT_SERVICES->CloseProtocol
+	 [address] 0x000078f8
 	 [message] type already applied
 ```
+
+*In result*
+
+ * Before analysis:
+
+    ![before_analysis](https://github.com/yeggor/UEFI_RETool/blob/master/img/before_analysis.png)
+
+ * After analysis:
+
+    ![after_analysis](https://github.com/yeggor/UEFI_RETool/blob/master/img/after_analysis.png)
 
 ## `r2_uefi_re\analyser.py`
 
@@ -153,7 +331,6 @@ positional arguments:
 optional arguments:
   -h, --help  show this help message and exit
 ```
-
 ```
 >python r2_uefi_re\analyser.py modules\DxeMain.efi
 UEFI_RETool
@@ -189,6 +366,7 @@ Protocols:
 │ [0x26baccb1-0x6f42-0x11d4-0xbc-0xe7-0x0-0x80-0xc7-0x3c-0x88-0x81]  │ gEfiCpuArchProtocolGuid       │ 0x11520 │ LocateProtocol           │ edk2_guids     │
 │ [0xffecffff-0x923c-0x14d2-0x9e-0x3f-0x22-0xa0-0xc9-0x69-0x56-0x3b] │ EFI_PERFORMANCE_PROTOCOL_GUID │ 0x11650 │ LocateProtocol           │ edk_guids      │
 └────────────────────────────────────────────────────────────────────┴───────────────────────────────┴─────────┴──────────────────────────┴────────────────┘
+
 ```
 
 ## `analyse_fw_ida.py`
@@ -204,7 +382,6 @@ Usage:
     - "IDA_PATH" and "IDA64_PATH" are paths to IDA Pro executable files
  * Run `pip install -r requirements.txt`
  * Run `python analyse_fw_ida.py -h` command to display the help message
-
 ```
 UEFI_RETool
 A tool for UEFI firmware analysis with IDA Pro
@@ -233,14 +410,13 @@ optional arguments:
                         analyse_fw_ida.py --update_edk2_guids edk2)
 ```
 
-Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpx1c.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpx1c.md)
+*Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpx1c.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpx1c.md)*
 
 ## `analyse_fw_r2.py`
 
 A similar script for UEFI firmware analysis with radare2
 
 Usage:
-
  * Run `pip install -r requirements.txt`
  * Run `python analyse_fw_r2.py -h` command to display the help message
 
@@ -280,6 +456,11 @@ optional arguments:
 
  * `tools\get_efi_images.py` is a script that gets all PE-images from the firmware file
  * `tools\update_edk2_guids.py` is a script that updates protocol GUIDs list from the `conf` directory
+
+## Similar works
+
+ * [ida-efiutils](https://github.com/snare/ida-efiutils)
+ * [EFISwissKnife](https://github.com/gdbinit/EFISwissKnife)
 
 ## Contributors
 

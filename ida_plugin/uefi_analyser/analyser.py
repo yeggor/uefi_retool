@@ -2,6 +2,7 @@ import json
 import idaapi
 import idautils
 import idc
+from PyQt5 import QtCore, QtWidgets
 
 import utils
 from utils import Table
@@ -14,6 +15,8 @@ from tables import (
 class Analyser():
     def __init__(self):
         header = utils.get_header_idb()
+        if not len(header):
+            header = utils.get_header_file()
         self.arch = utils.get_machine_type(header)
         self.subsystem = utils.check_subsystem(header)
         self.valid = True
@@ -255,7 +258,7 @@ class Analyser():
                 message = "EFI_BOOT_SERVICES->{0}".format(service)
                 idc.MakeComm(address, message)
                 empty = False
-                print("[{ea}] {message}".format(ea="{addr:#010x}".format(addr=address), message=message))
+                print("[ {ea} ] {message}".format(ea="{addr:#010x}".format(addr=address), message=message))
         if empty:
             print(" * list is empty")
 
@@ -275,7 +278,7 @@ class Analyser():
                 name = element["protocol_name"] + "_" + "{addr:#x}".format(addr=element["address"])
                 idc.MakeName(element["address"], name)
                 empty = False
-                print("[{ea}] {name}".format(
+                print("[ {ea} ] {name}".format(
                     ea="{addr:#010x}".format(addr=element["address"]),
                     name=name
                 ))
@@ -305,21 +308,21 @@ class Analyser():
                             gBs_var_type = idc.get_type(gBs_var)
                             if (gBs_var_type == "EFI_BOOT_SERVICES *"):
                                 empty = False
-                                print("[{0}] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
-                                print("\t [address] {0}".format("{addr:#010x}".format(addr=gBs_var)))
-                                print("\t [message] type already applied")
+                                print("[ {0} ] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
+                                print("\t address: {0}".format("{addr:#010x}".format(addr=gBs_var)))
+                                print("\t message: type already applied")
                                 break
                             if idc.SetType(gBs_var, EFI_BOOT_SERVICES):
                                 empty = False
                                 idc.MakeName(gBs_var, "gBs_{addr:#x}".format(addr=gBs_var))
-                                print("[{0}] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
-                                print("\t [address] {0}".format("{addr:#010x}".format(addr=gBs_var)))
-                                print("\t [message] type successfully applied")
+                                print("[ {0} ] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
+                                print("\t address: {0}".format("{addr:#010x}".format(addr=gBs_var)))
+                                print("\t message: type successfully applied")
                             else:
                                 empty = False
-                                print("[{0}] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
-                                print("\t [address] {0}".format("{addr:#010x}".format(addr=gBs_var)))
-                                print("\t [message] type not applied")
+                                print("[ {0} ] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
+                                print("\t address: {0}".format("{addr:#010x}".format(addr=gBs_var)))
+                                print("\t message: type not applied")
                             break
         if empty:
             print(" * list is empty")
@@ -385,6 +388,17 @@ def main():
     if analyser.valid:
         analyser.print_all()
         analyser.analyse_all()
+    if not analyser.valid:
+        analyser.arch = idaapi.askstr(0, "x86 / x64", "Set architecture manually (x86 or x64)")
+        if not (analyser.arch == "x86" or analyser.arch == "x64"):
+            return False 
+        if (analyser.arch == "x86"):
+            analyser.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x86
+        if (analyser.arch == "x64"):
+            analyser.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x64
+        analyser.print_all()
+        analyser.analyse_all()
+        return True
 
 if __name__=="__main__":
     main()

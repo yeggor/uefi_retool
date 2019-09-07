@@ -6,6 +6,10 @@ from idaapi import Choose2
 
 import utils
 from analyser import Analyser
+from tables import (
+    BOOT_SERVICES_OFFSET_x64, 
+    BOOT_SERVICES_OFFSET_x86
+)
 
 class chooser_handler_t(idaapi.action_handler_t):
     def __init__(self, thing):
@@ -145,9 +149,20 @@ def run():
     if analyser.valid:
         analyser.print_all()
         analyser.analyse_all()
-        if len(analyser.Protocols["All"]):
-            wind = ProtsWindow("Protocols", analyser, nb=10)
-            wind.show()
+    if not analyser.valid:
+        analyser.arch = idaapi.askstr(0, "x86 / x64", "Set architecture manually (x86 or x64)")
+        if not (analyser.arch == "x86" or analyser.arch == "x64"):
+            return False 
+        if (analyser.arch == "x86"):
+            analyser.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x86
+        if (analyser.arch == "x64"):
+            analyser.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x64
+        analyser.print_all()
+        analyser.analyse_all()
+    if len(analyser.Protocols["All"]):
+        wind = ProtsWindow("Protocols", analyser, nb=10)
+        wind.show()
+    return True
 
 if __name__=="__main__":
     run()
