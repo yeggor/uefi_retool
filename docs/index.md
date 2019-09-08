@@ -67,64 +67,71 @@ Boot services:
 +------------+-------------------------------------+
 | Address    | Service                             |
 +------------+-------------------------------------+
-| 0x000002c8 | LocateHandleBuffer                  |
-| 0x000005a0 | OpenProtocol                        |
-| 0x00000856 | OpenProtocol                        |
-| 0x00000a07 | OpenProtocol                        |
-| 0x00000c74 | OpenProtocol                        |
-| 0x00000d63 | OpenProtocol                        |
-| 0x00003520 | OpenProtocol                        |
-| 0x00003eba | OpenProtocol                        |
-| 0x0000506e | OpenProtocol                        |
-| 0x000050bd | OpenProtocol                        |
-| 0x00005dbb | OpenProtocol                        |
-| 0x00000368 | UninstallProtocolInterface          |
-| 0x000003b1 | UninstallProtocolInterface          |
-| 0x000003fa | UninstallProtocolInterface          |
-| 0x00000a9a | UninstallProtocolInterface          |
-| 0x00000e04 | UninstallProtocolInterface          |
-| 0x00000c9b | UninstallMultipleProtocolInterfaces |
-| 0x00000565 | InstallMultipleProtocolInterfaces   |
-| 0x000008f0 | InstallMultipleProtocolInterfaces   |
-| 0x00000c17 | InstallMultipleProtocolInterfaces   |
-| 0x00000300 | HandleProtocol                      |
-| 0x0000038a | HandleProtocol                      |
-| 0x000003d3 | HandleProtocol                      |
-| 0x0000048d | HandleProtocol                      |
-| 0x00000470 | LocateProtocol                      |
-| 0x0000098b | OpenProtocolInformation             |
-| 0x00003e37 | OpenProtocolInformation             |
-| 0x00000dda | CloseProtocol                       |
-| 0x00000e9f | CloseProtocol                       |
-| 0x00003783 | CloseProtocol                       |
-| 0x00003b35 | CloseProtocol                       |
-| 0x0000511b | CloseProtocol                       |
-| 0x00005213 | CloseProtocol                       |
-| 0x00005252 | CloseProtocol                       |
+| 0x00065662 | LocateHandleBuffer                  |
+| 0x00067863 | LocateHandleBuffer                  |
+| 0x000678bc | OpenProtocol                        |
+| 0x00065785 | UninstallProtocolInterface          |
+| 0x00065d7b | UninstallProtocolInterface          |
+| 0x00065de5 | UninstallProtocolInterface          |
+| 0x00066d2d | UninstallProtocolInterface          |
+| 0x00066d96 | UninstallProtocolInterface          |
+| 0x0006d38b | UninstallProtocolInterface          |
+| 0x00066cf6 | InstallProtocolInterface            |
+| 0x00067cbd | InstallProtocolInterface            |
+| 0x0006ebc1 | InstallProtocolInterface            |
+| 0x00067dcb | ProtocolsPerHandle                  |
+| 0x00065819 | UninstallMultipleProtocolInterfaces |
+| 0x000659eb | InstallMultipleProtocolInterfaces   |
+| 0x00065791 | ReinstallProtocolInterface          |
+| 0x00066e09 | ReinstallProtocolInterface          |
+| 0x00066e44 | ReinstallProtocolInterface          |
+| 0x0006cfe7 | ReinstallProtocolInterface          |
+| 0x0006d048 | ReinstallProtocolInterface          |
+| 0x0006d145 | ReinstallProtocolInterface          |
+| 0x0006d183 | ReinstallProtocolInterface          |
+| 0x0006ec23 | ReinstallProtocolInterface          |
+| 0x0007274e | ReinstallProtocolInterface          |
+| 0x0007287e | ReinstallProtocolInterface          |
+| 0x00072987 | ReinstallProtocolInterface          |
+| 0x00072a3a | ReinstallProtocolInterface          |
+| 0x000a09f2 | ReinstallProtocolInterface          |
+| 0x0006534e | HandleProtocol                      |
+| 0x00065abb | HandleProtocol                      |
+| 0x00065b7f | HandleProtocol                      |
+| 0x00065bac | HandleProtocol                      |
+| 0x000677ee | HandleProtocol                      |
+| 0x00067977 | HandleProtocol                      |
+| 0x00067b2d | HandleProtocol                      |
+| 0x00067b69 | HandleProtocol                      |
+| 0x00067c30 | HandleProtocol                      |
+| 0x00067ccb | HandleProtocol                      |
+| 0x00067d10 | HandleProtocol                      |
+| 0x0006ce41 | HandleProtocol                      |
+| 0x0006ce7a | HandleProtocol                      |
+| 0x0006d1ba | HandleProtocol                      |
+| 0x0006ebfe | HandleProtocol                      |
+| 0x000a0df8 | HandleProtocol                      |
+| 0x000690b0 | OpenProtocolInformation             |
+| 0x00065cad | RegisterProtocolNotify              |
 +------------+-------------------------------------+
 Protocols:
-+--------------------------------------------+-------------------------------------+------------+-------------------------------------+----------------+
-| GUID                                       | Protocol name                       | Address    | Service                             | Protocol place |
-+--------------------------------------------+-------------------------------------+------------+-------------------------------------+----------------+
-| 6414F083-BD99-E545-B3-83-AF-63-00-D8-E9-E6 | gEfiUdp4ServiceBindingProtocolGuid  | 0x000067a0 | OpenProtocol                        | edk2_guids     |
-| D8399A9D-42BD-734A-A4-D5-8E-E9-4B-E1-13-80 | gEfiDhcp4ServiceBindingProtocolGuid | 0x00006790 | OpenProtocol                        | edk2_guids     |
-| 29DFD93A-0145-8D47-B1-F8-7F-7F-E7-00-50-F3 | gEfiUdp4ProtocolGuid                | 0x000067c0 | OpenProtocol                        | edk2_guids     |
-| 1897218A-F54E-6147-91-C8-C0-F0-4B-DA-9E-56 | gEfiDhcp4ProtocolGuid               | 0x000067b0 | OpenProtocol                        | edk2_guids     |
-| AB31A018-43B4-1A4D-A5-C0-00-00-26-1E-9F-71 | gEfiDriverBindingProtocolGuid       | 0x00006800 | UninstallProtocolInterface          | edk2_guids     |
-| 2C777A10-E1D5-D411-9A-46-00-90-27-3F-C1-4D | gEfiComponentNameProtocolGuid       | 0x00006810 | UninstallProtocolInterface          | edk2_guids     |
-| FF5C7A6A-D9E8-704F-BA-DA-75-AB-30-25-CE-14 | gEfiComponentName2ProtocolGuid      | 0x00006820 | UninstallProtocolInterface          | edk2_guids     |
-| D8399A9D-42BD-734A-A4-D5-8E-E9-4B-E1-13-80 | gEfiDhcp4ServiceBindingProtocolGuid | 0x00006790 | UninstallProtocolInterface          | edk2_guids     |
-| 1897218A-F54E-6147-91-C8-C0-F0-4B-DA-9E-56 | gEfiDhcp4ProtocolGuid               | 0x000067b0 | UninstallProtocolInterface          | edk2_guids     |
-| 1897218A-F54E-6147-91-C8-C0-F0-4B-DA-9E-56 | gEfiDhcp4ProtocolGuid               | 0x000067b0 | UninstallMultipleProtocolInterfaces | edk2_guids     |
-| 1897218A-F54E-6147-91-C8-C0-F0-4B-DA-9E-56 | gEfiDhcp4ProtocolGuid               | 0x000067b0 | InstallMultipleProtocolInterfaces   | edk2_guids     |
-| AB31A018-43B4-1A4D-A5-C0-00-00-26-1E-9F-71 | gEfiDriverBindingProtocolGuid       | 0x00006800 | HandleProtocol                      | edk2_guids     |
-| 2C777A10-E1D5-D411-9A-46-00-90-27-3F-C1-4D | gEfiComponentNameProtocolGuid       | 0x00006810 | HandleProtocol                      | edk2_guids     |
-| FF5C7A6A-D9E8-704F-BA-DA-75-AB-30-25-CE-14 | gEfiComponentName2ProtocolGuid      | 0x00006820 | HandleProtocol                      | edk2_guids     |
-| A1311B5B-6295-D211-8E-3F-00-A0-C9-69-72-3B | gEfiLoadedImageProtocolGuid         | 0x00006830 | HandleProtocol                      | edk2_guids     |
-| 29DFD93A-0145-8D47-B1-F8-7F-7F-E7-00-50-F3 | gEfiUdp4ProtocolGuid                | 0x000067c0 | OpenProtocolInformation             | edk2_guids     |
-| 29DFD93A-0145-8D47-B1-F8-7F-7F-E7-00-50-F3 | gEfiUdp4ProtocolGuid                | 0x000067c0 | CloseProtocol                       | edk2_guids     |
-| 1588944F-B9B4-CB43-8A-33-90-E0-60-B3-49-55 | gEfiUdp6ProtocolGuid                | 0x000067e0 | CloseProtocol                       | edk2_guids     |
-+--------------------------------------------+-------------------------------------+------------+-------------------------------------+----------------+
++-------------------------------------+----------------------------------+------------+-------------------------------------+----------------+
+| GUID                                | Protocol name                    | Address    | Service                             | Protocol place |
++-------------------------------------+----------------------------------+------------+-------------------------------------+----------------+
+| 47C7B221-C42A-11D2-8E5700A0C969723B | gEfiShellEnvironment2Guid        | 0x00054d50 | UninstallProtocolInterface          | edk2_guids     |
+| 47C7B223-C42A-11D2-8E5700A0C969723B | gEfiShellInterfaceGuid           | 0x000098f0 | UninstallProtocolInterface          | edk2_guids     |
+| 0FD96974-23AA-4CDC-B9CB98D17750322A | gEfiHiiStringProtocolGuid        | 0x00000490 | UninstallMultipleProtocolInterfaces | edk2_guids     |
+| 47C7B221-C42A-11D2-8E5700A0C969723B | gEfiShellEnvironment2Guid        | 0x00054d50 | ReinstallProtocolInterface          | edk2_guids     |
+| 47C7B223-C42A-11D2-8E5700A0C969723B | gEfiShellInterfaceGuid           | 0x000098f0 | ReinstallProtocolInterface          | edk2_guids     |
+| 0006D5C0-0000-0000-243B070000000000 | ProprietaryProtocol              | 0x00008dd0 | ReinstallProtocolInterface          | unknown        |
+| 387477C1-69C7-11D2-8E3900A0C969723B | gEfiSimpleTextInProtocolGuid     | 0x00000460 | ReinstallProtocolInterface          | edk2_guids     |
+| 387477C2-69C7-11D2-8E3900A0C969723B | gEfiSimpleTextOutProtocolGuid    | 0x00000470 | ReinstallProtocolInterface          | edk2_guids     |
+| 5B1B31A1-9562-11D2-8E3F00A0C969723B | gEfiLoadedImageProtocolGuid      | 0x000005a0 | HandleProtocol                      | edk2_guids     |
+| 09576E91-6D3F-11D2-8E3900A0C969723B | gEfiDevicePathProtocolGuid       | 0x00000580 | HandleProtocol                      | edk2_guids     |
+| 47C7B223-C42A-11D2-8E5700A0C969723B | gEfiShellInterfaceGuid           | 0x000098f0 | HandleProtocol                      | edk2_guids     |
+| 47C7B221-C42A-11D2-8E5700A0C969723B | gEfiShellEnvironment2Guid        | 0x00054d50 | HandleProtocol                      | edk2_guids     |
+| 964E5B22-6459-11D2-8E3900A0C969723B | gEfiSimpleFileSystemProtocolGuid | 0x00000590 | HandleProtocol                      | edk2_guids     |
++-------------------------------------+----------------------------------+------------+-------------------------------------+----------------+
 ```
 
 *Example №2*
@@ -132,171 +139,200 @@ Protocols:
 ```
 Python>analyser.analyse_all()
 Comments:
-[0x000002c8] EFI_BOOT_SERVICES->LocateHandleBuffer
-[0x000005a0] EFI_BOOT_SERVICES->OpenProtocol
-[0x00000856] EFI_BOOT_SERVICES->OpenProtocol
-[0x00000a07] EFI_BOOT_SERVICES->OpenProtocol
-[0x00000c74] EFI_BOOT_SERVICES->OpenProtocol
-[0x00000d63] EFI_BOOT_SERVICES->OpenProtocol
-[0x00003520] EFI_BOOT_SERVICES->OpenProtocol
-[0x00003eba] EFI_BOOT_SERVICES->OpenProtocol
-[0x0000506e] EFI_BOOT_SERVICES->OpenProtocol
-[0x000050bd] EFI_BOOT_SERVICES->OpenProtocol
-[0x00005dbb] EFI_BOOT_SERVICES->OpenProtocol
-[0x00000368] EFI_BOOT_SERVICES->UninstallProtocolInterface
-[0x000003b1] EFI_BOOT_SERVICES->UninstallProtocolInterface
-[0x000003fa] EFI_BOOT_SERVICES->UninstallProtocolInterface
-[0x00000a9a] EFI_BOOT_SERVICES->UninstallProtocolInterface
-[0x00000e04] EFI_BOOT_SERVICES->UninstallProtocolInterface
-[0x00000c9b] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
-[0x00000565] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-[0x000008f0] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-[0x00000c17] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-[0x00000300] EFI_BOOT_SERVICES->HandleProtocol
-[0x0000038a] EFI_BOOT_SERVICES->HandleProtocol
-[0x000003d3] EFI_BOOT_SERVICES->HandleProtocol
-[0x0000048d] EFI_BOOT_SERVICES->HandleProtocol
-[0x00000470] EFI_BOOT_SERVICES->LocateProtocol
-[0x0000098b] EFI_BOOT_SERVICES->OpenProtocolInformation
-[0x00003e37] EFI_BOOT_SERVICES->OpenProtocolInformation
-[0x00000dda] EFI_BOOT_SERVICES->CloseProtocol
-[0x00000e9f] EFI_BOOT_SERVICES->CloseProtocol
-[0x00003783] EFI_BOOT_SERVICES->CloseProtocol
-[0x00003b35] EFI_BOOT_SERVICES->CloseProtocol
-[0x0000511b] EFI_BOOT_SERVICES->CloseProtocol
-[0x00005213] EFI_BOOT_SERVICES->CloseProtocol
-[0x00005252] EFI_BOOT_SERVICES->CloseProtocol
+[ 0x00065662 ] EFI_BOOT_SERVICES->LocateHandleBuffer
+[ 0x00067863 ] EFI_BOOT_SERVICES->LocateHandleBuffer
+[ 0x000678bc ] EFI_BOOT_SERVICES->OpenProtocol
+[ 0x00065785 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x00065d7b ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x00065de5 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x00066d2d ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x00066d96 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x0006d38b ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x00066cf6 ] EFI_BOOT_SERVICES->InstallProtocolInterface
+[ 0x00067cbd ] EFI_BOOT_SERVICES->InstallProtocolInterface
+[ 0x0006ebc1 ] EFI_BOOT_SERVICES->InstallProtocolInterface
+[ 0x00067dcb ] EFI_BOOT_SERVICES->ProtocolsPerHandle
+[ 0x00065819 ] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
+[ 0x000659eb ] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+[ 0x00065791 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x00066e09 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x00066e44 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006cfe7 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006d048 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006d145 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006d183 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006ec23 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0007274e ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0007287e ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x00072987 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x00072a3a ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x000a09f2 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006534e ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00065abb ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00065b7f ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00065bac ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x000677ee ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067977 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067b2d ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067b69 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067c30 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067ccb ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067d10 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x0006ce41 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x0006ce7a ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x0006d1ba ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x0006ebfe ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x000a0df8 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x000690b0 ] EFI_BOOT_SERVICES->OpenProtocolInformation
+[ 0x00065cad ] EFI_BOOT_SERVICES->RegisterProtocolNotify
 Names:
-[0x000067a0] gEfiUdp4ServiceBindingProtocolGuid_0x67a0
-[0x00006790] gEfiDhcp4ServiceBindingProtocolGuid_0x6790
-[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
-[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
-[0x00006800] gEfiDriverBindingProtocolGuid_0x6800
-[0x00006810] gEfiComponentNameProtocolGuid_0x6810
-[0x00006820] gEfiComponentName2ProtocolGuid_0x6820
-[0x00006790] gEfiDhcp4ServiceBindingProtocolGuid_0x6790
-[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
-[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
-[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
-[0x00006800] gEfiDriverBindingProtocolGuid_0x6800
-[0x00006810] gEfiComponentNameProtocolGuid_0x6810
-[0x00006820] gEfiComponentName2ProtocolGuid_0x6820
-[0x00006830] gEfiLoadedImageProtocolGuid_0x6830
-[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
-[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
-[0x000067e0] gEfiUdp6ProtocolGuid_0x67e0
-[0x000067a0] gEfiUdp4ServiceBindingProtocolGuid_0x67a0
-[0x00006790] gEfiDhcp4ServiceBindingProtocolGuid_0x6790
-[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
-[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
-[0x00006800] gEfiDriverBindingProtocolGuid_0x6800
-[0x00006810] gEfiComponentNameProtocolGuid_0x6810
-[0x00006820] gEfiComponentName2ProtocolGuid_0x6820
-[0x00006790] gEfiDhcp4ServiceBindingProtocolGuid_0x6790
-[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
-[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
-[0x000067b0] gEfiDhcp4ProtocolGuid_0x67b0
-[0x00006800] gEfiDriverBindingProtocolGuid_0x6800
-[0x00006810] gEfiComponentNameProtocolGuid_0x6810
-[0x00006820] gEfiComponentName2ProtocolGuid_0x6820
-[0x00006830] gEfiLoadedImageProtocolGuid_0x6830
-[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
-[0x000067c0] gEfiUdp4ProtocolGuid_0x67c0
-[0x000067e0] gEfiUdp6ProtocolGuid_0x67e0
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00000490 ] gEfiHiiStringProtocolGuid_0x490
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00008dd0 ] ProprietaryProtocol_0x8dd0
+[ 0x00000460 ] gEfiSimpleTextInProtocolGuid_0x460
+[ 0x00000470 ] gEfiSimpleTextOutProtocolGuid_0x470
+[ 0x000005a0 ] gEfiLoadedImageProtocolGuid_0x5a0
+[ 0x00000580 ] gEfiDevicePathProtocolGuid_0x580
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x00000590 ] gEfiSimpleFileSystemProtocolGuid_0x590
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00000490 ] gEfiHiiStringProtocolGuid_0x490
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00008dd0 ] ProprietaryProtocol_0x8dd0
+[ 0x00000460 ] gEfiSimpleTextInProtocolGuid_0x460
+[ 0x00000470 ] gEfiSimpleTextOutProtocolGuid_0x470
+[ 0x000005a0 ] gEfiLoadedImageProtocolGuid_0x5a0
+[ 0x00000580 ] gEfiDevicePathProtocolGuid_0x580
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x00000590 ] gEfiSimpleFileSystemProtocolGuid_0x590
 Types:
-[0x000002c8] EFI_BOOT_SERVICES->LocateHandleBuffer
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x000005a0] EFI_BOOT_SERVICES->OpenProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00000856] EFI_BOOT_SERVICES->OpenProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00000a07] EFI_BOOT_SERVICES->OpenProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00000c74] EFI_BOOT_SERVICES->OpenProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00000d63] EFI_BOOT_SERVICES->OpenProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00003520] EFI_BOOT_SERVICES->OpenProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00003eba] EFI_BOOT_SERVICES->OpenProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x0000506e] EFI_BOOT_SERVICES->OpenProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x000050bd] EFI_BOOT_SERVICES->OpenProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00005dbb] EFI_BOOT_SERVICES->OpenProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00000368] EFI_BOOT_SERVICES->UninstallProtocolInterface
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x000003b1] EFI_BOOT_SERVICES->UninstallProtocolInterface
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x000003fa] EFI_BOOT_SERVICES->UninstallProtocolInterface
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00000a9a] EFI_BOOT_SERVICES->UninstallProtocolInterface
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00000e04] EFI_BOOT_SERVICES->UninstallProtocolInterface
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00000565] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x000008f0] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00000c17] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00000300] EFI_BOOT_SERVICES->HandleProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x0000038a] EFI_BOOT_SERVICES->HandleProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x000003d3] EFI_BOOT_SERVICES->HandleProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x0000048d] EFI_BOOT_SERVICES->HandleProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x0000098b] EFI_BOOT_SERVICES->OpenProtocolInformation
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00003e37] EFI_BOOT_SERVICES->OpenProtocolInformation
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00000e9f] EFI_BOOT_SERVICES->CloseProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00003783] EFI_BOOT_SERVICES->CloseProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00003b35] EFI_BOOT_SERVICES->CloseProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x0000511b] EFI_BOOT_SERVICES->CloseProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00005213] EFI_BOOT_SERVICES->CloseProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
-[0x00005252] EFI_BOOT_SERVICES->CloseProtocol
-	 [address] 0x000078f8
-	 [message] type already applied
+[ 0x00065662 ] EFI_BOOT_SERVICES->LocateHandleBuffer
+	 address: 0x000b8120
+	 message: type successfully applied
+[ 0x00067863 ] EFI_BOOT_SERVICES->LocateHandleBuffer
+	 address: 0x000b8130
+	 message: type successfully applied
+[ 0x000678bc ] EFI_BOOT_SERVICES->OpenProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065785 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065de5 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 address: 0x000b8120
+	 message: type already applied
+[ 0x00066d2d ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00066d96 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006d38b ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00066cf6 ] EFI_BOOT_SERVICES->InstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067cbd ] EFI_BOOT_SERVICES->InstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006ebc1 ] EFI_BOOT_SERVICES->InstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067dcb ] EFI_BOOT_SERVICES->ProtocolsPerHandle
+	 address: 0x000b8120
+	 message: type already applied
+[ 0x00065819 ] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x000659eb ] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065791 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00066e09 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00066e44 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006d048 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006d145 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006d183 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006ec23 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0007274e ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0007287e ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00072a3a ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006534e ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065abb ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065b7f ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065bac ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x000677ee ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067b2d ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067b69 ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067c30 ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067ccb ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067d10 ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006ce41 ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006ce7a ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006d1ba ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006ebfe ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x000a0df8 ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x000690b0 ] EFI_BOOT_SERVICES->OpenProtocolInformation
+	 address: 0x000b8120
+	 message: type already applied
 ```
 
 *In result*
