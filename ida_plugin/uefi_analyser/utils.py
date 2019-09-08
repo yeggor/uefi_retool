@@ -77,10 +77,10 @@ def get_guid(address):
     return guid
 
 def get_guid_str(guid_struct):
-    guid = "{dw:08X}-".format(dw=(rev_endian(guid_struct[0])))
-    guid += "{w:04X}-".format(w=(rev_endian(guid_struct[1])))
-    guid += "{w:04X}-".format(w=(rev_endian(guid_struct[2])))
-    guid += "-".join(["{b:02X}".format(b=(rev_endian(guid_struct[i]))) for i in range(3, 11)])
+    guid = "{dw:08X}-".format(dw=guid_struct[0])
+    guid += "{w:04X}-".format(w=guid_struct[1])
+    guid += "{w:04X}-".format(w=guid_struct[2])
+    guid += "".join(["{b:02X}".format(b=guid_struct[i]) for i in range(3, 11)])
     return guid
 
 def get_num_le(bytearr):
