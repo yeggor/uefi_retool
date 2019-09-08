@@ -16,7 +16,7 @@ def list_boot_services(analyser):
     for service in analyser.gBServices:
         for address in analyser.gBServices[service]:
             empty = True
-            print_log("* [{0}] EFI_BOOT_SERVICES->{1}".format("{addr:#x}".format(addr=address)))
+            print_log("* [{0}] EFI_BOOT_SERVICES->{1}".format("{addr:#x}".format(addr=address), service))
     if (empty == False):
         print_log("* empty")
     
