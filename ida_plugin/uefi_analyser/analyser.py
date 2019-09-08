@@ -106,16 +106,16 @@ class Analyser():
         """
         for service_name in self.gBServices:
             for address in self.gBServices[service_name]:
-                ea, found = 0, False
+                ea, found = address, False
                 if self.arch == "x86":
                     for i in range(1, 25):
-                        ea = address - i
+                        ea = idc.prev_head(ea)
                         if (idc.get_operand_value(ea, 0) > self.base and idc.GetMnem(ea) == "push"):
                             found = True
                             break
                 if self.arch == "x64":
                     for i in range(1, 16):
-                        ea = address - i
+                        ea = idc.prev_head(ea)
                         if (idc.get_operand_value(ea, 1) > self.base and idc.GetMnem(ea) == "lea"):
                             found = True
                             break
