@@ -89,14 +89,16 @@ class Analyser():
         """
         found boot services in idb
         """
-        for ea_start in idautils.Functions():
-            for ea in idautils.FuncItems(ea_start):
-                for service_name in self.BOOT_SERVICES_OFFSET:
-                    if (idc.GetMnem(ea) == "call" and \
-                        idc.get_operand_value(ea, 0) == self.BOOT_SERVICES_OFFSET[service_name]
-                    ):
-                        if self.gBServices[service_name].count(ea) == 0:
-                            self.gBServices[service_name].append(ea)
+        code = list(idautils.Functions())[0]
+        start = idc.SegStart(code)
+        end = idc.SegEnd(code)
+        for ea in range(start, end):
+            for service_name in self.BOOT_SERVICES_OFFSET:
+                if (idc.GetMnem(ea) == "call" and \
+                    idc.get_operand_value(ea, 0) == self.BOOT_SERVICES_OFFSET[service_name]
+                ):
+                    if self.gBServices[service_name].count(ea) == 0:
+                        self.gBServices[service_name].append(ea)
 
     def get_protocols(self):
         """

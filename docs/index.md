@@ -375,13 +375,14 @@ A script for finding proprietary protocols in UEFI firmware with IDA Pro
 
 Usage:
 
- * Copy `ida_uefi_re` directory to <IDA_DIRECTORY>
+ * Copy `ida_plugin\uefi_analyser` directory to IDA plugins directory
  * Edit `config.json` file
     - "PE_DIR" is a folder that contains all executable images from the UEFI firmware file
     - "DUMP_DIR" is a folder that contains all components from the firmware filesystem
     - "IDA_PATH" and "IDA64_PATH" are paths to IDA Pro executable files
  * Run `pip install -r requirements.txt`
  * Run `python analyse_fw_ida.py -h` command to display the help message
+
 ```
 UEFI_RETool
 A tool for UEFI firmware analysis with IDA Pro
