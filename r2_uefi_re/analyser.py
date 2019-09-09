@@ -166,8 +166,10 @@ class Analyser():
                                 ):
                                     self.gBServices[service_name].append(ea)
 
-    """ return 0 if ea is start of block """
     def prev_head(self, ea):
+        """
+        return 0 if ea is start of block
+        """
         addresses = []
         i = 0
         self.r2.cmd("s {addr:#x}".format(addr=ea))
@@ -181,6 +183,9 @@ class Analyser():
             return 0
 
     def get_guid(self, address):
+        """
+        get GUID structure from data by address
+        """
         self.r2.cmd("s {addr:#x}".format(addr=address))
         guid_bytes = json.loads(self.r2.cmd("pcj 16"))
         current_guid = []
@@ -191,6 +196,9 @@ class Analyser():
         return current_guid
 
     def get_protocols(self):
+        """
+        find protocols
+        """
         baddr = 0
         if "baddr" in self.info["bin"]:
             baddr = self.get_info()["bin"]["baddr"]
@@ -224,6 +232,9 @@ class Analyser():
                         self.Protocols["All"].append(protocol_record)
 
     def get_prot_names(self):
+        """
+        identify known protocols
+        """
         for index in range(len(self.Protocols["All"])):
             fin = False
             for prot_name in self.Protocols["Edk2Guids"].keys():
@@ -259,6 +270,9 @@ class Analyser():
                 self.Protocols["PropGuids"].append(guid_r2)
 
     def list_boot_services(self):
+        """
+        print information about recognized boot services
+        """
         self.get_boot_services()
         empty = True
         table_data = []
@@ -278,6 +292,9 @@ class Analyser():
             print(table_instance.table)
 
     def list_protocols(self):
+        """
+        print information about recognized protocols
+        """
         self.get_boot_services()
         self.get_protocols()
         self.get_prot_names()
