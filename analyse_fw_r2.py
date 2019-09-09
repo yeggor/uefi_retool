@@ -53,7 +53,10 @@ def analyse_all():
 							for service in analyser.gBServices:
 								for address in analyser.gBServices[service]:
 									empty = True
-									log.write("* [{0}] EFI_BOOT_SERVICES->{1}\r\n".format(hex(address).replace("L", ""), service))
+									log.write("* [{0}] EFI_BOOT_SERVICES->{1}\r\n".format(
+										"{addr:#x}".format(addr=address), 
+										service)
+									)
 							if (empty == False):
 								log.write("* empty\r\n")
 							""" list protocols information """
@@ -64,8 +67,8 @@ def analyse_all():
 							if (len(data) == 0):
 								log.write("* empty\r\n")
 							for element in data:
-								guid_str = "[guid] " + str(map(hex, element["guid"])).replace("L", "").replace("'", "")
-								log.write("* [{0}]\r\n".format(hex(element["address"]).replace("L", "")))
+								guid_str = "[guid] " + analyser.get_guid_str(element["guid"])
+								log.write("* [{0}]\r\n".format("{addr:#x}".format(addr=element["address"])))
 								log.write("\t - [service] " + element["service"] + "\r\n")
 								log.write("\t - [protocol_name] " + element["protocol_name"] + "\r\n")
 								log.write("\t - [protocol_place] " + element["protocol_place"] + "\r\n")
@@ -111,10 +114,9 @@ def get_pp_guids():
 						analyser.get_boot_services()
 						analyser.get_protocols()
 						analyser.get_prot_names()
-
 						for protocol_record in analyser.Protocols["All"]:
 							if (protocol_record["protocol_name"] == "ProprietaryProtocol"):
-								guid = str(map(hex, protocol_record["guid"]))
+								guid = analyser.get_guid_str(protocol_record["guid"])
 								guid = guid.replace("L", "").replace("'", "")
 								service = protocol_record["service"]
 								address = hex(protocol_record["address"])
