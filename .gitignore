@@ -6,6 +6,7 @@ __pycache__/
 # Directories
 all/
 modules/
+.vscode/
 
 # Files
 config.json

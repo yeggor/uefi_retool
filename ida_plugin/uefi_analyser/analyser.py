@@ -108,13 +108,13 @@ class Analyser():
             for address in self.gBServices[service_name]:
                 ea, found = address, False
                 if self.arch == "x86":
-                    for i in range(1, 25):
+                    for _ in range(1, 25):
                         ea = idc.prev_head(ea)
                         if (idc.get_operand_value(ea, 0) > self.base and idc.GetMnem(ea) == "push"):
                             found = True
                             break
                 if self.arch == "x64":
-                    for i in range(1, 16):
+                    for _ in range(1, 16):
                         ea = idc.prev_head(ea)
                         if (idc.get_operand_value(ea, 1) > self.base and idc.GetMnem(ea) == "lea"):
                             found = True
@@ -176,7 +176,7 @@ class Analyser():
 
     @staticmethod
     def apply_struct(ea, size, sid):
-	    idc.MakeUnknown(ea, size, idc.DOUNK_DELNAMES)	
+	    idc.MakeUnknown(ea, size, idc.DOUNK_DELNAMES)
 	    idaapi.doStruct(ea, size, sid)
 	    return size
 
@@ -260,12 +260,14 @@ class Analyser():
         """
         make comments in idb
         """
+        EFI_BOOT_SERVICES_ID = idc.get_struc_id("EFI_BOOT_SERVICES")
         self.get_boot_services()
         empty = True
         for service in self.gBServices:
             for address in self.gBServices[service]:
                 message = "EFI_BOOT_SERVICES->{0}".format(service)
                 idc.MakeComm(address, message)
+                idc.op_stroff(address, 0, EFI_BOOT_SERVICES_ID, 0)
                 empty = False
                 print("[ {ea} ] {message}".format(ea="{addr:#010x}".format(addr=address), message=message))
         if empty:
@@ -298,14 +300,33 @@ class Analyser():
         if empty:
             print(" * list is empty")
 
+    def _find_est(self, gvar, start, end):
+        RAX = 0
+        BS_OFFSET = 0x60
+        EFI_SYSTEM_TABLE = "EFI_SYSTEM_TABLE *"
+        if self.arch == "x86":
+            BS_OFFSET = 0x3c
+        ea = start
+        while (ea < end):
+            if ((idc.GetMnem(ea) == "mov") and (idc.get_operand_value(ea, 0) == RAX) and \
+                (idc.get_operand_value(ea, 1) == BS_OFFSET)
+            ):
+                if idc.SetType(gvar, EFI_SYSTEM_TABLE):
+                    idc.MakeName(gvar, "gSt_{addr:#x}".format(addr=gvar))
+                    return True
+            ea = idc.next_head(ea)
+        return False
+
     def set_types(self):
         """
         handle (EFI_BOOT_SERVICES *) type
+        and (EFI_SYSTEM_TABLE *) for x64 images
         """
         RAX = 0
         O_REG = 1
         O_MEM = 2
         EFI_BOOT_SERVICES = "EFI_BOOT_SERVICES *"
+        EFI_SYSTEM_TABLE = "EFI_SYSTEM_TABLE *"
         empty = True
         for service in self.gBServices:
             for address in self.gBServices[service]:
@@ -315,25 +336,32 @@ class Analyser():
                     ea = idc.prev_head(ea)
                     if (idc.GetMnem(ea) == "mov" and idc.get_operand_type(ea, 1) == O_MEM):
                         if (idc.get_operand_type(ea, 0) == O_REG and idc.get_operand_value(ea, 0) == RAX):
-                            gBs_var = idc.get_operand_value(ea, 1)
-                            gBs_var_type = idc.get_type(gBs_var)
-                            if (gBs_var_type == "EFI_BOOT_SERVICES *"):
-                                empty = False
-                                print("[ {0} ] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
-                                print("\t address: {0}".format("{addr:#010x}".format(addr=gBs_var)))
-                                print("\t message: type already applied")
-                                break
-                            if idc.SetType(gBs_var, EFI_BOOT_SERVICES):
-                                empty = False
-                                idc.MakeName(gBs_var, "gBs_{addr:#x}".format(addr=gBs_var))
-                                print("[ {0} ] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
-                                print("\t address: {0}".format("{addr:#010x}".format(addr=gBs_var)))
-                                print("\t message: type successfully applied")
-                            else:
-                                empty = False
-                                print("[ {0} ] EFI_BOOT_SERVICES->{1}".format("{addr:#010x}".format(addr=address), service))
-                                print("\t address: {0}".format("{addr:#010x}".format(addr=gBs_var)))
-                                print("\t message: type not applied")
+                            gvar = idc.get_operand_value(ea, 1)
+                            gvar_type = idc.get_type(gvar)
+                            """
+                            if (EFI_SYSTEM_TABLE *)
+                            """
+                            if ((gvar_type != "EFI_SYSTEM_TABLE *") and \
+                                (idc.print_operand(address, 0).find("rax") == 1)
+                            ):
+                                if self._find_est(gvar, ea, address):
+                                    print("[ {0} ] Type ({type}) successfully applied".format(
+                                        "{addr:#010x}".format(addr=gvar), 
+                                        type=EFI_SYSTEM_TABLE)
+                                    )
+                                    empty = False
+                                    break
+                            """
+                            otherwise it (EFI_BOOT_SERVICES *)
+                            """
+                            if (gvar_type != "EFI_BOOT_SERVICES *" and gvar_type != "EFI_SYSTEM_TABLE *"):
+                                if idc.SetType(gvar, EFI_BOOT_SERVICES):
+                                    empty = False
+                                    idc.MakeName(gvar, "gBs_{addr:#x}".format(addr=gvar))
+                                    print("[ {0} ] Type ({type}) successfully applied".format(
+                                        "{addr:#010x}".format(addr=gvar), 
+                                        type=EFI_BOOT_SERVICES)
+                                    )
                             break
         if empty:
             print(" * list is empty")
@@ -395,6 +423,7 @@ class Analyser():
         self.get_data_guids()
 
 def main():
+    idc.auto_wait()
     analyser = Analyser()
     if analyser.valid:
         analyser.print_all()

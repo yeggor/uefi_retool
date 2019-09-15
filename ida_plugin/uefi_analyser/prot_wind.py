@@ -145,6 +145,7 @@ class ProtsWindow(Choose2):
         return self.Show(self.modal) >= 0
 
 def run():
+    idc.auto_wait()
     analyser = Analyser()
     if analyser.valid:
         analyser.print_all()
