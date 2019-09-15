@@ -174,11 +174,18 @@ class Analyser():
                 self.Protocols["All"][index]["protocol_name"] = "ProprietaryProtocol"
                 self.Protocols["All"][index]["protocol_place"] = "unknown"
 
+    @staticmethod
+    def apply_struct(ea, size, sid):
+	    idc.MakeUnknown(ea, size, idc.DOUNK_DELNAMES)	
+	    idaapi.doStruct(ea, size, sid)
+	    return size
+
     def get_data_guids(self):
         """
         rename GUIDs in idb
         """
         EFI_GUID = "EFI_GUID *"
+        EFI_GUID_ID = idc.get_struc_id("EFI_GUID")
         segments = [
             ".text", 
             ".data"
@@ -244,6 +251,7 @@ class Analyser():
                             break
                     if (find and (idc.Name(ea) != prot_name)):
                         idc.SetType(ea, EFI_GUID)
+                        self.apply_struct(ea, 16, EFI_GUID_ID)
                         idc.MakeName(ea, prot_name)
                         self.Protocols["Data"].append(record)
                 ea += 1
@@ -268,6 +276,7 @@ class Analyser():
         make names in idb
         """
         EFI_GUID = "EFI_GUID *"
+        EFI_GUID_ID = idc.get_struc_id("EFI_GUID")
         self.get_boot_services()
         self.get_protocols()
         self.get_prot_names()
@@ -276,6 +285,7 @@ class Analyser():
         for element in data:
             try:
                 idc.SetType(element["address"], EFI_GUID)
+                self.apply_struct(element["address"], 16, EFI_GUID_ID)
                 name = element["protocol_name"] + "_" + "{addr:#x}".format(addr=element["address"])
                 idc.MakeName(element["address"], name)
                 empty = False
