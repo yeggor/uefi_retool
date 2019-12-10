@@ -12,7 +12,7 @@ class UefiAnalyserPlugin(idaapi.plugin_t):
     flags = (idaapi.PLUGIN_MOD | idaapi.PLUGIN_PROC | idaapi.PLUGIN_FIX)
     comment = 'This plugin performs automatic analysis of the input UEFI module'
     help  = 'This plugin performs automatic analysis of the input UEFI module.\n'
-    help += 'Based on the https://github.com/yeggor/UEFI_RETool/blob/master/ida_uefi_re/analyser.py script.'
+    help += 'Based on the https://github.com/yeggor/UEFI_RETool/blob/master/ida_plugin/uefi_analyser/analyser.py script.'
     wanted_name = 'UEFI analyser'
     wanted_hotkey = 'Ctrl+Alt+U'
 
