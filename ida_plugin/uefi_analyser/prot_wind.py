@@ -116,11 +116,11 @@ class ProtsWindow(Choose):
         make custom element
         '''
         item = [
-            idaapi.askstr(0, '', 'Address'),
-            idaapi.askstr(0, '', 'Name'),
-            idaapi.askstr(0, '', 'Service'),
-            idaapi.askstr(0, '', 'Place'),
-            idaapi.askstr(0, '', 'GUID')
+            idaapi.ask_str('', 0, 'Address'),
+            idaapi.ask_str('', 0, 'Name'),
+            idaapi.ask_str('', 0, 'Service'),
+            idaapi.ask_str('', 0, 'Place'),
+            idaapi.ask_str('', 0, 'GUID')
         ]
         self.n += 1
         return item
@@ -170,7 +170,7 @@ def run():
         analyser.print_all()
         analyser.analyse_all()
     if not analyser.valid:
-        analyser.arch = idaapi.askstr(0, 'x86 / x64', 'Set architecture manually (x86 or x64)')
+        analyser.arch = idaapi.ask_str('x86 / x64', 0, 'Set architecture manually (x86 or x64)')
         if not (analyser.arch == 'x86' or analyser.arch == 'x64'):
             return False 
         if (analyser.arch == 'x86'):

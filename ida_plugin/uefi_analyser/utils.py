@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+
 import idaapi
 import idautils
 import idc
@@ -167,6 +169,9 @@ def get_header_file():
     '''
     get file header from analysing file
     '''
-    with open(idaapi.get_input_file_path(), 'rb') as f:
-        buf = f.read(512)
+    if os.path.isfile(idaapi.get_input_file_path()):
+        with open(idaapi.get_input_file_path(), 'rb') as f:
+            buf = f.read(512)
+    else:
+        buf = b'\x00'
     return bytearray(buf)
