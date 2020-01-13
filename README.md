@@ -1,14 +1,23 @@
-# [UEFI_RETool](https://yeggor.github.io/UEFI_RETool/)
+# UEFI_RETool
 
-A tool for finding proprietary protocols in UEFI firmware and UEFI modules analysing
+## Table of Contents
 
-## `ida_plugin`
+- [IDA plugin](#ida-plugin)
+- [IDAPython analyser script](#idapython-analyser-script)
+- [r2pipe analyser script](#r2pipe-analyser-script)
+- [Finding proprietary protocols in UEFI firmware with IDA Pro](#finding-proprietary-protocols-in-uefi-firmware-with-ida-pro)
+- [Finding proprietary protocols in UEFI firmware with radare2](#finding-proprietary-protocols-in-uefi-firmware-with-radare2)
+- [Additional tools](#additional-tools)
+- [Similar works](#similar-works)
+- [Contributors](#contributors)
+
+# IDA plugin
 
 [IDA plugin for UEFI analysis](https://github.com/yeggor/UEFI_RETool/tree/master/ida_plugin)
 
-## `ida_plugin\uefi_analyser\analyser.py`
+# IDAPython analyser script
 
-A script for simplifying reverse engineering of UEFI firmware modules with IDA Pro
+[ida_plugin/uefi_analyser/analyser.py](https://github.com/yeggor/UEFI_RETool/blob/master/ida_plugin/uefi_analyser/analyser.py) is a script for simplifying reverse engineering of UEFI firmware modules with IDA Pro
 
 Usage:
 
@@ -339,15 +348,15 @@ Types:
 
  * Before analysis:
 
-    ![before_analysis](https://github.com/yeggor/UEFI_RETool/blob/master/img/before_analysis.png)
+    ![before_analysis](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/before_analysis.png)
 
  * After analysis:
 
-    ![after_analysis](https://github.com/yeggor/UEFI_RETool/blob/master/img/after_analysis.png)
+    ![after_analysis](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/after_analysis.png)
 
-## `r2_uefi_re\analyser.py`
+# r2pipe analyser script
 
-A script with similar functionality based on r2pipe
+[r2_uefi_re/analyser.py](https://github.com/yeggor/UEFI_RETool/blob/master/r2_uefi_re/analyser.py) is a script with similar functionality based on r2pipe
 
 Usage:
 
@@ -405,9 +414,9 @@ Protocols:
 
 ```
 
-## `analyse_fw_ida.py`
+# Finding proprietary protocols in UEFI firmware with IDA Pro
 
-A script for finding proprietary protocols in UEFI firmware with IDA Pro
+[analyse_fw_ida.py](https://github.com/yeggor/UEFI_RETool/blob/master/analyse_fw_ida.py) is a script for finding proprietary protocols in UEFI firmware with IDA Pro
 
 Usage:
 
@@ -447,11 +456,11 @@ optional arguments:
                         analyse_fw_ida.py --update_edk2_guids edk2)
 ```
 
-*Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpx1c.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpx1c.md)*
+*Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpt480s.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpt480s.md)*
 
-## `analyse_fw_r2.py`
+# Finding proprietary protocols in UEFI firmware with radare2
 
-A similar script for UEFI firmware analysis with radare2
+[analyse_fw_r2.py](https://github.com/yeggor/UEFI_RETool/blob/master/analyse_fw_r2.py) is a similar script for UEFI firmware analysis with radare2
 
 Usage:
  * Run `pip install -r requirements.txt`
@@ -489,17 +498,17 @@ optional arguments:
                         analyse_fw_r2.py --update_edk2_guids edk2)
 ```
 
-## Additional tools
+# Additional tools
 
  * `tools\get_efi_images.py` is a script that gets all PE-images from the firmware file
  * `tools\update_edk2_guids.py` is a script that updates protocol GUIDs list from the `conf` directory
 
-## Similar works
+# Similar works
 
  * [ida-efiutils](https://github.com/snare/ida-efiutils)
  * [EFISwissKnife](https://github.com/gdbinit/EFISwissKnife)
 
-## Contributors
+# Contributors
 
  * yeggor (vasilenko.yegor@gmail.com)
  * p41l (philka9498@gmail.com)
