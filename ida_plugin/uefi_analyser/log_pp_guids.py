@@ -24,7 +24,6 @@ import os
 
 import idaapi
 import idc
-
 import utils
 from analyser import Analyser
 
@@ -39,7 +38,7 @@ output format:
 
 def print_log(data):
     with open(LOG_FILE, 'ab') as log:
-        log.write(data + '\r\n')
+        log.write(data.encode('utf-8') + b'\r\n')
 
 def get_table_line(guid, module, service, address):
     line =  '| ' + guid + ' '

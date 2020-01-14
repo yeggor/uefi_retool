@@ -27,7 +27,7 @@ PE_OFFSET = 0x3c
 def get_num_le(bytearr):
 	num_le = 0
 	for i in range(len(bytearr)):
-		num_le += ord(bytearr[i]) * pow(256, i)
+		num_le += bytearr[i] * pow(256, i)
 	return num_le
 
 def get_machine_type(module_path):

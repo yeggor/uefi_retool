@@ -23,6 +23,7 @@
 import argparse
 import json
 import os
+import time
 
 import click
 import r2pipe
@@ -35,7 +36,9 @@ from tools.update_edk2_guids import update
 LOG_FILE_ALL = os.path.join('log', 'r2_log_all.md')
 LOG_FILE_PP_GUIDS = os.path.join('log', 'r2_log_pp_guids.md')
 
-''' reads configuration data '''
+'''
+reads configuration data
+'''
 with open('config.json', 'rb') as cfile:
 	config = json.load(cfile)
 
@@ -45,17 +48,13 @@ def show_item(item):
 	return 'current module: {}'.format(item)
 
 def analyse_all():
-	log = open(LOG_FILE_ALL, 'ab')
+	log = open(LOG_FILE_ALL, 'a')
 	if not os.path.isdir(pe_dir):
 		return False
 	files = os.listdir(pe_dir)
-	with click.progressbar(
-		files,
-		length=len(files),
-		bar_template=click.style('%(label)s  %(bar)s | %(info)s', fg='cyan'),
-		label='Modules analysis',
-		item_show_func=show_item,
-	) as bar:
+	bar_template = click.style('%(label)s  %(bar)s | %(info)s', fg='cyan')
+	label = 'Modules analysis'
+	with click.progressbar(files, length=len(files), bar_template=bar_template, label=label, item_show_func=show_item) as bar:
 		for module in bar:
 			if (
 				module.find('.idb') < 0 and \
@@ -66,41 +65,45 @@ def analyse_all():
 				module.find('.til') < 0
 			):
 				module_path = os.path.join(pe_dir, module)
-				''' x64 only '''
+				# x64 only
 				machine_type = utils.get_machine_type(module_path)
 				if machine_type == utils.IMAGE_FILE_MACHINE_IA64:
 					try:
-						log.write('## Module: {module}\r\n'.format(module=module))
+						log.write('## Module: {module}\n'.format(module=module))
 						analyser = Analyser(module_path)
 						analyser.get_boot_services()
-						''' list boot services '''
-						log.write('### Boot services:\r\n')
+						'''
+						list boot services
+						'''
+						log.write('### Boot services:\n')
 						empty = False
 						for service in analyser.gBServices:
 							for address in analyser.gBServices[service]:
 								empty = True
-								log.write('* [{0}] EFI_BOOT_SERVICES->{1}\r\n'.format(
+								log.write('* [{0}] EFI_BOOT_SERVICES->{1}\n'.format(
 									'{addr:#x}'.format(addr=address), 
 									service)
 								)
 						if not empty:
-							log.write('* empty\r\n')
-						''' list protocols information '''
+							log.write('* empty\n')
+						'''
+						list protocols information
+						'''
 						analyser.get_protocols()
 						analyser.get_prot_names()
 						data = analyser.Protocols['All']
-						log.write('### Protocols:\r\n')
+						log.write('### Protocols:\n')
 						if not len(data):
-							log.write('* empty\r\n')
+							log.write('* empty\n')
 						for element in data:
 							guid_str = '[guid] ' + analyser.get_guid_str(element['guid'])
-							log.write('* [{0}]\r\n'.format('{addr:#x}'.format(addr=element['address'])))
-							log.write('\t - [service] ' + element['service'] + '\r\n')
-							log.write('\t - [protocol_name] ' + element['protocol_name'] + '\r\n')
-							log.write('\t - [protocol_place] ' + element['protocol_place'] + '\r\n')
-							log.write('\t - ' + guid_str + '\r\n')
+							log.write('* [{0}]\n'.format('{addr:#x}'.format(addr=element['address'])))
+							log.write('\t - [service] ' + element['service'] + '\n')
+							log.write('\t - [protocol_name] ' + element['protocol_name'] + '\n')
+							log.write('\t - [protocol_place] ' + element['protocol_place'] + '\n')
+							log.write('\t - ' + guid_str + '\n')
 					except Exception as e:
-						log.write('### ERROR: {err}\r\n'.format(err=e))
+						log.write('### ERROR: {err}\n'.format(err=e))
 						continue
 	log.close()
 
@@ -113,21 +116,17 @@ def get_table_line(guid, module, service, address):
     return line
 
 def get_pp_guids():
-	log = open(LOG_FILE_PP_GUIDS, 'ab')
+	log = open(LOG_FILE_PP_GUIDS, 'a')
 	if os.path.getsize(LOG_FILE_PP_GUIDS) == 0:
-		log.write(get_table_line('Guid', 'Module', 'Service', 'Address') + '\r\n')
-		log.write(get_table_line('---', '---', '---', '---') + '\r\n')
+		log.write(get_table_line('Guid', 'Module', 'Service', 'Address') + '\n')
+		log.write(get_table_line('---', '---', '---', '---') + '\n')
 	
 	if not os.path.isdir(pe_dir):
 		return False
 	files = os.listdir(pe_dir)
-	with click.progressbar(
-		files,
-		length=len(files),
-		bar_template=click.style('%(label)s  %(bar)s | %(info)s', fg='cyan'),
-		label='Modules analysis',
-		item_show_func=show_item,
-	) as bar:
+	bar_template = click.style('%(label)s  %(bar)s | %(info)s', fg='cyan')
+	label = 'Modules analysis'
+	with click.progressbar(files, length=len(files), bar_template=bar_template, label=label, item_show_func=show_item) as bar:
 		for module in bar:
 			if (
 				module.find('.idb') < 0 and \
@@ -150,7 +149,7 @@ def get_pp_guids():
 							service = protocol_record['service']
 							address = hex(protocol_record['address'])
 							address = address.replace('L', '')
-							log.write(get_table_line(guid, module, service, address) + '\r\n')
+							log.write(get_table_line(guid, module, service, address) + '\n')
 				except:
 					continue
 	log.close()
@@ -161,13 +160,9 @@ def get_pp_guids_num():
 	if os.path.isdir(pe_dir) == 0:
 		return False
 	files = os.listdir(pe_dir)
-	with click.progressbar(
-		files,
-		length=len(files),
-		bar_template=click.style('%(label)s  %(bar)s | %(info)s', fg='cyan'),
-		label='Modules analysis',
-		item_show_func=show_item,
-	) as bar:
+	bar_template = click.style('%(label)s  %(bar)s | %(info)s', fg='cyan')
+	label = 'Modules analysis'
+	with click.progressbar(files, length=len(files), bar_template=bar_template, label=label, item_show_func=show_item) as bar:
 		for module in bar:
 			if (
 				module.find('.idb') < 0 and \
@@ -247,49 +242,43 @@ def main():
 		example: python analyse_fw_r2.py --get_efi_images <firmware_path>)'''
 		.format(sep=os.sep)
 	)
-	parser.add_argument(
-		'--update_edk2_guids', 
-		metavar='EDK2_PATH', 
-		type=str, 
-		help='''update list of GUIDs from EDK2
-		(example: git clone https://github.com/tianocore/edk2,
-		python analyse_fw_r2.py --update_edk2_guids edk2)'''
-	)
 
 	args = parser.parse_args()
 
 	if (args.all and os.path.isfile(args.firmware_path)):
 		clear_all()
 		get_efi_images(args.firmware_path)
-		''' log all information '''
+		'''
+		log all information
+		'''
 		analyse_all()
+		time.sleep(2)
 		clear_all()
 
 	if (args.pp_guids and os.path.isfile(args.firmware_path)):
 		clear_all()
 		get_efi_images(args.firmware_path)
-		''' log proprietary protocols list '''
+		'''
+		log proprietary protocols list
+		'''
 		get_pp_guids()
+		time.sleep(2)
 		clear_all()
 
 	if (args.pp_guids_num and os.path.isfile(args.firmware_path)):
 		clear_all()
 		get_efi_images(args.firmware_path)
-		''' print number of proprietary protocols '''
+		'''
+		print number of proprietary protocols
+		'''
 		get_pp_guids_num()
+		time.sleep(2)
 		clear_all()
 
 	if (args.get_efi_images and os.path.isfile(args.firmware_path)):
 		clear_all()
 		get_efi_images(args.firmware_path)
 		print('Check .{sep}modules directory'.format(sep=os.sep))
-
-	if (args.update_edk2_guids):
-		edk2_path = args.update_edk2_guids
-		if os.path.isdir(edk2_path):
-			data_path = 'conf'
-			guids_path = os.path.join('r2_uefi_re', 'guids')
-			update(edk2_path, data_path, guids_path)
 
 if __name__=='__main__':
 	main()

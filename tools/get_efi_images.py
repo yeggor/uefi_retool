@@ -43,15 +43,18 @@ def get_files(directory_name, pe_dir):
 		label='Obtaining UEFI images'
 	) as bar:
 		for obj in bar:
-			if os.path.isfile(directory_name + os.sep + obj):
+			src = os.path.join(directory_name, obj)
+			template = os.path.join(directory_name, '*.ui')
+			if os.path.isfile(src):
 				if obj[-3:] == '.pe':
-					if len(glob(directory_name + os.sep + '*.ui')) == 1:
-						ui_path = glob(directory_name + os.sep + '*.ui')[0]
+					if len(glob(template)) == 1:
+						ui_path = glob(template)[0]
 						with open(ui_path, 'rb') as ui:
 							pe_name = ui.read().replace(b'\x00', b'')
-						shutil.copy(directory_name + os.sep + obj, pe_dir + os.sep + pe_name)
-			if os.path.isdir(directory_name + os.sep + obj):
-				get_files(directory_name + os.sep + obj, pe_dir)
+							dst = os.path.join(pe_dir, pe_name.decode('utf-8'))
+						shutil.copy(src, dst)
+			if os.path.isdir(src):
+				get_files(src, pe_dir)
 	return True
 
 class Dumper():

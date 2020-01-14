@@ -28,10 +28,10 @@ import idaapi
 import idautils
 import idc
 import utils
-
 from guids import ami_guids, edk2_guids, edk_guids
 from tables import BOOT_SERVICES_OFFSET_x64, BOOT_SERVICES_OFFSET_x86
 from utils import Table
+
 
 class Analyser():
     def __init__(self):

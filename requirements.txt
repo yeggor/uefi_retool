@@ -1,5 +1,5 @@
-uefi-firmware==1.7
 Click==7.0
 colorama==0.4.1
 r2pipe==1.1.0
 terminaltables==3.1.0
+https://github.com/theopolis/uefi-firmware-parser/archive/v1.8.tar.gz

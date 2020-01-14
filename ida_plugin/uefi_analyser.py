@@ -23,12 +23,10 @@
 import idaapi
 import idautils
 import idc
-
-import uefi_analyser.analyser as analyser
 import uefi_analyser.prot_wind as pw
 
 AUTHOR = 'yeggor'
-VERSION = 'v1.0.0'
+VERSION = 'v1.1.0'
 
 class UefiAnalyserPlugin(idaapi.plugin_t):
     flags = (idaapi.PLUGIN_MOD | idaapi.PLUGIN_PROC | idaapi.PLUGIN_FIX)

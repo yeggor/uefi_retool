@@ -24,7 +24,6 @@ import os
 
 import idaapi
 import idc
-
 import utils
 from analyser import Analyser
 
@@ -32,7 +31,7 @@ LOG_FILE = os.path.join('..', 'log', 'ida_log_all.md')
 
 def print_log(data):
     with open(LOG_FILE, 'ab') as log:
-        log.write(data + '\r\n')
+        log.write(data.encode('utf-8') + b'\r\n')
 
 def list_boot_services(analyser):
     empty = True

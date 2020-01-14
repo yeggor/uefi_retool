@@ -33,12 +33,15 @@ from tools import utils
 from tools.get_efi_images import get_efi_images
 from tools.update_edk2_guids import update
 
-''' reads configuration data '''
+'''
+reads configuration data
+'''
 with open('config.json', 'rb') as cfile:
 	config = json.load(cfile)
 
 dump_dir = config['DUMP_DIR']
 pe_dir = config['PE_DIR']
+ida_path = '"{}"'.format(config['IDA_PATH'])
 ida64_path = '"{}"'.format(config['IDA64_PATH'])
 
 def show_item(item):
@@ -49,13 +52,9 @@ def analyse_all(scr_name):
 	if os.path.isfile(log_path):
 		os.remove(log_path)
 	files = os.listdir(pe_dir)
-	with click.progressbar(
-		files,
-		length=len(files),
-		bar_template=click.style('%(label)s  %(bar)s | %(info)s', fg='cyan'),
-		label='Modules analysis',
-		item_show_func=show_item,
-	) as bar:
+	bar_template = click.style('%(label)s  %(bar)s | %(info)s', fg='cyan')
+	label = 'Modules analysis'
+	with click.progressbar(files, length=len(files), bar_template=bar_template, label=label, item_show_func=show_item) as bar:
 		for module in bar:
 			if (
 				module.find('.idb') < 0 and \
@@ -66,8 +65,12 @@ def analyse_all(scr_name):
 				module.find('.til') < 0
 			):
 				module_path = os.path.join(pe_dir, module)
+				machine_type = utils.get_machine_type(module_path)
+				ida_exe = ida64_path
+				if machine_type == utils.IMAGE_FILE_MACHINE_I386:
+					ida_exe = ida_path
 				cmd_line = ' '.join([
-					ida64_path,
+					ida_exe,
 					'-c -A -S' + os.path.join('plugins', 'uefi_analyser', scr_name),
 					module_path
 				])
@@ -123,14 +126,6 @@ def main():
 		example: python analyse_fw_ida.py --get_efi_images <firmware_path>)'''
 		.format(sep=os.sep)
 	)
-	parser.add_argument(
-		'--update_edk2_guids',
-		metavar='EDK2_PATH', 
-		type=str,
-		help='''update list of GUIDs from EDK2
-		(example: git clone https://github.com/tianocore/edk2,
-		python analyse_fw_ida.py --update_edk2_guids edk2)'''
-	)
 
 	args = parser.parse_args()
 
@@ -152,13 +147,6 @@ def main():
 		clear_all()
 		get_efi_images(args.firmware_path)
 		print('Check .{sep}modules directory'.format(sep=os.sep))
-
-	if (args.update_edk2_guids):
-		edk2_path = args.update_edk2_guids
-		if os.path.isdir(edk2_path):
-			data_path = 'conf'
-			guids_path = 'ida_uefi_re{sep}guids'.format(sep=os.sep)
-			update(edk2_path, data_path, guids_path)
 
 if __name__=='__main__':
 	main()

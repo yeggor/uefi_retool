@@ -24,11 +24,11 @@ import ida_kernwin
 import idaapi
 import idautils
 import idc
-from idaapi import Choose
-
 import utils
 from analyser import Analyser
+from idaapi import Choose
 from tables import BOOT_SERVICES_OFFSET_x64, BOOT_SERVICES_OFFSET_x86
+
 
 class chooser_handler_t(idaapi.action_handler_t):
     def __init__(self, thing):
