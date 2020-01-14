@@ -450,10 +450,6 @@ optional arguments:
   --get_efi_images      get all executable images from UEFI firmware (images
                         are stored in .\modules directory, example: python
                         analyse_fw_ida.py --get_efi_images <firmware_path>)
-  --update_edk2_guids EDK2_PATH
-                        update list of GUIDs from EDK2 (example: git clone
-                        https://github.com/tianocore/edk2, python
-                        analyse_fw_ida.py --update_edk2_guids edk2)
 ```
 
 *Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpt480s.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpt480s.md)*
@@ -492,10 +488,6 @@ optional arguments:
   --get_efi_images      get all executable images from UEFI firmware (images
                         are stored in .\modules directory, example: python
                         analyse_fw_r2.py --get_efi_images <firmware_path>)
-  --update_edk2_guids EDK2_PATH
-                        update list of GUIDs from EDK2 (example: git clone
-                        https://github.com/tianocore/edk2, python
-                        analyse_fw_r2.py --update_edk2_guids edk2)
 ```
 
 # Additional tools
