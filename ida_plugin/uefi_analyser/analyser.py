@@ -27,19 +27,20 @@ import ida_name
 import idaapi
 import idautils
 import idc
-import utils
-from guids import ami_guids, edk2_guids, edk_guids
-from tables import BOOT_SERVICES_OFFSET_x64, BOOT_SERVICES_OFFSET_x86
-from utils import Table
+
+from .guids import ami_guids, edk2_guids, edk_guids
+from .tables import BOOT_SERVICES_OFFSET_x64, BOOT_SERVICES_OFFSET_x86
+from .utils import (Table, check_subsystem, get_guid, get_guid_str,
+                    get_header_file, get_header_idb, get_machine_type)
 
 
 class Analyser():
     def __init__(self):
-        header = utils.get_header_idb()
+        header = get_header_idb()
         if not len(header):
-            header = utils.get_header_file()
-        self.arch = utils.get_machine_type(header)
-        self.subsystem = utils.check_subsystem(header)
+            header = get_header_file()
+        self.arch = get_machine_type(header)
+        self.subsystem = check_subsystem(header)
         self.valid = True
         if not self.subsystem:
             print('[ERROR] Wrong subsystem')
@@ -145,7 +146,7 @@ class Analyser():
                     continue
                 for xref in idautils.DataRefsFrom(ea):
                     if (idc.print_insn_mnem(xref) == ''):
-                        cur_guid = utils.get_guid(xref)
+                        cur_guid = get_guid(xref)
                         if cur_guid != [0] * 11:
                             record = {
                                 'address': xref,
@@ -421,7 +422,7 @@ class Analyser():
             table_data = []
             table_data.append(['GUID', 'Protocol name', 'Address', 'Service', 'Protocol place'])
             for element in data:
-                guid = utils.get_guid_str(element['guid'])
+                guid = get_guid_str(element['guid'])
                 table_data.append([
                     guid,
                     element['protocol_name'],

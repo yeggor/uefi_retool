@@ -24,10 +24,11 @@ import ida_kernwin
 import idaapi
 import idautils
 import idc
-import utils
-from analyser import Analyser
 from idaapi import Choose
-from tables import BOOT_SERVICES_OFFSET_x64, BOOT_SERVICES_OFFSET_x86
+
+from .analyser import Analyser
+from .tables import BOOT_SERVICES_OFFSET_x64, BOOT_SERVICES_OFFSET_x86
+from .utils import get_guid_str
 
 
 class chooser_handler_t(idaapi.action_handler_t):
@@ -90,8 +91,8 @@ class ProtsWindow(Choose):
                 sizes['Service'] = len(prot['service'])
             if len(prot['protocol_place']) > sizes['Place']:
                 sizes['Place'] = len(prot['protocol_place'])
-            if len(utils.get_guid_str(prot['guid'])) > sizes['GUID']:
-                sizes['GUID'] = len(utils.get_guid_str(prot['guid']))
+            if len(get_guid_str(prot['guid'])) > sizes['GUID']:
+                sizes['GUID'] = len(get_guid_str(prot['guid']))
         return sizes
 
     def _get_lines(self, analyser):
@@ -105,7 +106,7 @@ class ProtsWindow(Choose):
                 prot['protocol_name'],
                 prot['service'],
                 prot['protocol_place'],
-                utils.get_guid_str(prot['guid'])
+                get_guid_str(prot['guid'])
             ]
             if not lines.count(item):
                 lines.append(item)

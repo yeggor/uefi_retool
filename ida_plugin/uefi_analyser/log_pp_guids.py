@@ -24,8 +24,9 @@ import os
 
 import idaapi
 import idc
-import utils
-from analyser import Analyser
+
+from .analyser import Analyser
+from .utils import get_guid_str
 
 LOG_FILE = os.path.join('..', 'log', 'ida_log_pp_guids.md')
 
@@ -61,7 +62,7 @@ def log_pp_guids():
     analyser.get_prot_names()
     for protocol_record in analyser.Protocols['All']:
         if (protocol_record['protocol_name'] == 'ProprietaryProtocol'):
-            guid = utils.get_guid_str(protocol_record['guid'])
+            guid = get_guid_str(protocol_record['guid'])
             module = idaapi.get_root_filename()
             service = protocol_record['service']
             address = '{addr:#x}'.format(addr=protocol_record['address'])

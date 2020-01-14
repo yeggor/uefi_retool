@@ -24,8 +24,9 @@ import os
 
 import idaapi
 import idc
-import utils
-from analyser import Analyser
+
+from .analyser import Analyser
+from .utils import get_guid_str
 
 LOG_FILE = os.path.join('..', 'log', 'ida_log_all.md')
 
@@ -58,7 +59,7 @@ def log_all():
     if not len(data):
         print_log('* empty')
     for element in data:
-        guid_str = '[guid] ' + utils.get_guid_str(element['guid'])
+        guid_str = '[guid] ' + get_guid_str(element['guid'])
         print_log('* [{0}]'.format('{addr:#x}'.format(addr=element['address'])))
         print_log('\t - [service] ' + element['service'])
         print_log('\t - [protocol_name] ' + element['protocol_name'])

@@ -23,7 +23,7 @@
 import idaapi
 import idautils
 import idc
-import uefi_analyser.prot_wind as pw
+from uefi_analyser import prot_wind
 
 AUTHOR = 'yeggor'
 VERSION = 'v1.1.0'
@@ -62,7 +62,7 @@ class UefiAnalyserPlugin(idaapi.plugin_t):
 
     @staticmethod
     def _analyse_all():
-        pw.run()
+        prot_wind.run()
 
 def PLUGIN_ENTRY():
     try:
