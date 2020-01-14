@@ -1,10 +1,23 @@
-# [UEFI_RETool](https://yeggor.github.io/UEFI_RETool/)
+# UEFI_RETool
 
-A tool for finding proprietary protocols in UEFI firmware and UEFI modules analysing
+## Table of Contents
 
-## `ida_uefi_re\analyser.py`
+- [IDA plugin](#ida-plugin)
+- [IDAPython analyser script](#idapython-analyser-script)
+- [r2pipe analyser script](#r2pipe-analyser-script)
+- [Finding proprietary protocols in UEFI firmware with IDA Pro](#finding-proprietary-protocols-in-uefi-firmware-with-ida-pro)
+- [Finding proprietary protocols in UEFI firmware with radare2](#finding-proprietary-protocols-in-uefi-firmware-with-radare2)
+- [Additional tools](#additional-tools)
+- [Similar works](#similar-works)
+- [Contributors](#contributors)
 
-A script for simplifying reverse engineering of UEFI firmware modules with IDA Pro
+# IDA plugin
+
+[IDA plugin for UEFI analysis](https://github.com/yeggor/UEFI_RETool/tree/master/ida_plugin)
+
+# IDAPython analyser script
+
+[ida_plugin/uefi_analyser/analyser.py](https://github.com/yeggor/UEFI_RETool/blob/master/ida_plugin/uefi_analyser/analyser.py) is a script for simplifying reverse engineering of UEFI firmware modules with IDA Pro
 
 Usage:
 
@@ -60,33 +73,74 @@ Commands:
  * analyser.analyse_all()
 Python>analyser.print_all()
 Boot services:
-┌─────────┬──────────────────────────┐
-│ Address │ Service                  │
-├─────────┼──────────────────────────┤
-│ 0x250aL │ InstallProtocolInterface │
-│ 0xbabL  │ HandleProtocol           │
-│ 0xbcdL  │ HandleProtocol           │
-│ 0xbfbL  │ HandleProtocol           │
-│ 0xd84L  │ LocateProtocol           │
-│ 0xde7L  │ LocateProtocol           │
-│ 0xe05L  │ LocateProtocol           │
-│ 0xe23L  │ LocateProtocol           │
-│ 0xe4aL  │ LocateProtocol           │
-│ 0xed5L  │ LocateProtocol           │
-└─────────┴──────────────────────────┘
++------------+-------------------------------------+
+| Address    | Service                             |
++------------+-------------------------------------+
+| 0x00065662 | LocateHandleBuffer                  |
+| 0x00067863 | LocateHandleBuffer                  |
+| 0x000678bc | OpenProtocol                        |
+| 0x00065785 | UninstallProtocolInterface          |
+| 0x00065d7b | UninstallProtocolInterface          |
+| 0x00065de5 | UninstallProtocolInterface          |
+| 0x00066d2d | UninstallProtocolInterface          |
+| 0x00066d96 | UninstallProtocolInterface          |
+| 0x0006d38b | UninstallProtocolInterface          |
+| 0x00066cf6 | InstallProtocolInterface            |
+| 0x00067cbd | InstallProtocolInterface            |
+| 0x0006ebc1 | InstallProtocolInterface            |
+| 0x00067dcb | ProtocolsPerHandle                  |
+| 0x00065819 | UninstallMultipleProtocolInterfaces |
+| 0x000659eb | InstallMultipleProtocolInterfaces   |
+| 0x00065791 | ReinstallProtocolInterface          |
+| 0x00066e09 | ReinstallProtocolInterface          |
+| 0x00066e44 | ReinstallProtocolInterface          |
+| 0x0006cfe7 | ReinstallProtocolInterface          |
+| 0x0006d048 | ReinstallProtocolInterface          |
+| 0x0006d145 | ReinstallProtocolInterface          |
+| 0x0006d183 | ReinstallProtocolInterface          |
+| 0x0006ec23 | ReinstallProtocolInterface          |
+| 0x0007274e | ReinstallProtocolInterface          |
+| 0x0007287e | ReinstallProtocolInterface          |
+| 0x00072987 | ReinstallProtocolInterface          |
+| 0x00072a3a | ReinstallProtocolInterface          |
+| 0x000a09f2 | ReinstallProtocolInterface          |
+| 0x0006534e | HandleProtocol                      |
+| 0x00065abb | HandleProtocol                      |
+| 0x00065b7f | HandleProtocol                      |
+| 0x00065bac | HandleProtocol                      |
+| 0x000677ee | HandleProtocol                      |
+| 0x00067977 | HandleProtocol                      |
+| 0x00067b2d | HandleProtocol                      |
+| 0x00067b69 | HandleProtocol                      |
+| 0x00067c30 | HandleProtocol                      |
+| 0x00067ccb | HandleProtocol                      |
+| 0x00067d10 | HandleProtocol                      |
+| 0x0006ce41 | HandleProtocol                      |
+| 0x0006ce7a | HandleProtocol                      |
+| 0x0006d1ba | HandleProtocol                      |
+| 0x0006ebfe | HandleProtocol                      |
+| 0x000a0df8 | HandleProtocol                      |
+| 0x000690b0 | OpenProtocolInformation             |
+| 0x00065cad | RegisterProtocolNotify              |
++------------+-------------------------------------+
 Protocols:
-┌────────────────────────────────────────────────────────────────────┬─────────────────────────────┬─────────┬────────────────┬────────────────┐
-│ GUID                                                               │ Protocol name               │ Address │ Service        │ Protocol place │
-├────────────────────────────────────────────────────────────────────┼─────────────────────────────┼─────────┼────────────────┼────────────────┤
-│ [0x6378fef3-0xc89f-0x492f-0xbd-0xb1-0xbf-0xb4-0x43-0x19-0xcf-0xda] │ ProprietaryProtocol         │ 0x678L  │ HandleProtocol │ unknown        │
-│ [0x4c8a2451-0xc207-0x405b-0x96-0x94-0x99-0xea-0x13-0x25-0x13-0x41] │ gEfiDebugMaskProtocolGuid   │ 0x658L  │ HandleProtocol │ edk2_guids     │
-│ [0x5b1b31a1-0x9562-0x11d2-0x8e-0x3f-0x0-0xa0-0xc9-0x69-0x72-0x3b]  │ gEfiLoadedImageProtocolGuid │ 0x628L  │ HandleProtocol │ edk2_guids     │
-│ [0xcd2333d7-0x6a0a-0x4c76-0x83-0x50-0x24-0xa-0xda-0x36-0xa2-0xc7]  │ ProprietaryProtocol         │ 0x6f0L  │ LocateProtocol │ unknown        │
-│ [0xae80d021-0x618e-0x11d4-0xbc-0xd7-0x0-0x80-0xc7-0x3c-0x88-0x81]  │ gEfiDataHubProtocolGuid     │ 0x6c0L  │ LocateProtocol │ edk2_guids     │
-│ [0xe49d33ed-0x513d-0x4634-0xb6-0x98-0x6f-0x55-0xaa-0x75-0x1c-0x1b] │ gEfiSmbusHcProtocolGuid     │ 0x6b0L  │ LocateProtocol │ edk2_guids     │
-│ [0xef9fc172-0xa1b2-0x4693-0xb3-0x27-0x6d-0x32-0xfc-0x41-0x60-0x42] │ gEfiHiiDatabaseProtocolGuid │ 0x648L  │ LocateProtocol │ edk2_guids     │
-│ [0xfd96974-0x23aa-0x4cdc-0xb9-0xcb-0x98-0xd1-0x77-0x50-0x32-0x2a]  │ gEfiHiiStringProtocolGuid   │ 0x638L  │ LocateProtocol │ edk2_guids     │
-└────────────────────────────────────────────────────────────────────┴─────────────────────────────┴─────────┴────────────────┴────────────────┘
++-------------------------------------+----------------------------------+------------+-------------------------------------+----------------+
+| GUID                                | Protocol name                    | Address    | Service                             | Protocol place |
++-------------------------------------+----------------------------------+------------+-------------------------------------+----------------+
+| 47C7B221-C42A-11D2-8E5700A0C969723B | gEfiShellEnvironment2Guid        | 0x00054d50 | UninstallProtocolInterface          | edk2_guids     |
+| 47C7B223-C42A-11D2-8E5700A0C969723B | gEfiShellInterfaceGuid           | 0x000098f0 | UninstallProtocolInterface          | edk2_guids     |
+| 0FD96974-23AA-4CDC-B9CB98D17750322A | gEfiHiiStringProtocolGuid        | 0x00000490 | UninstallMultipleProtocolInterfaces | edk2_guids     |
+| 47C7B221-C42A-11D2-8E5700A0C969723B | gEfiShellEnvironment2Guid        | 0x00054d50 | ReinstallProtocolInterface          | edk2_guids     |
+| 47C7B223-C42A-11D2-8E5700A0C969723B | gEfiShellInterfaceGuid           | 0x000098f0 | ReinstallProtocolInterface          | edk2_guids     |
+| 0006D5C0-0000-0000-243B070000000000 | ProprietaryProtocol              | 0x00008dd0 | ReinstallProtocolInterface          | unknown        |
+| 387477C1-69C7-11D2-8E3900A0C969723B | gEfiSimpleTextInProtocolGuid     | 0x00000460 | ReinstallProtocolInterface          | edk2_guids     |
+| 387477C2-69C7-11D2-8E3900A0C969723B | gEfiSimpleTextOutProtocolGuid    | 0x00000470 | ReinstallProtocolInterface          | edk2_guids     |
+| 5B1B31A1-9562-11D2-8E3F00A0C969723B | gEfiLoadedImageProtocolGuid      | 0x000005a0 | HandleProtocol                      | edk2_guids     |
+| 09576E91-6D3F-11D2-8E3900A0C969723B | gEfiDevicePathProtocolGuid       | 0x00000580 | HandleProtocol                      | edk2_guids     |
+| 47C7B223-C42A-11D2-8E5700A0C969723B | gEfiShellInterfaceGuid           | 0x000098f0 | HandleProtocol                      | edk2_guids     |
+| 47C7B221-C42A-11D2-8E5700A0C969723B | gEfiShellEnvironment2Guid        | 0x00054d50 | HandleProtocol                      | edk2_guids     |
+| 964E5B22-6459-11D2-8E3900A0C969723B | gEfiSimpleFileSystemProtocolGuid | 0x00000590 | HandleProtocol                      | edk2_guids     |
++-------------------------------------+----------------------------------+------------+-------------------------------------+----------------+
 ```
 
 *Example №2*
@@ -94,56 +148,215 @@ Protocols:
 ```
 Python>analyser.analyse_all()
 Comments:
-[0x250aL] EFI_BOOT_SERVICES->InstallProtocolInterface
-[0xbabL] EFI_BOOT_SERVICES->HandleProtocol
-[0xbcdL] EFI_BOOT_SERVICES->HandleProtocol
-[0xbfbL] EFI_BOOT_SERVICES->HandleProtocol
-[0xd84L] EFI_BOOT_SERVICES->LocateProtocol
-[0xde7L] EFI_BOOT_SERVICES->LocateProtocol
-[0xe05L] EFI_BOOT_SERVICES->LocateProtocol
-[0xe23L] EFI_BOOT_SERVICES->LocateProtocol
-[0xe4aL] EFI_BOOT_SERVICES->LocateProtocol
-[0xed5L] EFI_BOOT_SERVICES->LocateProtocol
+[ 0x00065662 ] EFI_BOOT_SERVICES->LocateHandleBuffer
+[ 0x00067863 ] EFI_BOOT_SERVICES->LocateHandleBuffer
+[ 0x000678bc ] EFI_BOOT_SERVICES->OpenProtocol
+[ 0x00065785 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x00065d7b ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x00065de5 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x00066d2d ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x00066d96 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x0006d38b ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+[ 0x00066cf6 ] EFI_BOOT_SERVICES->InstallProtocolInterface
+[ 0x00067cbd ] EFI_BOOT_SERVICES->InstallProtocolInterface
+[ 0x0006ebc1 ] EFI_BOOT_SERVICES->InstallProtocolInterface
+[ 0x00067dcb ] EFI_BOOT_SERVICES->ProtocolsPerHandle
+[ 0x00065819 ] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
+[ 0x000659eb ] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+[ 0x00065791 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x00066e09 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x00066e44 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006cfe7 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006d048 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006d145 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006d183 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006ec23 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0007274e ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0007287e ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x00072987 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x00072a3a ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x000a09f2 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+[ 0x0006534e ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00065abb ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00065b7f ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00065bac ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x000677ee ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067977 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067b2d ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067b69 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067c30 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067ccb ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x00067d10 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x0006ce41 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x0006ce7a ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x0006d1ba ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x0006ebfe ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x000a0df8 ] EFI_BOOT_SERVICES->HandleProtocol
+[ 0x000690b0 ] EFI_BOOT_SERVICES->OpenProtocolInformation
+[ 0x00065cad ] EFI_BOOT_SERVICES->RegisterProtocolNotify
 Names:
-[0x678L] ProprietaryProtocol_0x678L
-[0x658L] gEfiDebugMaskProtocolGuid_0x658L
-[0x628L] gEfiLoadedImageProtocolGuid_0x628L
-[0x6f0L] ProprietaryProtocol_0x6f0L
-[0x6c0L] gEfiDataHubProtocolGuid_0x6c0L
-[0x6b0L] gEfiSmbusHcProtocolGuid_0x6b0L
-[0x648L] gEfiHiiDatabaseProtocolGuid_0x648L
-[0x638L] gEfiHiiStringProtocolGuid_0x638L
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00000490 ] gEfiHiiStringProtocolGuid_0x490
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00008dd0 ] ProprietaryProtocol_0x8dd0
+[ 0x00000460 ] gEfiSimpleTextInProtocolGuid_0x460
+[ 0x00000470 ] gEfiSimpleTextOutProtocolGuid_0x470
+[ 0x000005a0 ] gEfiLoadedImageProtocolGuid_0x5a0
+[ 0x00000580 ] gEfiDevicePathProtocolGuid_0x580
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x00000590 ] gEfiSimpleFileSystemProtocolGuid_0x590
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00000490 ] gEfiHiiStringProtocolGuid_0x490
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00008dd0 ] ProprietaryProtocol_0x8dd0
+[ 0x00000460 ] gEfiSimpleTextInProtocolGuid_0x460
+[ 0x00000470 ] gEfiSimpleTextOutProtocolGuid_0x470
+[ 0x000005a0 ] gEfiLoadedImageProtocolGuid_0x5a0
+[ 0x00000580 ] gEfiDevicePathProtocolGuid_0x580
+[ 0x000098f0 ] gEfiShellInterfaceGuid_0x98f0
+[ 0x00054d50 ] gEfiShellEnvironment2Guid_0x54d50
+[ 0x00000590 ] gEfiSimpleFileSystemProtocolGuid_0x590
 Types:
-[0xde7] EFI_BOOT_SERVICES->LocateProtocol
-	 [address] 0x3170
-	 [message] type successfully applied
-[0xe05] EFI_BOOT_SERVICES->LocateProtocol
-	 [address] 0x3170
-	 [message] type already applied
-[0xe23] EFI_BOOT_SERVICES->LocateProtocol
-	 [address] 0x3170
-	 [message] type already applied
-[0xe4a] EFI_BOOT_SERVICES->LocateProtocol
-	 [address] 0x3170
-	 [message] type already applied
-[0xed5] EFI_BOOT_SERVICES->LocateProtocol
-	 [address] 0x3170
-	 [message] type already applied
+[ 0x00065662 ] EFI_BOOT_SERVICES->LocateHandleBuffer
+	 address: 0x000b8120
+	 message: type successfully applied
+[ 0x00067863 ] EFI_BOOT_SERVICES->LocateHandleBuffer
+	 address: 0x000b8130
+	 message: type successfully applied
+[ 0x000678bc ] EFI_BOOT_SERVICES->OpenProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065785 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065de5 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 address: 0x000b8120
+	 message: type already applied
+[ 0x00066d2d ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00066d96 ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006d38b ] EFI_BOOT_SERVICES->UninstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00066cf6 ] EFI_BOOT_SERVICES->InstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067cbd ] EFI_BOOT_SERVICES->InstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006ebc1 ] EFI_BOOT_SERVICES->InstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067dcb ] EFI_BOOT_SERVICES->ProtocolsPerHandle
+	 address: 0x000b8120
+	 message: type already applied
+[ 0x00065819 ] EFI_BOOT_SERVICES->UninstallMultipleProtocolInterfaces
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x000659eb ] EFI_BOOT_SERVICES->InstallMultipleProtocolInterfaces
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065791 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00066e09 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00066e44 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006d048 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006d145 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006d183 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006ec23 ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0007274e ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0007287e ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00072a3a ] EFI_BOOT_SERVICES->ReinstallProtocolInterface
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006534e ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065abb ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065b7f ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00065bac ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x000677ee ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067b2d ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067b69 ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067c30 ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067ccb ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x00067d10 ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006ce41 ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006ce7a ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006d1ba ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x0006ebfe ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x000a0df8 ] EFI_BOOT_SERVICES->HandleProtocol
+	 address: 0x000b8130
+	 message: type already applied
+[ 0x000690b0 ] EFI_BOOT_SERVICES->OpenProtocolInformation
+	 address: 0x000b8120
+	 message: type already applied
 ```
 
 *In result*
 
  * Before analysis:
 
-    ![before_analysis](https://github.com/yeggor/UEFI_RETool/blob/master/img/before_analysis.png)
+    ![before_analysis](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/before_analysis.png)
 
  * After analysis:
 
-    ![after_analysis](https://github.com/yeggor/UEFI_RETool/blob/master/img/after_analysis.png)
+    ![after_analysis](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/after_analysis.png)
 
-## `r2_uefi_re\analyser.py`
+# r2pipe analyser script
 
-A script with similar functionality based on r2pipe
+[r2_uefi_re/analyser.py](https://github.com/yeggor/UEFI_RETool/blob/master/r2_uefi_re/analyser.py) is a script with similar functionality based on r2pipe
 
 Usage:
 
@@ -201,19 +414,20 @@ Protocols:
 
 ```
 
-## `analyse_fw_ida.py`
+# Finding proprietary protocols in UEFI firmware with IDA Pro
 
-A script for finding proprietary protocols in UEFI firmware with IDA Pro
+[analyse_fw_ida.py](https://github.com/yeggor/UEFI_RETool/blob/master/analyse_fw_ida.py) is a script for finding proprietary protocols in UEFI firmware with IDA Pro
 
 Usage:
 
- * Copy `ida_uefi_re` directory to <IDA_DIRECTORY>
+ * Copy `ida_plugin\uefi_analyser` directory to IDA plugins directory
  * Edit `config.json` file
     - "PE_DIR" is a folder that contains all executable images from the UEFI firmware file
     - "DUMP_DIR" is a folder that contains all components from the firmware filesystem
     - "IDA_PATH" and "IDA64_PATH" are paths to IDA Pro executable files
  * Run `pip install -r requirements.txt`
  * Run `python analyse_fw_ida.py -h` command to display the help message
+
 ```
 UEFI_RETool
 A tool for UEFI firmware analysis with IDA Pro
@@ -242,11 +456,11 @@ optional arguments:
                         analyse_fw_ida.py --update_edk2_guids edk2)
 ```
 
-*Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpx1c.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpx1c.md)*
+*Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpt480s.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpt480s.md)*
 
-## `analyse_fw_r2.py`
+# Finding proprietary protocols in UEFI firmware with radare2
 
-A similar script for UEFI firmware analysis with radare2
+[analyse_fw_r2.py](https://github.com/yeggor/UEFI_RETool/blob/master/analyse_fw_r2.py) is a similar script for UEFI firmware analysis with radare2
 
 Usage:
  * Run `pip install -r requirements.txt`
@@ -284,12 +498,17 @@ optional arguments:
                         analyse_fw_r2.py --update_edk2_guids edk2)
 ```
 
-## Additional tools
+# Additional tools
 
  * `tools\get_efi_images.py` is a script that gets all PE-images from the firmware file
  * `tools\update_edk2_guids.py` is a script that updates protocol GUIDs list from the `conf` directory
 
-## Contributors
+# Similar works
+
+ * [ida-efiutils](https://github.com/snare/ida-efiutils)
+ * [EFISwissKnife](https://github.com/gdbinit/EFISwissKnife)
+
+# Contributors
 
  * yeggor (vasilenko.yegor@gmail.com)
  * p41l (philka9498@gmail.com)
