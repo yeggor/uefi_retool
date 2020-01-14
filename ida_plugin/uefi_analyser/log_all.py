@@ -24,9 +24,8 @@ import os
 
 import idaapi
 import idc
-
-from .analyser import Analyser
-from .utils import get_guid_str
+from uefi_analyser.analyser import Analyser
+from uefi_analyser.utils import get_guid_str
 
 LOG_FILE = os.path.join('..', 'log', 'ida_log_all.md')
 

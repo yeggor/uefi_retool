@@ -20,13 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import inspect
 import os
+import sys
 
 import idaapi
 import idc
-
-from .analyser import Analyser
-from .utils import get_guid_str
+from uefi_analyser.analyser import Analyser
+from uefi_analyser.utils import get_guid_str
 
 LOG_FILE = os.path.join('..', 'log', 'ida_log_pp_guids.md')
 
