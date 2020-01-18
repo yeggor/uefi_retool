@@ -22,16 +22,17 @@
 
 import json
 
-import ida_bytes
-import ida_name
-import idaapi
-import idautils
-import idc
+import ida_bytes  # pylint: disable=import-error
+import ida_name  # pylint: disable=import-error
+import idaapi  # pylint: disable=import-error
+import idautils  # pylint: disable=import-error
+import idc  # pylint: disable=import-error
 
 from .guids import ami_guids, edk2_guids, edk_guids
 from .tables import BOOT_SERVICES_OFFSET_x64, BOOT_SERVICES_OFFSET_x86
-from .utils import (Table, check_subsystem, get_guid, get_guid_str,
-                    get_header_file, get_header_idb, get_machine_type)
+from .utils import (
+    Table, check_guid, check_subsystem, get_guid, get_guid_str,
+    get_header_file, get_header_idb, get_machine_type)
 
 
 class Analyser():
@@ -108,6 +109,23 @@ class Analyser():
         print(' * analyser.print_all()')
         print(' * analyser.analyse_all()')
 
+    def _find_est(self, gvar, start, end):
+        RAX = 0
+        BS_OFFSET = 0x60
+        EFI_SYSTEM_TABLE = 'EFI_SYSTEM_TABLE *'
+        if self.arch == 'x86':
+            BS_OFFSET = 0x3c
+        ea = start
+        while (ea < end):
+            if ((idc.print_insn_mnem(ea) == 'mov') and (idc.get_operand_value(ea, 0) == RAX) and \
+                (idc.get_operand_value(ea, 1) == BS_OFFSET)
+            ):
+                if idc.SetType(gvar, EFI_SYSTEM_TABLE):
+                    idc.set_name(gvar, 'gSt_{addr:#x}'.format(addr=gvar))
+                    return True
+            ea = idc.next_head(ea)
+        return False
+
     def get_boot_services(self):
         '''
         found boot services in idb
@@ -145,19 +163,21 @@ class Analyser():
                 if not found:
                     continue
                 for xref in idautils.DataRefsFrom(ea):
-                    if (idc.print_insn_mnem(xref) == ''):
-                        cur_guid = get_guid(xref)
-                        if cur_guid != [0] * 11:
-                            record = {
-                                'address': xref,
-                                'service': service_name,
-                                'guid': cur_guid,
-                            }
-                            record['address'] = xref
-                            record['service'] = service_name
-                            record['guid'] = cur_guid
-                            if not self.Protocols['All'].count(record):
-                                self.Protocols['All'].append(record)
+                    if idc.print_insn_mnem(xref):
+                        continue
+                    if not check_guid(xref):
+                        continue
+                    cur_guid = get_guid(xref)
+                    record = {
+                        'address': xref,
+                        'service': service_name,
+                        'guid': cur_guid,
+                    }
+                    record['address'] = xref
+                    record['service'] = service_name
+                    record['guid'] = cur_guid
+                    if not self.Protocols['All'].count(record):
+                        self.Protocols['All'].append(record)
 
     def get_prot_names(self):
         '''
@@ -196,12 +216,6 @@ class Analyser():
             if not 'protocol_name' in self.Protocols['All'][index]:
                 self.Protocols['All'][index]['protocol_name'] = 'ProprietaryProtocol'
                 self.Protocols['All'][index]['protocol_place'] = 'unknown'
-
-    @staticmethod
-    def apply_struct(ea, size, sid):
-	    ida_bytes.del_items(ea, size, idc.DELIT_DELNAMES)
-	    ida_bytes.create_struct(ea, size, sid)
-	    return size
 
     def get_data_guids(self):
         '''
@@ -323,23 +337,6 @@ class Analyser():
         if empty:
             print(' * list is empty')
 
-    def _find_est(self, gvar, start, end):
-        RAX = 0
-        BS_OFFSET = 0x60
-        EFI_SYSTEM_TABLE = 'EFI_SYSTEM_TABLE *'
-        if self.arch == 'x86':
-            BS_OFFSET = 0x3c
-        ea = start
-        while (ea < end):
-            if ((idc.print_insn_mnem(ea) == 'mov') and (idc.get_operand_value(ea, 0) == RAX) and \
-                (idc.get_operand_value(ea, 1) == BS_OFFSET)
-            ):
-                if idc.SetType(gvar, EFI_SYSTEM_TABLE):
-                    idc.set_name(gvar, 'gSt_{addr:#x}'.format(addr=gvar))
-                    return True
-            ea = idc.next_head(ea)
-        return False
-
     def set_types(self):
         '''
         handle (EFI_BOOT_SERVICES *) type
@@ -445,6 +442,13 @@ class Analyser():
         self.set_types()
         self.get_data_guids()
 
+    @staticmethod
+    def apply_struct(ea, size, sid):
+	    ida_bytes.del_items(ea, size, idc.DELIT_DELNAMES)
+	    ida_bytes.create_struct(ea, size, sid)
+	    return size
+
+
 def main():
     idc.auto_wait()
     analyser = Analyser()
@@ -463,5 +467,5 @@ def main():
         analyser.analyse_all()
         return True
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()

@@ -22,8 +22,8 @@
 
 import os
 
-import idaapi
-import idc
+import idaapi  # pylint: disable=import-error
+import idc  # pylint: disable=import-error
 from uefi_analyser.analyser import Analyser
 from uefi_analyser.utils import get_guid_str
 

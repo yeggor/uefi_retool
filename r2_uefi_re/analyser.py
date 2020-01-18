@@ -27,6 +27,7 @@ import sys
 
 import click
 import r2pipe
+
 from terminaltables import SingleTable
 
 from .guids import ami_guids, edk2_guids, edk_guids

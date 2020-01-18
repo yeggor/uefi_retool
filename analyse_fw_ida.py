@@ -29,7 +29,7 @@ from glob import glob
 import click
 import uefi_firmware
 
-from tools import utils
+from tools import md_to_json, utils
 from tools.get_efi_images import get_efi_images
 from tools.update_edk2_guids import update
 
@@ -80,6 +80,9 @@ def analyse_all(scr_name):
 						hint='check your config.json file or move ida_plugin/uefi_analyser directory to IDA plugins directory'
 					)
 					exit(msg)
+	if scr_name == 'log_all.py':
+		md_name = os.path.join('log', 'ida_log_all.md')
+		md_to_json.get_json(md_name)
 
 def clear(dirname):
 	for root, dirs, files in os.walk(dirname, topdown=False):

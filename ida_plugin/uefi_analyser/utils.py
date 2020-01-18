@@ -22,9 +22,10 @@
 
 import os
 
-import idaapi
-import idautils
-import idc
+import ida_bytes  # pylint: disable=import-error
+import idaapi  # pylint: disable=import-error
+import idautils  # pylint: disable=import-error
+import idc  # pylint: disable=import-error
 
 '''
 definitions from PE file structure
@@ -86,7 +87,7 @@ def check_guid(address):
     '''
     correctness is determined based on the number of unique bytes
     '''
-    return (len(set(idaapi.get_many_bytes(address, 16))) > 8)
+    return (len(set(ida_bytes.get_bytes(address, 16))) > 8)
 
 def get_guid(address):
     '''
@@ -175,3 +176,31 @@ def get_header_file():
     else:
         buf = b'\x00'
     return bytearray(buf)
+
+
+def get_dep_json(res_json):
+    '''
+    get json for dependency browser and dependency graph
+    '''
+    dep_json = []
+    for module_info in res_json:
+        for protocol in module_info['protocols']:
+            if (protocol['service'] == 'InstallProtocolInterface' or
+                protocol['service'] == 'InstallMultipleProtocolInterfaces'
+            ):
+                dep_json_item = {
+                    'module_name': module_info['module_name'],
+                    'protocol_name': protocol['protocol_name'],
+                    'guid': protocol['guid'],
+                    'service': protocol['service']
+                }
+                dep_json_item['used_by'] = []
+                for module_info in res_json:
+                    for protocol in module_info['protocols']:
+                        if (protocol['service'] == 'LocateProtocol' and
+                            protocol['guid'] == dep_json_item['guid']
+                        ):
+                            dep_json_item['used_by'].append(module_info['module_name'])        
+                dep_json.append(dep_json_item)
+    return dep_json
+

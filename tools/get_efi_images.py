@@ -36,12 +36,10 @@ pe_dir = 'modules'
 def get_files(directory_name, pe_dir):
 	if not os.path.isdir(pe_dir):
 		os.mkdir(pe_dir)
+	bar_template = click.style('%(label)s  %(bar)s | %(info)s', fg='cyan')
 	files = os.listdir(directory_name)
-	with click.progressbar(files,
-		length=len(files),
-		bar_template=click.style('%(label)s  %(bar)s | %(info)s', fg='cyan'),
-		label='Obtaining UEFI images'
-	) as bar:
+	label = 'Obtaining UEFI images'
+	with click.progressbar(files, length=len(files), bar_template=bar_template, label=label) as bar:
 		for obj in bar:
 			src = os.path.join(directory_name, obj)
 			template = os.path.join(directory_name, '*.ui')
@@ -85,7 +83,9 @@ class Dumper():
 		get_files(self.dir_name, self.pe_dir)
 
 def get_efi_images(fw_name):
-	''' for correct color display in uefi_firmware module '''
+	'''
+	for correct color display in uefi_firmware module
+	'''
 	colorama.init()
 	dumper = Dumper(fw_name, dir_name, pe_dir)
 	if not dumper.dump_all():
@@ -94,7 +94,9 @@ def get_efi_images(fw_name):
 	return True
 
 def main():
-	''' for correct color display in uefi_firmware module '''
+	'''
+	for correct color display in uefi_firmware module
+	'''
 	colorama.init()
 	program = 'python ' + os.path.basename(__file__)
 	parser = argparse.ArgumentParser(
@@ -118,6 +120,7 @@ def main():
 		help='name of the directory containing all firmware PE-images (default: `modules`)',
 		default=pe_dir
 	)
+
 	args = parser.parse_args()
 
 	dumper = Dumper(args.firmware_path, args.all_dir, args.pe_dir)

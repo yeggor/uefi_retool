@@ -20,12 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import inspect
 import os
 import sys
 
-import idaapi
-import idc
+import idaapi  # pylint: disable=import-error
+import idc  # pylint: disable=import-error
 from uefi_analyser.analyser import Analyser
 from uefi_analyser.utils import get_guid_str
 

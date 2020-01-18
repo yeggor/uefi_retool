@@ -20,24 +20,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import idaapi
-import idautils
-import idc
-from uefi_analyser import prot_wind
+import os
+
+import idaapi  # pylint: disable=import-error
+import idautils  # pylint: disable=import-error
+import idc  # pylint: disable=import-error
+from PyQt5 import QtWidgets  # pylint: disable=import-error
+from uefi_analyser import dep_browser, dep_graph, prot_explorer, ui
 
 AUTHOR = 'yeggor'
-VERSION = 'v1.1.0'
+VERSION = '1.1.0'
+
+NAME = 'UEFI_RETool'
+HELP_MSG = 'This plugin performs automatic analysis of the input UEFI module'
+COMMENT_MSG = 'This plugin performs automatic analysis of the input UEFI module'
 
 class UefiAnalyserPlugin(idaapi.plugin_t):
     flags = (idaapi.PLUGIN_MOD | idaapi.PLUGIN_PROC | idaapi.PLUGIN_FIX)
-    comment = 'This plugin performs automatic analysis of the input UEFI module'
-    help  = 'This plugin performs automatic analysis of the input UEFI module.\n'
-    help += 'Based on the https://github.com/yeggor/UEFI_RETool/blob/master/ida_plugin/uefi_analyser/analyser.py script.'
-    wanted_name = 'UEFI analyser'
+    comment = COMMENT_MSG
+    help = HELP_MSG
+    wanted_name = NAME
     wanted_hotkey = 'Ctrl+Alt+U'
 
     def init(self):
-        self.input_file_path = idaapi.get_input_file_path()
+        self._last_directory = idautils.GetIdbDir()
+        ui.init_menu(MenuHandler(self))
         self._welcome()
         return idaapi.PLUGIN_KEEP
 
@@ -47,27 +54,64 @@ class UefiAnalyserPlugin(idaapi.plugin_t):
     def term(self):
         pass
 
+    def load_json_log(self):
+        print('[{}] try to parse JSON log file'.format(NAME))
+        log_name = self._select_log()
+        print('[{}] log name: {}'.format(NAME, log_name))
+        dep_browser.run(log_name)
+        dep_graph.run(log_name)
+
+    def _select_log(self):
+        file_dialog = QtWidgets.QFileDialog()
+        file_dialog.setFileMode(QtWidgets.QFileDialog.ExistingFiles)
+        filename = None
+        try:
+            filename, _ = file_dialog.getOpenFileName(
+                file_dialog,
+                'Select the {} log file'.format(NAME),
+                self._last_directory,
+                'Results files (*.json)'
+            )
+        except Exception as e:
+            print('[{} error] {}'.format(NAME, str(e)))
+        if filename:
+            self._last_directory = os.path.dirname(filename)
+        return filename
+
     @staticmethod
     def _welcome():
-        main_line = ' UEFI analyser plugin {version} by {author} '.format(
-            version=VERSION, 
-            author=AUTHOR
-        )
-        message =  '[{line}]\n'.format(line='='*len(main_line))
-        message += '|{line}|\n'.format(line=' '*len(main_line))
-        message += '|{main_line}|\n'.format(main_line=main_line)
-        message += '|{line}|\n'.format(line=' '*len(main_line))
-        message += '[{line}]\n'.format(line='='*len(main_line))
+        main_line = ' {} plugin {} by {} '.format(NAME, VERSION, AUTHOR)
+        message =  '[{}]\n'.format('=' * len(main_line))
+        message += '|{}|\n'.format(' ' * len(main_line))
+        message += '|{}|\n'.format(main_line)
+        message += '|{}|\n'.format(' ' * len(main_line))
+        message += '[{}]\n'.format('=' * len(main_line))
         print(message)
 
     @staticmethod
     def _analyse_all():
-        prot_wind.run()
+        prot_explorer.run()
+
+class MenuHandler(idaapi.action_handler_t):
+    def __init__(self, plugin):
+        idaapi.action_handler_t.__init__(self)
+        self.plugin = plugin
+
+    def activate(self, ctx):
+        try:
+            self.plugin.load_json_log()
+        except Exception as err:
+            import traceback
+            print('[{} error] {}\n{}'.format(NAME, str(err), traceback.format_exc()))
+
+        return True
+
+    def update(self, ctx):
+        return idaapi.AST_ENABLE_ALWAYS
 
 def PLUGIN_ENTRY():
     try:
         return UefiAnalyserPlugin()
     except Exception as err:
         import traceback
-        print('[Error] %s\n%s' % str((err), traceback.format_exc()))
-        raise
+        print('[{} error] {}\n{}'.format(NAME, str(err), traceback.format_exc()))
