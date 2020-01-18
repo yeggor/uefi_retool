@@ -1,18 +1,17 @@
+## UEFI_RETool
+
+A tool for UEFI firmware reverse engineering.
+
+The tool consists of a plugin for IDA and a set of scripts for UEFI firmware analysing.
+
 ## Table of Contents
 
-- [UEFI_RETool](#uefiretool)
 - [IDA plugin](#ida-plugin)
 - [UEFI firmware analysis with IDA Pro](#uefi-firmware-analysis-with-ida-pro)
 - [UEFI firmware analysis with radare2](#uefi-firmware-analysis-with-radare2)
 - [Additional tools](#additional-tools)
 - [Similar works](#similar-works)
 - [Contributors](#contributors)
-
-# UEFI_RETool
-
-A tool for UEFI firmware reverse engineering.
-
-The tool consists of a plugin for IDA and a set of scripts for UEFI firmware analysing.
 
 # IDA plugin
 

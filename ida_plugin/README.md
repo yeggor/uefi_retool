@@ -1,6 +1,9 @@
+## IDA plugin for UEFI analysis
+
+This plugin allows you to automatically analyse the input UEFI images, as well as search for dependencies between UEFI images in firmware.
+
 ## Table of Contents
 
-- [IDA plugin for UEFI analysis](#ida-plugin-for-uefi-analysis)
 - [Analyser & Protocol explorer](#analyser--protocol-explorer)
   - [Usage](#usage)
   - [Example](#example)
@@ -12,10 +15,6 @@
   - [Example](#example-1)
     - [Dependency browser window](#dependency-browser-window)
     - [Dependency graph](#dependency-graph)
-
-# IDA plugin for UEFI analysis
-
-This plugin allows you to automatically analyse the input UEFI images, as well as search for dependencies between UEFI images in firmware.
 
 # Analyser & Protocol explorer
 
