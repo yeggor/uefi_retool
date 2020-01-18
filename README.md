@@ -1,131 +1,26 @@
-# UEFI_RETool
-
 ## Table of Contents
 
+- [UEFI_RETool](#uefiretool)
 - [IDA plugin](#ida-plugin)
-- [IDAPython analyser script](#idapython-analyser-script)
-- [r2pipe analyser script](#r2pipe-analyser-script)
-- [Finding proprietary protocols in UEFI firmware with IDA Pro](#finding-proprietary-protocols-in-uefi-firmware-with-ida-pro)
-- [Finding proprietary protocols in UEFI firmware with radare2](#finding-proprietary-protocols-in-uefi-firmware-with-radare2)
+- [UEFI firmware analysis with IDA Pro](#uefi-firmware-analysis-with-ida-pro)
+- [UEFI firmware analysis with radare2](#uefi-firmware-analysis-with-radare2)
 - [Additional tools](#additional-tools)
 - [Similar works](#similar-works)
 - [Contributors](#contributors)
+
+# UEFI_RETool
+
+A tool for UEFI firmware reverse engineering.
+
+The tool consists of a plugin for IDA and a set of scripts for UEFI firmware analysing.
 
 # IDA plugin
 
 [IDA plugin for UEFI analysis](https://github.com/yeggor/UEFI_RETool/tree/master/ida_plugin)
 
-# IDAPython analyser script
+# UEFI firmware analysis with IDA Pro
 
-[ida_plugin/uefi_analyser/analyser.py](https://github.com/yeggor/UEFI_RETool/blob/master/ida_plugin/uefi_analyser/analyser.py) is a script for simplifying reverse engineering of UEFI firmware modules with IDA Pro
-
-Usage:
-
- * Open the UEFI module in IDA Pro
- * Run `pip install -r requirements.txt`
- * Run `analyser.py` script from IDA
- * Run following commands in output window:
-
-```
-    Python>analyser = Analyser()
-    Python>analyser.help()
-```
-
-```
-    Methods:
-    * analyser.get_boot_services()
-        - check: analyser.gBServices[<service_name>]
-    * analyser.get_protocols()
-        - check: analyser.Protocols['All']
-    * analyser.get_prot_names()
-        - check: analyser.Protocols['All']
-    Commands:
-    * analyser.list_boot_services()
-    * analyser.list_protocols()
-    * analyser.make_comments()
-    * analyser.make_names()
-    * analyser.set_types()
-    * analyser.print_all()
-    * analyser.analyse_all()
-```
-
- * Then run the necessary command from the list
-
- * Examples is [here](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/analyser_output.md)
-
-In result:
-
- * Before analysis:
-
-    ![before_analysis](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/before_analysis.png)
-
- * After analysis:
-
-    ![after_analysis](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/after_analysis.png)
-
-# r2pipe analyser script
-
-[r2_uefi_re/analyser.py](https://github.com/yeggor/UEFI_RETool/blob/master/r2_uefi_re/analyser.py) is a script with similar functionality based on r2pipe
-
-Usage:
-
-* Run `pip install -r requirements.txt`
-* Run `python r2_uefi_re\analyser.py -h`
-
-```
-UEFI_RETool
-A tool for UEFI module analysis with radare2
-usage: python analyser.py [-h] module
-
-UEFI module analyser
-
-positional arguments:
-  module      path to UEFI module
-
-optional arguments:
-  -h, --help  show this help message and exit
-```
-```
->python r2_uefi_re\analyser.py modules\DxeMain.efi
-UEFI_RETool
-A tool for UEFI module analysis with radare2
-Boot services:
-┌─────────┬──────────────────────────┐
-│ Address │ Service                  │
-├─────────┼──────────────────────────┤
-│ 0x15fef │ LocateHandleBuffer       │
-│ 0x1c30f │ OpenProtocol             │
-│ 0x1bec7 │ OpenProtocol             │
-│ 0x1603c │ OpenProtocol             │
-│ 0x1c9af │ InstallProtocolInterface │
-│ 0x1c2dd │ HandleProtocol           │
-│ 0x1c33a │ HandleProtocol           │
-│ 0x1bf98 │ HandleProtocol           │
-│ 0x1c9fd │ HandleProtocol           │
-│ 0x1be95 │ HandleProtocol           │
-│ 0x1bef2 │ HandleProtocol           │
-│ 0x12f2f │ LocateProtocol           │
-│ 0x1c7b0 │ LocateProtocol           │
-│ 0x1c744 │ LocateProtocol           │
-└─────────┴──────────────────────────┘
-Protocols:
-┌────────────────────────────────────────────────────────────────────┬───────────────────────────────┬─────────┬──────────────────────────┬────────────────┐
-│ GUID                                                               │ Protocol name                 │ Address │ Service                  │ Protocol place │
-├────────────────────────────────────────────────────────────────────┼───────────────────────────────┼─────────┼──────────────────────────┼────────────────┤
-│ [0x18a031ab-0xb443-0x4d1a-0xa5-0xc0-0xc-0x9-0x26-0x1e-0x9f-0x71]   │ gEfiDriverBindingProtocolGuid │ 0x11410 │ LocateHandleBuffer       │ edk2_guids     │
-│ [0x18a031ab-0xb443-0x4d1a-0xa5-0xc0-0xc-0x9-0x26-0x1e-0x9f-0x71]   │ gEfiDriverBindingProtocolGuid │ 0x11410 │ OpenProtocol             │ edk2_guids     │
-│ [0x83485340-0x30ec-0x8b48-0x44-0x24-0x60-0x4d-0x8b-0xd1-0x4d-0x8b] │ ProprietaryProtocol           │ 0x1c6d4 │ InstallProtocolInterface │ unknown        │
-│ [0x5b1b31a1-0x9562-0x11d2-0x8e-0x3f-0x0-0xa0-0xc9-0x69-0x72-0x3b]  │ gEfiLoadedImageProtocolGuid   │ 0x11440 │ HandleProtocol           │ edk2_guids     │
-│ [0x9576e91-0x6d3f-0x11d2-0x8e-0x39-0x0-0xa0-0xc9-0x69-0x72-0x3b]   │ gEfiDevicePathProtocolGuid    │ 0x11400 │ HandleProtocol           │ edk2_guids     │
-│ [0x26baccb1-0x6f42-0x11d4-0xbc-0xe7-0x0-0x80-0xc7-0x3c-0x88-0x81]  │ gEfiCpuArchProtocolGuid       │ 0x11520 │ LocateProtocol           │ edk2_guids     │
-│ [0xffecffff-0x923c-0x14d2-0x9e-0x3f-0x22-0xa0-0xc9-0x69-0x56-0x3b] │ EFI_PERFORMANCE_PROTOCOL_GUID │ 0x11650 │ LocateProtocol           │ edk_guids      │
-└────────────────────────────────────────────────────────────────────┴───────────────────────────────┴─────────┴──────────────────────────┴────────────────┘
-
-```
-
-# Finding proprietary protocols in UEFI firmware with IDA Pro
-
-[analyse_fw_ida.py](https://github.com/yeggor/UEFI_RETool/blob/master/analyse_fw_ida.py) is a script for finding proprietary protocols in UEFI firmware with IDA Pro
+[analyse_fw_ida.py](https://github.com/yeggor/UEFI_RETool/blob/master/analyse_fw_ida.py) is a script for UEFI firmware analysis with IDA Pro
 
 Usage:
 
@@ -163,7 +58,7 @@ optional arguments:
 
 *Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpt480s.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpt480s.md)*
 
-# Finding proprietary protocols in UEFI firmware with radare2
+# UEFI firmware analysis with radare2
 
 [analyse_fw_r2.py](https://github.com/yeggor/UEFI_RETool/blob/master/analyse_fw_r2.py) is a similar script for UEFI firmware analysis with radare2
 
