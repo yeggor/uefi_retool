@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # MIT License
 # 
 # Copyright (c) 2018-2019 yeggor
@@ -56,55 +58,49 @@ def analyse_all():
 	label = 'Modules analysis'
 	with click.progressbar(files, length=len(files), bar_template=bar_template, label=label, item_show_func=show_item) as bar:
 		for module in bar:
-			if (
-				module.find('.idb') < 0 and \
-				module.find('.i64') < 0 and \
-				module.find('.id1') < 0 and \
-				module.find('.id2') < 0 and \
-				module.find('.nam') < 0 and \
-				module.find('.til') < 0
-			):
-				module_path = os.path.join(pe_dir, module)
-				# x64 only
-				machine_type = utils.get_machine_type(module_path)
-				if machine_type == utils.IMAGE_FILE_MACHINE_IA64:
-					try:
-						log.write('## Module: {module}\n'.format(module=module))
-						analyser = Analyser(module_path)
-						analyser.get_boot_services()
-						'''
-						list boot services
-						'''
-						log.write('### Boot services:\n')
-						empty = False
-						for service in analyser.gBServices:
-							for address in analyser.gBServices[service]:
-								empty = True
-								log.write('* [{0}] EFI_BOOT_SERVICES->{1}\n'.format(
-									'{addr:#x}'.format(addr=address), 
-									service)
-								)
-						if not empty:
-							log.write('* empty\n')
-						'''
-						list protocols information
-						'''
-						analyser.get_protocols()
-						analyser.get_prot_names()
-						data = analyser.Protocols['All']
-						log.write('### Protocols:\n')
-						if not len(data):
-							log.write('* empty\n')
-						for element in data:
-							guid_str = '[guid] ' + analyser.get_guid_str(element['guid'])
-							log.write('* [{0}]\n'.format('{addr:#x}'.format(addr=element['address'])))
-							log.write('\t - [service] ' + element['service'] + '\n')
-							log.write('\t - [protocol_name] ' + element['protocol_name'] + '\n')
-							log.write('\t - [protocol_place] ' + element['protocol_place'] + '\n')
-							log.write('\t - ' + guid_str + '\n')
-					except Exception as e:
-						log.write('### ERROR: {err}\n'.format(err=e))
-						continue
+			if module[-4:] in ['.idb', '.i64', '.id1', '.id2', '.nam', '.til']:
+				continue
+			module_path = os.path.join(pe_dir, module)
+			# x64 only
+			machine_type = utils.get_machine_type(module_path)
+			if machine_type == utils.IMAGE_FILE_MACHINE_IA64:
+				try:
+					log.write('## Module: {module}\n'.format(module=module))
+					analyser = Analyser(module_path)
+					analyser.get_boot_services()
+					'''
+					list boot services
+					'''
+					log.write('### Boot services:\n')
+					empty = False
+					for service in analyser.gBServices:
+						for address in analyser.gBServices[service]:
+							empty = True
+							log.write('* [{0}] EFI_BOOT_SERVICES->{1}\n'.format(
+								'{addr:#x}'.format(addr=address), 
+								service)
+							)
+					if not empty:
+						log.write('* empty\n')
+					'''
+					list protocols information
+					'''
+					analyser.get_protocols()
+					analyser.get_prot_names()
+					data = analyser.Protocols['All']
+					log.write('### Protocols:\n')
+					if not len(data):
+						log.write('* empty\n')
+					for element in data:
+						guid_str = '[guid] ' + analyser.get_guid_str(element['guid'])
+						log.write('* [{0}]\n'.format('{addr:#x}'.format(addr=element['address'])))
+						log.write('\t - [service] ' + element['service'] + '\n')
+						log.write('\t - [protocol_name] ' + element['protocol_name'] + '\n')
+						log.write('\t - [protocol_place] ' + element['protocol_place'] + '\n')
+						log.write('\t - ' + guid_str + '\n')
+				except Exception as e:
+					log.write('### ERROR: {err}\n'.format(err=e))
+					continue
 	log.close()
 
 def get_table_line(guid, module, service, address):
@@ -128,30 +124,24 @@ def get_pp_guids():
 	label = 'Modules analysis'
 	with click.progressbar(files, length=len(files), bar_template=bar_template, label=label, item_show_func=show_item) as bar:
 		for module in bar:
-			if (
-				module.find('.idb') < 0 and \
-				module.find('.i64') < 0 and \
-				module.find('.id1') < 0 and \
-				module.find('.id2') < 0 and \
-				module.find('.nam') < 0 and \
-				module.find('.til') < 0
-			):
-				module_path = os.path.join(pe_dir, module)
-				try:
-					analyser = Analyser(module_path)
-					analyser.get_boot_services()
-					analyser.get_protocols()
-					analyser.get_prot_names()
-					for protocol_record in analyser.Protocols['All']:
-						if (protocol_record['protocol_name'] == 'ProprietaryProtocol'):
-							guid = analyser.get_guid_str(protocol_record['guid'])
-							guid = guid.replace('L', '').replace("'", '')
-							service = protocol_record['service']
-							address = hex(protocol_record['address'])
-							address = address.replace('L', '')
-							log.write(get_table_line(guid, module, service, address) + '\n')
-				except:
-					continue
+			if module[-4:] in ['.idb', '.i64', '.id1', '.id2', '.nam', '.til']:
+				continue
+			module_path = os.path.join(pe_dir, module)
+			try:
+				analyser = Analyser(module_path)
+				analyser.get_boot_services()
+				analyser.get_protocols()
+				analyser.get_prot_names()
+				for protocol_record in analyser.Protocols['All']:
+					if (protocol_record['protocol_name'] == 'ProprietaryProtocol'):
+						guid = analyser.get_guid_str(protocol_record['guid'])
+						guid = guid.replace('L', '').replace("'", '')
+						service = protocol_record['service']
+						address = hex(protocol_record['address'])
+						address = address.replace('L', '')
+						log.write(get_table_line(guid, module, service, address) + '\n')
+			except:
+				continue
 	log.close()
 
 def get_pp_guids_num():
@@ -164,24 +154,18 @@ def get_pp_guids_num():
 	label = 'Modules analysis'
 	with click.progressbar(files, length=len(files), bar_template=bar_template, label=label, item_show_func=show_item) as bar:
 		for module in bar:
-			if (
-				module.find('.idb') < 0 and \
-				module.find('.i64') < 0 and \
-				module.find('.id1') < 0 and \
-				module.find('.id2') < 0 and \
-				module.find('.nam') < 0 and \
-				module.find('.til') < 0
-			):
-				module_path = pe_dir + os.sep + module
-				try:
-					analyser = Analyser(module_path)
-					analyser.get_boot_services()
-					analyser.get_protocols()
-					analyser.get_prot_names()
-					full_guids_num += len(analyser.Protocols['All'])
-					pp_guids_num += len(analyser.Protocols['PropGuids'])
-				except:
-					continue
+			if module[-4:] in ['.idb', '.i64', '.id1', '.id2', '.nam', '.til']:
+				continue
+			module_path = pe_dir + os.sep + module
+			try:
+				analyser = Analyser(module_path)
+				analyser.get_boot_services()
+				analyser.get_protocols()
+				analyser.get_prot_names()
+				full_guids_num += len(analyser.Protocols['All'])
+				pp_guids_num += len(analyser.Protocols['PropGuids'])
+			except:
+				continue
 	print('\t [number of proprietary protocols] {0}'.format(pp_guids_num))
 	print('\t [full number of protocols] {0}'.format(full_guids_num))
 

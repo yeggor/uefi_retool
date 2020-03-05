@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # MIT License
 # 
 # Copyright (c) 2018-2019 yeggor
@@ -56,30 +58,24 @@ def analyse_all(scr_name):
 	label = 'Modules analysis'
 	with click.progressbar(files, length=len(files), bar_template=bar_template, label=label, item_show_func=show_item) as bar:
 		for module in bar:
-			if (
-				module.find('.idb') < 0 and \
-				module.find('.i64') < 0 and \
-				module.find('.id1') < 0 and \
-				module.find('.id2') < 0 and \
-				module.find('.nam') < 0 and \
-				module.find('.til') < 0
-			):
-				module_path = os.path.join(pe_dir, module)
-				machine_type = utils.get_machine_type(module_path)
-				ida_exe = ida64_path
-				if machine_type == utils.IMAGE_FILE_MACHINE_I386:
-					ida_exe = ida_path
-				cmd_line = ' '.join([
-					ida_exe,
-					'-c -A -S' + os.path.join('plugins', 'uefi_analyser', scr_name),
-					module_path
-				])
-				if os.system(cmd_line):
-					msg = '[-] Error during {module} module processing\n\t{hint}'.format(
-						module=module_path,
-						hint='check your config.json file or move ida_plugin/uefi_analyser directory to IDA plugins directory'
-					)
-					exit(msg)
+			if module[-4:] in ['.idb', '.i64', '.id1', '.id2', '.nam', '.til']:
+				continue
+			module_path = os.path.join(pe_dir, module)
+			machine_type = utils.get_machine_type(module_path)
+			ida_exe = ida64_path
+			if machine_type == utils.IMAGE_FILE_MACHINE_I386:
+				ida_exe = ida_path
+			cmd_line = ' '.join([
+				ida_exe,
+				'-c -A -S' + os.path.join('plugins', 'uefi_analyser', scr_name),
+				module_path
+			])
+			if os.system(cmd_line):
+				msg = '[-] Error during {module} module processing\n\t{hint}'.format(
+					module=module_path,
+					hint='check your config.json file or move ida_plugin/uefi_analyser directory to IDA plugins directory'
+				)
+				exit(msg)
 	if scr_name == 'log_all.py':
 		md_name = os.path.join('log', 'ida_log_all.md')
 		md_to_json.get_json(md_name)
