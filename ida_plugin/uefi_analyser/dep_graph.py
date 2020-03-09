@@ -1,17 +1,17 @@
 # MIT License
-# 
+#
 # Copyright (c) 2018-2019 yeggor
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,17 +23,19 @@
 import json
 import os
 
-import ida_funcs  # pylint: disable=import-error
-import ida_graph  # pylint: disable=import-error
-import ida_idp  # pylint: disable=import-error
-import ida_kernwin  # pylint: disable=import-error
-import ida_ua  # pylint: disable=import-error
-import idautils  # pylint: disable=import-error
+# pylint: disable=import-error
+import ida_funcs
+import ida_graph
+import ida_idp
+import ida_kernwin
+import ida_ua
+import idautils
 
 from .utils import get_dep_json
 
 NAME = 'UEFI_RETool'
 DEBUG = True
+
 
 class _base_graph_action_handler_t(ida_kernwin.action_handler_t):
     def __init__(self, graph):
@@ -43,15 +45,18 @@ class _base_graph_action_handler_t(ida_kernwin.action_handler_t):
     def update(self, ctx):
         return ida_kernwin.AST_ENABLE_ALWAYS
 
+
 class GraphCloser(_base_graph_action_handler_t):
     def activate(self, ctx):
         self.graph.Close()
+
 
 class ColorChanger(_base_graph_action_handler_t):
     def activate(self, ctx):
         self.graph.color = self.graph.color ^ 0xffffff
         self.graph.Refresh()
         return 1
+
 
 class SelectionPrinter(_base_graph_action_handler_t):
     def activate(self, ctx):
@@ -67,8 +72,10 @@ class SelectionPrinter(_base_graph_action_handler_t):
                     if s.is_node:
                         print('[{}] selected node {}'.format(NAME, s.node))
                     else:
+                        # yapf: disable
                         print('[{}] selected edge {} -> {}'.format(NAME, str(s.elp.e.src), str(s.elp.e.dst)))
         return 1
+
 
 class DependencyGraph(ida_graph.GraphViewer):
     def __init__(self, dep_json):
@@ -91,7 +98,8 @@ class DependencyGraph(ida_graph.GraphViewer):
                 if DEBUG:
                     if now_node != was_node:
                         if self.v().GetWidget() == w:
-                            print('[{}] current node now: {} (was {})'.format(NAME, str(now_node), str(was_node)))
+                            print('[{}] current node now: {} (was {})'.format(
+                                NAME, str(now_node), str(was_node)))
 
         self.my_view_hooks = my_view_hooks_t(self)
 
@@ -121,25 +129,29 @@ class DependencyGraph(ida_graph.GraphViewer):
     def OnPopup(self, form, popup_handle):
         # graph closer
         actname = 'graph_closer:{}'.format(self.title)
-        desc = ida_kernwin.action_desc_t(actname, 'Close: {}'.format(self.title), GraphCloser(self))
+        desc = ida_kernwin.action_desc_t(
+            actname, 'Close: {}'.format(self.title), GraphCloser(self))
         ida_kernwin.attach_dynamic_action_to_popup(form, popup_handle, desc)
 
         # color changer
         actname = 'color_changer:{}'.format(self.title)
-        desc = ida_kernwin.action_desc_t(actname, 'Change colors: {}'.format(self.title), ColorChanger(self))
+        desc = ida_kernwin.action_desc_t(
+            actname, 'Change colors: {}'.format(self.title), ColorChanger(self))
         ida_kernwin.attach_dynamic_action_to_popup(form, popup_handle, desc)
 
         # selection printer
         actname = 'selection_printer:{}'.format(self.title)
-        desc = ida_kernwin.action_desc_t(actname, 'Print selection: {}'.format(self.title), SelectionPrinter(self))
+        desc = ida_kernwin.action_desc_t(
+            actname, 'Print selection: {}'.format(self.title), SelectionPrinter(self))
         ida_kernwin.attach_dynamic_action_to_popup(form, popup_handle, desc)
 
     def _get_all_pairs(self):
         pairs = []
         for mod in self.dep_json:
-            for ub_mod in mod['used_by']:  
+            for ub_mod in mod['used_by']:
                 pairs.append((mod['module_name'], ub_mod))
         return pairs
+
 
 def run(json_file):
     with open(json_file, 'r') as f:
@@ -151,11 +163,14 @@ def run(json_file):
     else:
         return None
 
+
 def test():
-    json_file = os.path.join(idautils.GetIdbDir().replace('modules', 'log'), 'examples', 'ida_log_all_tpt480s.json')
+    json_file = os.path.join(idautils.GetIdbDir().replace(
+        'modules', 'log'), 'examples', 'ida_log_all_tpt480s.json')
     g = run(json_file)
     if g and DEBUG:
         print('[{}] graph created and displayed'.format(NAME))
+
 
 if __name__ == '__main__':
     test()

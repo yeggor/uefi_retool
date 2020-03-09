@@ -1,17 +1,17 @@
 # MIT License
-# 
+#
 # Copyright (c) 2018-2019 yeggor
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,16 +22,18 @@
 
 import json
 
-import ida_kernwin  # pylint: disable=import-error
-import idaapi  # pylint: disable=import-error
-import idautils  # pylint: disable=import-error
-import idc  # pylint: disable=import-error
-from idaapi import Choose  # pylint: disable=import-error
+# pylint: disable=import-error
+import ida_kernwin
+import idaapi
+import idautils
+import idc
+from idaapi import Choose
 
 from .utils import get_dep_json
 
 NAME = 'UEFI_RETool'
 DEBUG = True
+
 
 class chooser_handler_t(idaapi.action_handler_t):
     def __init__(self, thing):
@@ -46,12 +48,14 @@ class chooser_handler_t(idaapi.action_handler_t):
             return idaapi.AST_ENABLE_FOR_FORM
         return idaapi.AST_DISABLE_FOR_FORM
 
+
 class ProtsWindow(Choose):
     '''
     class to display protocols information output window
     '''
     def __init__(self, title, dep_json, nb=5):
         sizes = self._get_sizes(dep_json)
+        # yapf: disable
         Choose.__init__(
             self,
             title,
@@ -61,10 +65,10 @@ class ProtsWindow(Choose):
                 ['Module', sizes['Module']],
                 ['Service', sizes['Service']]
             ],
-            flags = 0,
-            width = None,
-            height = None,
-            embedded = False
+            flags=0,
+            width=None,
+            height=None,
+            embedded=False
         )
         self.n = 0
         self.items = self._get_lines(dep_json)
@@ -170,10 +174,12 @@ class ProtsWindow(Choose):
     def show(self):
         return self.Show(self.modal) >= 0
 
+
 def handle_json(res_json):
     dep_json = get_dep_json(res_json)
     wind = ProtsWindow('{} dependency browser'.format(NAME), dep_json, nb=10)
     wind.show()
+
 
 def run(log_file):
     with open(log_file, 'rb') as f:

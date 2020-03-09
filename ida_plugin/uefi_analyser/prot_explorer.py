@@ -1,17 +1,17 @@
 # MIT License
-# 
+#
 # Copyright (c) 2018-2019 yeggor
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,11 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import ida_kernwin  # pylint: disable=import-error
-import idaapi  # pylint: disable=import-error
-import idautils  # pylint: disable=import-error
-import idc  # pylint: disable=import-error
-from idaapi import Choose  # pylint: disable=import-error
+# pylint: disable=import-error
+import ida_kernwin
+import idaapi
+import idautils
+import idc
+from idaapi import Choose
 
 from .analyser import Analyser
 from .tables import BOOT_SERVICES_OFFSET_x64, BOOT_SERVICES_OFFSET_x86
@@ -32,6 +33,7 @@ from .utils import get_guid_str
 
 NAME = 'UEFI_RETool'
 DEBUG = True
+
 
 class chooser_handler_t(idaapi.action_handler_t):
     def __init__(self, thing):
@@ -46,12 +48,14 @@ class chooser_handler_t(idaapi.action_handler_t):
             return idaapi.AST_ENABLE_FOR_FORM
         return idaapi.AST_DISABLE_FOR_FORM
 
+
 class ProtsWindow(Choose):
     '''
     class to display protocols information output window
     '''
     def __init__(self, title, analyser, nb=5):
         sizes = self._get_sizes(analyser)
+        # yapf: disable
         Choose.__init__(
             self,
             title,
@@ -62,10 +66,10 @@ class ProtsWindow(Choose):
                 ['Place', sizes['Place']],
                 ['GUID', sizes['GUID']],
             ],
-            flags = 0,
-            width = None,
-            height = None,
-            embedded = False
+            flags=0,
+            width=None,
+            height=None,
+            embedded=False
         )
         self.n = 0
         self.items = self._get_lines(analyser)
@@ -84,9 +88,10 @@ class ProtsWindow(Choose):
             'Place': 0,
             'GUID': 0
         }
-        for prot in analyser.Protocols['All'] + analyser.Protocols['Data']:
+        for prot in analyser.Protocols['all'] + analyser.Protocols['data']:
             if len('{addr:#010x}'.format(addr=prot['address'])) > sizes['Address']:
-                sizes['Address'] = len('{addr:#010x}'.format(addr=prot['address']))
+                sizes['Address'] = len(
+                    '{addr:#010x}'.format(addr=prot['address']))
             if len(prot['protocol_name']) > sizes['Name']:
                 sizes['Name'] = len(prot['protocol_name'])
             if len(prot['service']) > sizes['Service']:
@@ -102,7 +107,7 @@ class ProtsWindow(Choose):
         to fill line in the table
         '''
         lines = []
-        for prot in analyser.Protocols['All'] + analyser.Protocols['Data']:
+        for prot in analyser.Protocols['all'] + analyser.Protocols['data']:
             item = [
                 '{addr:#010x}'.format(addr=prot['address']),
                 prot['protocol_name'],
@@ -173,6 +178,7 @@ class ProtsWindow(Choose):
     def show(self):
         return self.Show(self.modal) >= 0
 
+
 def run():
     idc.auto_wait()
     analyser = Analyser()
@@ -180,19 +186,22 @@ def run():
         analyser.print_all()
         analyser.analyse_all()
     if not analyser.valid:
-        analyser.arch = idaapi.ask_str('x86 / x64', 0, 'Set architecture manually (x86 or x64)')
+        analyser.arch = idaapi.ask_str(
+            'x86 / x64', 0, 'Set architecture manually (x86 or x64)')
         if not (analyser.arch == 'x86' or analyser.arch == 'x64'):
-            return False 
+            return False
         if (analyser.arch == 'x86'):
             analyser.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x86
         if (analyser.arch == 'x64'):
             analyser.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x64
         analyser.print_all()
         analyser.analyse_all()
-    if len(analyser.Protocols['All']):
-        wind = ProtsWindow('{} protocol explorer'.format(NAME), analyser, nb=10)
+    if len(analyser.Protocols['all']):
+        wind = ProtsWindow(
+            '{} protocol explorer'.format(NAME), analyser, nb=10)
         wind.show()
     return True
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     run()

@@ -1,17 +1,17 @@
 # MIT License
-# 
+#
 # Copyright (c) 2018-2019 yeggor
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,10 +27,10 @@ import sys
 
 import click
 import r2pipe
-
 from terminaltables import SingleTable
 
-from .guids import ami_guids, edk2_guids, edk_guids
+from .guids import (ami_guids, asrock_guids, dell_guids, edk2_guids, edk_guids,
+                    lenovo_guids)
 
 MIN_SET_LEN = 5
 
@@ -63,15 +63,14 @@ LEA_NUM = {
     'LocateProtocol': 1
 }
 
+
 class Analyser():
     def __init__(self, module_path):
         self.module_path = module_path
-        '''
-        '-2' for disabling warnings
-        '''
+        # '-2' for disabling warnings
         self.r2 = r2pipe.open(module_path, ['-2'])
         self.r2.cmd('aaa')
-        
+
         self.gBServices = {}
         self.gBServices['InstallProtocolInterface'] = []
         self.gBServices['ReinstallProtocolInterface'] = []
@@ -88,18 +87,14 @@ class Analyser():
         self.gBServices['UninstallMultipleProtocolInterfaces'] = []
 
         self.Protocols = {}
-        self.Protocols['AmiGuids'] = ami_guids.ami_guids
-        self.Protocols['EdkGuids'] = edk_guids.edk_guids
-        self.Protocols['Edk2Guids'] = edk2_guids.edk2_guids
-        self.Protocols['All'] = [
-            # {
-            #   address: ...
-            #   service: ...
-            #   guid: ...
-            # }, 
-            # ...
-        ]
-        self.Protocols['PropGuids'] = []
+        self.Protocols['ami_guids'] = ami_guids.ami_guids
+        self.Protocols['asrock_guids'] = asrock_guids.asrock_guids
+        self.Protocols['dell_guids'] = dell_guids.dell_guids
+        self.Protocols['edk_guids'] = edk_guids.edk_guids
+        self.Protocols['edk2_guids'] = edk2_guids.edk2_guids
+        self.Protocols['lenovo_guids'] = lenovo_guids.lenovo_guids
+        self.Protocols['all'] = []
+        self.Protocols['prop_guids'] = []
         self.info = self.get_info()
 
     @staticmethod
@@ -107,7 +102,7 @@ class Analyser():
         '''
         get le-word from bytes
         '''
-        word  = (bytes[1] << 8) & 0xff00
+        word = (bytes[1] << 8) & 0xff00
         word |= (bytes[0] << 0) & 0x00ff
         return word
 
@@ -116,10 +111,10 @@ class Analyser():
         '''
         get le-dword from bytes
         '''
-        dword  = (bytes[3] << 24) & 0xff000000
+        dword = (bytes[3] << 24) & 0xff000000
         dword |= (bytes[2] << 16) & 0x00ff0000
-        dword |= (bytes[1] <<  8) & 0x0000ff00
-        dword |= (bytes[0] <<  0) & 0x000000ff
+        dword |= (bytes[1] << 8) & 0x0000ff00
+        dword |= (bytes[0] << 0) & 0x000000ff
         return dword
 
     @staticmethod
@@ -130,7 +125,8 @@ class Analyser():
         guid = '{dw:08X}-'.format(dw=guid_struct[0])
         guid += '{w:04X}-'.format(w=guid_struct[1])
         guid += '{w:04X}-'.format(w=guid_struct[2])
-        guid += ''.join(['{b:02X}'.format(b=guid_struct[i]) for i in range(3, 11)])
+        guid += ''.join(
+            ['{b:02X}'.format(b=guid_struct[i]) for i in range(3, 11)])
         return guid
 
     def get_info(self):
@@ -139,13 +135,7 @@ class Analyser():
         '''
         info = json.loads(self.r2.cmd('ij'))
         return info
-    
-    '''
-    format: {
-        func_name: func_address,
-        ...
-    } 
-    '''
+
     def get_funcs(self):
         '''
         get all recognized functions
@@ -171,22 +161,15 @@ class Analyser():
             if ('ops' in func_info):
                 fcode = func_info['ops']
                 for line in fcode:
-                    if (
-                        'ptr'    in line and \
-                        'type'   in line and \
-                        'offset' in line and \
-                        'disasm' in line
-                    ):
-                        if (
-                            line['type'].find('call') > -1 and \
-                            line['disasm'].find('call qword [') > -1
-                        ):
+                    if ('ptr' in line and 'type' in line and 'offset' in line
+                            and 'disasm' in line):
+                        if (line['type'].find('call') > -1
+                                and line['disasm'].find('call qword [') > -1):
                             for service_name in OFFSET_x64:
                                 ea = line['offset']
-                                if (
-                                    line['ptr'] == OFFSET_x64[service_name] and \
-                                    not self.gBServices[service_name].count(ea)
-                                ):
+                                if (line['ptr'] == OFFSET_x64[service_name]
+                                        and not self.gBServices[service_name].
+                                        count(ea)):
                                     self.gBServices[service_name].append(ea)
         return True
 
@@ -236,7 +219,8 @@ class Analyser():
                     ea = self.prev_head(ea)
                     if not ea:
                         break
-                    instr = json.loads(self.r2.cmd('pdj 1 @ {addr}'.format(addr=ea)))[0]
+                    instr = json.loads(
+                        self.r2.cmd('pdj 1 @ {addr}'.format(addr=ea)))[0]
                     if (instr['type'] == 'lea'):
                         lea_counter += 1
                         if (lea_counter == LEA_NUM[service_name]):
@@ -252,49 +236,38 @@ class Analyser():
                     protocol_record['address'] = guid_addr
                     protocol_record['service'] = service_name
                     protocol_record['guid'] = current_guid
-                    if not self.Protocols['All'].count(protocol_record):
-                        self.Protocols['All'].append(protocol_record)
+                    if not self.Protocols['all'].count(protocol_record):
+                        self.Protocols['all'].append(protocol_record)
 
     def get_prot_names(self):
         '''
         identify known protocols
         '''
-        for index in range(len(self.Protocols['All'])):
+        for index in range(len(self.Protocols['all'])):
             fin = False
-            for prot_name in self.Protocols['Edk2Guids'].keys():
-                guid_r2 = self.Protocols['All'][index]['guid']
-                guid_conf = self.Protocols['Edk2Guids'][prot_name]
-                if (guid_r2 == guid_conf):
-                    self.Protocols['All'][index]['protocol_name'] = prot_name
-                    self.Protocols['All'][index]['protocol_place'] = 'edk2_guids'
-                    fin = True
+            for guid_place in [
+                    'ami_guids', 'asrock_guids', 'dell_guids', 'edk_guids',
+                    'edk2_guids', 'lenovo_guids'
+            ]:
+                for prot_name in self.Protocols[guid_place].keys():
+                    guid_r2 = self.Protocols['all'][index]['guid']
+                    guid_conf = self.Protocols[guid_place][prot_name]
+                    if (guid_r2 == guid_conf):
+                        self.Protocols['all'][index][
+                            'protocol_name'] = prot_name
+                        self.Protocols['all'][index][
+                            'protocol_place'] = guid_place
+                        fin = True
+                        break
+                if fin:
                     break
             if fin:
                 continue
-            for prot_name in self.Protocols['EdkGuids'].keys():
-                guid_r2 = self.Protocols['All'][index]['guid']
-                guid_conf = self.Protocols['EdkGuids'][prot_name]
-                if (guid_r2 == guid_conf):
-                    self.Protocols['All'][index]['protocol_name'] = prot_name
-                    self.Protocols['All'][index]['protocol_place'] = 'edk_guids'
-                    fin = True
-                    break
-            if fin:
-                continue
-            for prot_name in self.Protocols['AmiGuids'].keys():
-                guid_r2 = self.Protocols['All'][index]['guid']
-                guid_conf = self.Protocols['AmiGuids'][prot_name]
-                if (guid_r2 == guid_conf):
-                    self.Protocols['All'][index]['protocol_name'] = prot_name
-                    self.Protocols['All'][index]['protocol_place'] = 'ami_guids'
-                    fin = True
-                    break
-            if fin:
-                continue
-            if not 'protocol_name' in self.Protocols['All'][index]:
-                self.Protocols['All'][index]['protocol_name'] = 'ProprietaryProtocol'
-                self.Protocols['All'][index]['protocol_place'] = 'unknown'
-                self.Protocols['PropGuids'].append(guid_r2)
+            if not 'protocol_name' in self.Protocols['all'][index]:
+                self.Protocols['all'][index][
+                    'protocol_name'] = 'ProprietaryProtocol'
+                self.Protocols['all'][index]['protocol_place'] = 'unknown'
+                self.Protocols['prop_guids'].append(guid_r2)
 
     def list_boot_services(self):
         '''
@@ -308,10 +281,7 @@ class Analyser():
         print('Boot services:')
         for service in self.gBServices:
             for address in self.gBServices[service]:
-                table_data.append([
-                    '{addr:#x}'.format(addr=address), 
-                    service
-                ])
+                table_data.append(['{addr:#x}'.format(addr=address), service])
                 empty = False
         if empty:
             print(' * list is empty')
@@ -325,38 +295,38 @@ class Analyser():
         self.get_boot_services()
         self.get_protocols()
         self.get_prot_names()
-        data = self.Protocols['All']
+        data = self.Protocols['all']
         print('Protocols:')
         if not len(data):
             print(' * list is empty')
         else:
             table_data = []
             table_instance = SingleTable(table_data)
-            table_data.append(['GUID', 'Protocol name', 'Address', 'Service', 'Protocol place'])
+            table_data.append([
+                'GUID', 'Protocol name', 'Address', 'Service', 'Protocol place'
+            ])
             for element in data:
                 guid = self.get_guid_str(element['guid'])
                 table_data.append([
-                    guid,
-                    element['protocol_name'],
+                    guid, element['protocol_name'],
                     '{addr:#x}'.format(addr=element['address']),
-                    element['service'],
-                    element['protocol_place']
-                    ])
+                    element['service'], element['protocol_place']
+                ])
             print(table_instance.table)
 
     def print_all(self):
         self.list_boot_services()
         self.list_protocols()
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     click.echo(click.style('UEFI_RETool', fg='cyan'))
-    click.echo(click.style('A tool for UEFI module analysis with radare2', fg='cyan'))
+    click.echo(
+        click.style('A tool for UEFI module analysis with radare2', fg='cyan'))
     program = 'python ' + os.path.basename(__file__)
     parser = argparse.ArgumentParser(description='UEFI module analyser',
-		prog=program)
-    parser.add_argument('module',
-		type=str, 
-		help='path to UEFI module')
+                                     prog=program)
+    parser.add_argument('module', type=str, help='path to UEFI module')
     args = parser.parse_args()
     if os.path.isfile(args.module):
         analyser = Analyser(args.module)

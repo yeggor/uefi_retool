@@ -1,17 +1,17 @@
 # MIT License
-# 
+#
 # Copyright (c) 2018-2019 yeggor
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,17 +22,18 @@
 
 import json
 
-import ida_bytes  # pylint: disable=import-error
-import ida_name  # pylint: disable=import-error
-import idaapi  # pylint: disable=import-error
-import idautils  # pylint: disable=import-error
-import idc  # pylint: disable=import-error
+# pylint: disable=import-error
+import ida_bytes
+import ida_name
+import idaapi
+import idautils
+import idc
 
-from .guids import ami_guids, edk2_guids, edk_guids
+from .guids import (ami_guids, asrock_guids, dell_guids, edk2_guids, edk_guids,
+                    lenovo_guids)
 from .tables import BOOT_SERVICES_OFFSET_x64, BOOT_SERVICES_OFFSET_x86
-from .utils import (
-    Table, check_guid, check_subsystem, get_guid, get_guid_str,
-    get_header_file, get_header_idb, get_machine_type)
+from .utils import (Table, check_guid, check_subsystem, get_guid, get_guid_str,
+                    get_header_file, get_header_idb, get_machine_type)
 
 
 class Analyser():
@@ -75,39 +76,15 @@ class Analyser():
         self.gBServices['UninstallMultipleProtocolInterfaces'] = []
 
         self.Protocols = {}
-        self.Protocols['AmiGuids'] = ami_guids.ami_guids
-        self.Protocols['EdkGuids'] = edk_guids.edk_guids
-        self.Protocols['Edk2Guids'] = edk2_guids.edk2_guids
-        self.Protocols['All'] = [
-            # {
-            #   address: ...
-            #   service: ...
-            #   guid: ...
-            #   protocol_name: ...
-            #   protocol_place: ...
-            # }, 
-            # ...
-        ]
-        self.Protocols['PropGuids'] = []
-        self.Protocols['Data'] = []
-
-    @staticmethod
-    def help():
-        print('Methods:')
-        print(' * analyser.get_boot_services()')
-        print('   - check: analyser.gBServices[<service_name>]')
-        print(' * analyser.get_protocols()')
-        print('   - check: analyser.Protocols["All"]')
-        print(' * analyser.get_prot_names()')
-        print('   - check: analyser.Protocols["All"]')
-        print('Commands:')
-        print(' * analyser.list_boot_services()')
-        print(' * analyser.list_protocols()')
-        print(' * analyser.make_comments()')
-        print(' * analyser.make_names()')
-        print(' * analyser.set_types()')
-        print(' * analyser.print_all()')
-        print(' * analyser.analyse_all()')
+        self.Protocols['ami_guids'] = ami_guids.ami_guids
+        self.Protocols['asrock_guids'] = asrock_guids.asrock_guids
+        self.Protocols['dell_guids'] = dell_guids.dell_guids
+        self.Protocols['edk_guids'] = edk_guids.edk_guids
+        self.Protocols['edk2_guids'] = edk2_guids.edk2_guids
+        self.Protocols['lenovo_guids'] = lenovo_guids.lenovo_guids
+        self.Protocols['all'] = []
+        self.Protocols['prop_guids'] = []
+        self.Protocols['data'] = []
 
     def _find_est(self, gvar, start, end):
         RAX = 0
@@ -117,9 +94,9 @@ class Analyser():
             BS_OFFSET = 0x3c
         ea = start
         while (ea < end):
-            if ((idc.print_insn_mnem(ea) == 'mov') and (idc.get_operand_value(ea, 0) == RAX) and \
-                (idc.get_operand_value(ea, 1) == BS_OFFSET)
-            ):
+            if ((idc.print_insn_mnem(ea) == 'mov')
+                    and (idc.get_operand_value(ea, 0) == RAX)
+                    and (idc.get_operand_value(ea, 1) == BS_OFFSET)):
                 if idc.SetType(gvar, EFI_SYSTEM_TABLE):
                     idc.set_name(gvar, 'gSt_{addr:#x}'.format(addr=gvar))
                     return True
@@ -135,9 +112,9 @@ class Analyser():
         end = idc.get_segm_end(code)
         for ea in range(start, end):
             for service_name in self.BOOT_SERVICES_OFFSET:
-                if (idc.print_insn_mnem(ea) == 'call' and \
-                    idc.get_operand_value(ea, 0) == self.BOOT_SERVICES_OFFSET[service_name]
-                ):
+                if (idc.print_insn_mnem(ea) == 'call'
+                        and idc.get_operand_value(
+                            ea, 0) == self.BOOT_SERVICES_OFFSET[service_name]):
                     if not self.gBServices[service_name].count(ea):
                         self.gBServices[service_name].append(ea)
 
@@ -151,13 +128,15 @@ class Analyser():
                 if self.arch == 'x86':
                     for _ in range(1, 25):
                         ea = idc.prev_head(ea)
-                        if (idc.get_operand_value(ea, 0) > self.base and idc.print_insn_mnem(ea) == 'push'):
+                        if (idc.get_operand_value(ea, 0) > self.base
+                                and idc.print_insn_mnem(ea) == 'push'):
                             found = True
                             break
                 if self.arch == 'x64':
                     for _ in range(1, 16):
                         ea = idc.prev_head(ea)
-                        if (idc.get_operand_value(ea, 1) > self.base and idc.print_insn_mnem(ea) == 'lea'):
+                        if (idc.get_operand_value(ea, 1) > self.base
+                                and idc.print_insn_mnem(ea) == 'lea'):
                             found = True
                             break
                 if not found:
@@ -176,46 +155,38 @@ class Analyser():
                     record['address'] = xref
                     record['service'] = service_name
                     record['guid'] = cur_guid
-                    if not self.Protocols['All'].count(record):
-                        self.Protocols['All'].append(record)
+                    if not self.Protocols['all'].count(record):
+                        self.Protocols['all'].append(record)
 
     def get_prot_names(self):
         '''
         match UEFI protocols GUIDs with known GUIDs
         if protocol GUID is not found in a lists of known GUIDs, the protocol is considered proprietary
         '''
-        for index in range(len(self.Protocols['All'])):
+        for index in range(len(self.Protocols['all'])):
             fin = False
-            for prot_name in self.Protocols['Edk2Guids'].keys():
-                guid_idb = self.Protocols['All'][index]['guid']
-                guid_conf = self.Protocols['Edk2Guids'][prot_name]
-                if (guid_idb == guid_conf):
-                    self.Protocols['All'][index]['protocol_name'] = prot_name
-                    self.Protocols['All'][index]['protocol_place'] = 'edk2_guids'
-                    fin = True
+            for guid_place in [
+                    'ami_guids', 'asrock_guids', 'dell_guids', 'edk_guids',
+                    'edk2_guids', 'lenovo_guids'
+            ]:
+                for prot_name in self.Protocols[guid_place].keys():
+                    guid_idb = self.Protocols['all'][index]['guid']
+                    guid_conf = self.Protocols[guid_place][prot_name]
+                    if (guid_idb == guid_conf):
+                        self.Protocols['all'][index][
+                            'protocol_name'] = prot_name
+                        self.Protocols['all'][index][
+                            'protocol_place'] = guid_place
+                        fin = True
+                        break
+                if fin:
                     break
-            if fin: continue
-            for prot_name in self.Protocols['EdkGuids'].keys():
-                guid_idb = self.Protocols['All'][index]['guid']
-                guid_conf = self.Protocols['EdkGuids'][prot_name]
-                if (guid_idb == guid_conf):
-                    self.Protocols['All'][index]['protocol_name'] = prot_name
-                    self.Protocols['All'][index]['protocol_place'] = 'edk_guids'
-                    fin = True
-                    break
-            if fin: continue
-            for prot_name in self.Protocols['AmiGuids'].keys():
-                guid_idb = self.Protocols['All'][index]['guid']
-                guid_conf = self.Protocols['AmiGuids'][prot_name]
-                if (guid_idb == guid_conf):
-                    self.Protocols['All'][index]['protocol_name'] = prot_name
-                    self.Protocols['All'][index]['protocol_place'] = 'ami_guids'
-                    fin = True
-                    break
-            if fin: continue
-            if not 'protocol_name' in self.Protocols['All'][index]:
-                self.Protocols['All'][index]['protocol_name'] = 'ProprietaryProtocol'
-                self.Protocols['All'][index]['protocol_place'] = 'unknown'
+            if fin:
+                continue
+            if not 'protocol_name' in self.Protocols['all'][index]:
+                self.Protocols['all'][index][
+                    'protocol_name'] = 'ProprietaryProtocol'
+                self.Protocols['all'][index]['protocol_place'] = 'unknown'
 
     def get_data_guids(self):
         '''
@@ -223,10 +194,7 @@ class Analyser():
         '''
         EFI_GUID = 'EFI_GUID *'
         EFI_GUID_ID = idc.get_struc_id('EFI_GUID')
-        segments = [
-            '.text', 
-            '.data'
-        ]
+        segments = ['.text', '.data']
         for segment in segments:
             seg_start, seg_end = 0, 0
             for seg in idautils.Segments():
@@ -248,49 +216,31 @@ class Analyser():
                     if cur_guid == [0] * 11:
                         ea += 1
                         continue
-                    for name in self.Protocols['Edk2Guids']:
-                        if self.Protocols['Edk2Guids'][name] == cur_guid:
-                            prot_name = name + '_' + '{addr:#x}'.format(addr=ea)
-                            record = {
-                                'address': ea, 
-                                'service': 'unknown', 
-                                'guid': cur_guid, 
-                                'protocol_name': name, 
-                                'protocol_place': 'edk2_guids'
-                            }
-                            find = True
-                            break
-                    for name in self.Protocols['EdkGuids']:
-                        if self.Protocols['EdkGuids'][name] == cur_guid:
-                            prot_name = name + '_' + '{addr:#x}'.format(addr=ea)
-                            prot_name = name + '_' + '{addr:#x}'.format(addr=ea)
-                            record = {
-                                'address': ea, 
-                                'service': 'unknown', 
-                                'guid': cur_guid, 
-                                'protocol_name': name, 
-                                'protocol_place': 'edk_guids'
-                            }
-                            find = True
-                            break
-                    for name in self.Protocols['AmiGuids']:
-                        if self.Protocols['AmiGuids'][name] == cur_guid:
-                            prot_name = name + '_' + '{addr:#x}'.format(addr=ea)
-                            prot_name = name + '_' + '{addr:#x}'.format(addr=ea)
-                            record = {
-                                'address': ea, 
-                                'service': 'unknown', 
-                                'guid': cur_guid, 
-                                'protocol_name': name, 
-                                'protocol_place': 'ami_guids'
-                            }
-                            find = True
-                            break
-                    if find and (idc.get_name(ea, ida_name.GN_VISIBLE) != prot_name):
+                    for guid_place in [
+                            'ami_guids', 'asrock_guids', 'dell_guids',
+                            'edk_guids', 'edk2_guids', 'lenovo_guids'
+                    ]:
+                        for name in self.Protocols[guid_place]:
+                            if self.Protocols[guid_place][name] == cur_guid:
+                                prot_name = name + '_' + \
+                                    '{addr:#x}'.format(addr=ea)
+                                record = {
+                                    'address': ea,
+                                    'service': 'unknown',
+                                    'guid': cur_guid,
+                                    'protocol_name': name,
+                                    'protocol_place': guid_place
+                                }
+                                find = True
+                                break
+                            if find:
+                                break
+                    if find and (idc.get_name(ea, ida_name.GN_VISIBLE) !=
+                                 prot_name):
                         idc.SetType(ea, EFI_GUID)
                         self.apply_struct(ea, 16, EFI_GUID_ID)
                         idc.set_name(ea, prot_name)
-                        self.Protocols['Data'].append(record)
+                        self.Protocols['data'].append(record)
                 ea += 1
 
     def make_comments(self):
@@ -306,7 +256,8 @@ class Analyser():
                 idc.set_cmt(address, message, 0)
                 idc.op_stroff(address, 0, EFI_BOOT_SERVICES_ID, 0)
                 empty = False
-                print('[ {ea} ] {message}'.format(ea='{addr:#010x}'.format(addr=address), message=message))
+                print('[ {ea} ] {message}'.format(
+                    ea='{addr:#010x}'.format(addr=address), message=message))
         if empty:
             print(' * list is empty')
 
@@ -319,19 +270,19 @@ class Analyser():
         self.get_boot_services()
         self.get_protocols()
         self.get_prot_names()
-        data = self.Protocols['All']
+        data = self.Protocols['all']
         empty = True
         for element in data:
             try:
                 idc.SetType(element['address'], EFI_GUID)
                 self.apply_struct(element['address'], 16, EFI_GUID_ID)
-                name = element['protocol_name'] + '_' + '{addr:#x}'.format(addr=element['address'])
+                name = element['protocol_name'] + '_' + \
+                    '{addr:#x}'.format(addr=element['address'])
                 idc.set_name(element['address'], name)
                 empty = False
                 print('[ {ea} ] {name}'.format(
                     ea='{addr:#010x}'.format(addr=element['address']),
-                    name=name
-                ))
+                    name=name))
             except:
                 continue
         if empty:
@@ -354,34 +305,35 @@ class Analyser():
                 num_of_attempts = 10
                 for _ in range(num_of_attempts):
                     ea = idc.prev_head(ea)
-                    if (idc.print_insn_mnem(ea) == 'mov' and idc.get_operand_type(ea, 1) == O_MEM):
-                        if (idc.get_operand_type(ea, 0) == O_REG and idc.get_operand_value(ea, 0) == RAX):
+                    if (idc.print_insn_mnem(ea) == 'mov'
+                            and idc.get_operand_type(ea, 1) == O_MEM):
+                        if (idc.get_operand_type(ea, 0) == O_REG
+                                and idc.get_operand_value(ea, 0) == RAX):
                             gvar = idc.get_operand_value(ea, 1)
                             gvar_type = idc.get_type(gvar)
-                            '''
-                            if (EFI_SYSTEM_TABLE *)
-                            '''
-                            if ((gvar_type != 'EFI_SYSTEM_TABLE *') and \
-                                (idc.print_operand(address, 0).find('rax') == 1)
-                            ):
+                            # if (EFI_SYSTEM_TABLE *)
+                            if ((gvar_type != 'EFI_SYSTEM_TABLE *')
+                                    and (idc.print_operand(
+                                        address, 0).find('rax') == 1)):
                                 if self._find_est(gvar, ea, address):
+                                    # yapf: disable
                                     print('[ {0} ] Type ({type}) successfully applied'.format(
-                                        '{addr:#010x}'.format(addr=gvar), 
-                                        type=EFI_SYSTEM_TABLE)
-                                    )
+                                            '{addr:#010x}'.format(addr=gvar),
+                                            type=EFI_SYSTEM_TABLE))
                                     empty = False
                                     break
-                            '''
-                            otherwise it (EFI_BOOT_SERVICES *)
-                            '''
-                            if (gvar_type != 'EFI_BOOT_SERVICES *' and gvar_type != 'EFI_SYSTEM_TABLE *'):
+                            # otherwise it (EFI_BOOT_SERVICES *)
+                            if (gvar_type != 'EFI_BOOT_SERVICES *'
+                                    and gvar_type != 'EFI_SYSTEM_TABLE *'):
                                 if idc.SetType(gvar, EFI_BOOT_SERVICES):
                                     empty = False
-                                    idc.set_name(gvar, 'gBs_{addr:#x}'.format(addr=gvar))
+                                    idc.set_name(
+                                        gvar,
+                                        'gBs_{addr:#x}'.format(addr=gvar))
+                                    # yapf: disable
                                     print('[ {0} ] Type ({type}) successfully applied'.format(
-                                        '{addr:#010x}'.format(addr=gvar), 
-                                        type=EFI_BOOT_SERVICES)
-                                    )
+                                            '{addr:#010x}'.format(addr=gvar),
+                                            type=EFI_BOOT_SERVICES))
                             break
         if empty:
             print(' * list is empty')
@@ -397,7 +349,8 @@ class Analyser():
         print('Boot services:')
         for service in self.gBServices:
             for address in self.gBServices[service]:
-                table_data.append(['{addr:#010x}'.format(addr=address), service])
+                table_data.append(
+                    ['{addr:#010x}'.format(addr=address), service])
                 empty = False
         if empty:
             print(' * list is empty')
@@ -411,21 +364,21 @@ class Analyser():
         self.get_boot_services()
         self.get_protocols()
         self.get_prot_names()
-        data = self.Protocols['All'] + self.Protocols['Data']
+        data = self.Protocols['all'] + self.Protocols['data']
         print('Protocols:')
         if len(data) == 0:
             print(' * list is empty')
         else:
             table_data = []
-            table_data.append(['GUID', 'Protocol name', 'Address', 'Service', 'Protocol place'])
+            table_data.append([
+                'GUID', 'Protocol name', 'Address', 'Service', 'Protocol place'
+            ])
             for element in data:
                 guid = get_guid_str(element['guid'])
                 table_data.append([
-                    guid,
-                    element['protocol_name'],
+                    guid, element['protocol_name'],
                     '{addr:#010x}'.format(addr=element['address']),
-                    element['service'],
-                    element['protocol_place']
+                    element['service'], element['protocol_place']
                 ])
             print(Table.display(table_data))
 
@@ -444,9 +397,9 @@ class Analyser():
 
     @staticmethod
     def apply_struct(ea, size, sid):
-	    ida_bytes.del_items(ea, size, idc.DELIT_DELNAMES)
-	    ida_bytes.create_struct(ea, size, sid)
-	    return size
+        ida_bytes.del_items(ea, size, idc.DELIT_DELNAMES)
+        ida_bytes.create_struct(ea, size, sid)
+        return size
 
 
 def main():
@@ -456,9 +409,10 @@ def main():
         analyser.print_all()
         analyser.analyse_all()
     if not analyser.valid:
-        analyser.arch = idaapi.askstr(0, 'x86 / x64', 'Set architecture manually (x86 or x64)')
+        analyser.arch = idaapi.askstr(
+            0, 'x86 / x64', 'Set architecture manually (x86 or x64)')
         if not (analyser.arch == 'x86' or analyser.arch == 'x64'):
-            return False 
+            return False
         if (analyser.arch == 'x86'):
             analyser.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x86
         if (analyser.arch == 'x64'):
@@ -466,6 +420,7 @@ def main():
         analyser.print_all()
         analyser.analyse_all()
         return True
+
 
 if __name__ == '__main__':
     main()
