@@ -7,3 +7,7 @@ __pycache__/
 all/
 modules/
 .vscode/
+
+# Files
+log/ida_log_all.json
+log/ida_log_all.md
