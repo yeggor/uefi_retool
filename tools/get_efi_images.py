@@ -29,6 +29,7 @@ from glob import glob
 import click
 import colorama
 import uefi_firmware
+from .guid_db import UEFI_GUIDS
 
 dir_name = 'all'
 pe_dir = 'modules'
@@ -54,7 +55,16 @@ def get_files(directory_name, pe_dir):
                         with open(ui_path, 'rb') as ui:
                             pe_name = ui.read().replace(b'\x00', b'')
                             dst = os.path.join(pe_dir, pe_name.decode('utf-8'))
-                        shutil.copy(src, dst)
+                    else:
+                        # No UI section, try to get a friendly name from the GUID database.
+                        pe_guid = directory_name.split(os.path.sep)[-2]
+                        pe_guid = pe_guid.replace("file-", "").upper()
+                        pe_name = UEFI_GUIDS.get(pe_guid)
+                        if not pe_name:
+                            # Unknown GUID.
+                            pe_name = pe_guid
+                        dst = os.path.join(pe_dir, pe_name)
+                    shutil.copy(src, dst)
             if os.path.isdir(src):
                 get_files(src, pe_dir)
     return True
