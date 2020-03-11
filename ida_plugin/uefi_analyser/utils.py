@@ -27,6 +27,7 @@ import ida_bytes
 import idaapi
 import idautils
 import idc
+
 '''
 definitions from PE file structure
 '''
@@ -135,11 +136,11 @@ def rev_endian(num):
     '''
     reorders bytes in number
     '''
-    num_str = hex(num).replace('0x', '').replace('L', '')
+    # yapf: disable
+    num_str = '{:x}'.format(num)
     num_ba = ([
         int('0x' + num_str[i:i + 2], 16)
-        for i in range(0,
-                       len(num_str) - 1, 2)
+        for i in range(0, len(num_str) - 1, 2)
     ])
     return get_num_le(num_ba)
 
@@ -211,8 +212,8 @@ def get_dep_json(res_json):
     for module_info in res_json:
         for protocol in module_info['protocols']:
             if (protocol['service'] == 'InstallProtocolInterface' or
-                        protocol['service'] == 'InstallMultipleProtocolInterfaces'
-                    ):
+                protocol['service'] == 'InstallMultipleProtocolInterfaces'
+                ):
                 dep_json_item = {
                     'module_name': module_info['module_name'],
                     'protocol_name': protocol['protocol_name'],
