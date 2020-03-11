@@ -204,6 +204,8 @@ def get_dep_json(res_json):
     '''
     get json for dependency browser and dependency graph
     '''
+    CLIENT_PROTOCOL_SERVICES = ('LocateProtocol', 'OpenProtocol')
+
     dep_json = []
     for module_info in res_json:
         for protocol in module_info['protocols']:
@@ -219,7 +221,7 @@ def get_dep_json(res_json):
                 dep_json_item['used_by'] = []
                 for module_info in res_json:
                     for protocol in module_info['protocols']:
-                        if (protocol['service'] == 'LocateProtocol'
+                        if (protocol['service'] in CLIENT_PROTOCOL_SERVICES
                                 and protocol['guid'] == dep_json_item['guid']):
                             dep_json_item['used_by'].append(
                                 module_info['module_name'])
