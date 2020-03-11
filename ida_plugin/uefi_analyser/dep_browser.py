@@ -32,6 +32,7 @@ from idaapi import Choose
 from .utils import get_dep_json
 
 NAME = 'UEFI_RETool'
+
 DEBUG = True
 
 
@@ -53,6 +54,7 @@ class ProtsWindow(Choose):
     '''
     class to display protocols information output window
     '''
+
     def __init__(self, title, dep_json, nb=5):
         sizes = self._get_sizes(dep_json)
         # yapf: disable
@@ -182,11 +184,11 @@ def handle_json(res_json):
 
 
 def run(log_file):
-    with open(log_file, 'rb') as f:
-        try:
+    try:
+        with open(log_file, 'rb') as f:
             res_json = json.load(f)
-            handle_json(res_json)
-        except Exception as e:
-            print('[{} error] {}'.format(NAME, repr(e)))
-            return False
+        handle_json(res_json)
+    except Exception as e:
+        print('[{} error] {}'.format(NAME, repr(e)))
+        return False
     return True

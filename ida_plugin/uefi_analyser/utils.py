@@ -42,6 +42,7 @@ class Table():
     '''
     class to build table from array
     '''
+
     def __init__(self, table_data):
         self.table_data = table_data
         self.max_sizes = self._get_max_sizes()
@@ -210,8 +211,8 @@ def get_dep_json(res_json):
     for module_info in res_json:
         for protocol in module_info['protocols']:
             if (protocol['service'] == 'InstallProtocolInterface' or
-                    protocol['service'] == 'InstallMultipleProtocolInterfaces'
-                ):
+                        protocol['service'] == 'InstallMultipleProtocolInterfaces'
+                    ):
                 dep_json_item = {
                     'module_name': module_info['module_name'],
                     'protocol_name': protocol['protocol_name'],

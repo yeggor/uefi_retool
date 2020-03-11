@@ -34,6 +34,8 @@ import idautils
 from .utils import get_dep_json
 
 NAME = 'UEFI_RETool'
+DEP_GRAPH = None
+
 DEBUG = True
 
 
@@ -73,7 +75,8 @@ class SelectionPrinter(_base_graph_action_handler_t):
                         print('[{}] selected node {}'.format(NAME, s.node))
                     else:
                         # yapf: disable
-                        print('[{}] selected edge {} -> {}'.format(NAME, str(s.elp.e.src), str(s.elp.e.dst)))
+                        print('[{}] selected edge {} -> {}'.format(NAME,
+                                                                   str(s.elp.e.src), str(s.elp.e.dst)))
         return 1
 
 
@@ -154,14 +157,20 @@ class DependencyGraph(ida_graph.GraphViewer):
 
 
 def run(json_file):
-    with open(json_file, 'r') as f:
-        res_json = json.load(f)
-    dep_json = get_dep_json(res_json)
-    g = DependencyGraph(dep_json)
-    if g.Show():
-        return g
-    else:
-        return None
+    global DEP_GRAPH
+    if DEP_GRAPH:
+        DEP_GRAPH.Close()
+    try:
+        with open(json_file, 'r') as f:
+            res_json = json.load(f)
+        dep_json = get_dep_json(res_json)
+        g = DependencyGraph(dep_json)
+        DEP_GRAPH = g
+        if g.Show():
+            return g
+    except Exception as e:
+        print('[{} error] {}'.format(NAME, repr(e)))
+    return False
 
 
 def test():
