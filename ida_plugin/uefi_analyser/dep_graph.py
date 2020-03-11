@@ -75,8 +75,7 @@ class SelectionPrinter(_base_graph_action_handler_t):
                         print('[{}] selected node {}'.format(NAME, s.node))
                     else:
                         # yapf: disable
-                        print('[{}] selected edge {} -> {}'.format(NAME,
-                                                                   str(s.elp.e.src), str(s.elp.e.dst)))
+                        print('[{}] selected edge {} -> {}'.format(NAME, str(s.elp.e.src), str(s.elp.e.dst)))
         return 1
 
 

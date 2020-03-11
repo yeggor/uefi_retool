@@ -54,7 +54,6 @@ class ProtsWindow(Choose):
     '''
     class to display protocols information output window
     '''
-
     def __init__(self, title, dep_json, nb=5):
         sizes = self._get_sizes(dep_json)
         # yapf: disable

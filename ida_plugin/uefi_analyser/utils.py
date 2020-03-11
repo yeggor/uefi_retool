@@ -27,7 +27,6 @@ import ida_bytes
 import idaapi
 import idautils
 import idc
-
 '''
 definitions from PE file structure
 '''
@@ -43,7 +42,6 @@ class Table():
     '''
     class to build table from array
     '''
-
     def __init__(self, table_data):
         self.table_data = table_data
         self.max_sizes = self._get_max_sizes()
