@@ -110,13 +110,17 @@ class Analyser():
         code = list(idautils.Functions())[0]
         start = idc.get_segm_start(code)
         end = idc.get_segm_end(code)
-        for ea in range(start, end):
+        ea = start
+        while (ea <= end):
+            if idc.print_insn_mnem(ea) != 'call':
+                ea = idc.next_head(ea)
+                continue
             for service_name in self.BOOT_SERVICES_OFFSET:
-                if (idc.print_insn_mnem(ea) == 'call'
-                        and idc.get_operand_value(
-                            ea, 0) == self.BOOT_SERVICES_OFFSET[service_name]):
+                # yapf: disable
+                if (idc.get_operand_value(ea, 0) == self.BOOT_SERVICES_OFFSET[service_name]):
                     if not self.gBServices[service_name].count(ea):
                         self.gBServices[service_name].append(ea)
+            ea = idc.next_head(ea)
 
     def get_protocols(self):
         '''
