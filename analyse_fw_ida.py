@@ -51,7 +51,8 @@ def show_item(item):
 
 
 def analyse_all(scr_name):
-    log_path = os.path.join('log', 'ida_' + scr_name.replace('.py', '.log'))
+    log_path = os.path.join('log',
+                            'ida_{}'.format(scr_name.replace('.py', '.md')))
     if os.path.isfile(log_path):
         os.remove(log_path)
     files = os.listdir(pe_dir)
