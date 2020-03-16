@@ -156,9 +156,6 @@ class Analyser():
                         'service': service_name,
                         'guid': cur_guid,
                     }
-                    record['address'] = xref
-                    record['service'] = service_name
-                    record['guid'] = cur_guid
                     if not self.Protocols['all'].count(record):
                         self.Protocols['all'].append(record)
 
