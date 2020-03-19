@@ -119,6 +119,9 @@ class DependencyGraph(ida_graph.GraphViewer):
             if output_node is None:
                 output_node = self.AddNode((pair[0], self.color))
                 saved_nodes.append((pair[0], output_node))
+            if pair[0] == pair[1]:
+                # Handle the reflexive case, e.g. (x, x)
+                input_node = output_node
             if input_node is None:
                 input_node = self.AddNode((pair[1], self.color))
                 saved_nodes.append((pair[1], input_node))
