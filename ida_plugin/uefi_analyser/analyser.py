@@ -224,7 +224,7 @@ class Analyser():
                         for name in self.Protocols[guid_place]:
                             if self.Protocols[guid_place][name] == cur_guid:
                                 prot_name = name + '_' + \
-                                    '{addr:#x}'.format(addr=ea)
+                                    '{}_{:#x}'.format(name, ea)
                                 record = {
                                     'address': ea,
                                     'service': 'unknown',

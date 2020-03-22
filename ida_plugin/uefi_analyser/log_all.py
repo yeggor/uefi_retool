@@ -70,7 +70,7 @@ def log_all():
         print_log('\t - [protocol_name] ' + element['protocol_name'])
         print_log('\t - [protocol_place] ' + element['protocol_place'])
         print_log('\t - ' + guid_str)
-    idc.qexit(1)
+    idc.qexit(0)
 
 
 if __name__ == '__main__':

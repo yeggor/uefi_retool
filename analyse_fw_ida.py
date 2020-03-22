@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.7
 
 # MIT License
 #
@@ -25,6 +25,7 @@
 import argparse
 import json
 import os
+import platform
 import sys
 from glob import glob
 
@@ -34,10 +35,15 @@ import uefi_firmware
 from tools import md_to_json, utils
 from tools.get_efi_images import get_efi_images
 from tools.update_edk2_guids import update
-'''
-reads configuration data
-'''
-with open('config.json', 'rb') as cfile:
+
+if platform.system() == 'Windows':
+    CONFIG_FILE = 'config-win.json'
+
+if platform.system() == 'Linux':
+    CONFIG_FILE = 'config-nix.json'
+
+# reads configuration data
+with open(CONFIG_FILE, 'rb') as cfile:
     config = json.load(cfile)
 
 dump_dir = config['DUMP_DIR']

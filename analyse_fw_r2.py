@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.7
 
 # MIT License
 #
@@ -25,6 +25,7 @@
 import argparse
 import json
 import os
+import platform
 import time
 
 import click
@@ -37,13 +38,21 @@ from tools.update_edk2_guids import update
 
 LOG_FILE_ALL = os.path.join('log', 'r2_log_all.md')
 LOG_FILE_PP_GUIDS = os.path.join('log', 'r2_log_pp_guids.md')
-'''
-reads configuration data
-'''
-with open('config.json', 'rb') as cfile:
+
+if platform.system() == 'Windows':
+    CONFIG_FILE = 'config-win.json'
+
+if platform.system() == 'Linux':
+    CONFIG_FILE = 'config-nix.json'
+
+# reads configuration data
+with open(CONFIG_FILE, 'rb') as cfile:
     config = json.load(cfile)
 
+dump_dir = config['DUMP_DIR']
 pe_dir = config['PE_DIR']
+ida_path = '"{}"'.format(config['IDA_PATH'])
+ida64_path = '"{}"'.format(config['IDA64_PATH'])
 
 
 def show_item(item):

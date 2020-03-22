@@ -59,7 +59,7 @@ def log_pp_guids():
             service = protocol_record['service']
             address = '{addr:#x}'.format(addr=protocol_record['address'])
             print_log(get_table_line(guid, module, service, address))
-    idc.qexit(1)
+    idc.qexit(0)
 
 
 if __name__ == '__main__':
