@@ -24,7 +24,7 @@ The tool consists of a plugin for IDA and a set of scripts for UEFI firmware ana
 Usage:
 
  * Copy `ida_plugin\uefi_analyser` directory to IDA plugins directory
- * Edit `config.json` file
+ * Edit `config-[win|nix].json` file
     - "PE_DIR" is a folder that contains all executable images from the UEFI firmware file
     - "DUMP_DIR" is a folder that contains all components from the firmware filesystem
     - "IDA_PATH" and "IDA64_PATH" are paths to IDA Pro executable files
