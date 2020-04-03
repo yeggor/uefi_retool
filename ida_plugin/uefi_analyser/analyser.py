@@ -223,8 +223,7 @@ class Analyser():
                     ]:
                         for name in self.Protocols[guid_place]:
                             if self.Protocols[guid_place][name] == cur_guid:
-                                prot_name = name + '_' + \
-                                    '{}_{:#x}'.format(name, ea)
+                                prot_name = '{}_{:#x}'.format(name, ea)
                                 record = {
                                     'address': ea,
                                     'service': 'unknown',
@@ -277,8 +276,7 @@ class Analyser():
             try:
                 idc.SetType(element['address'], EFI_GUID)
                 self.apply_struct(element['address'], 16, EFI_GUID_ID)
-                name = element['protocol_name'] + '_' + \
-                    '{addr:#x}'.format(addr=element['address'])
+                name = '{prot_name}_{addr:#x}'.format(prot_name=element['protocol_name'], addr=element['address'])
                 idc.set_name(element['address'], name)
                 empty = False
                 print('[ {ea} ] {name}'.format(
