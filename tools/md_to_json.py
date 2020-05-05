@@ -1,6 +1,7 @@
+################################################################################
 # MIT License
 #
-# Copyright (c) 2018-2019 yeggor
+# Copyright (c) 2018-2020 yeggor
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,8 +20,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+################################################################################
 
-import argparse
 import json
 import os
 
@@ -82,6 +83,7 @@ def get_module_json(module_chunk):
 
 
 def md_to_json(md_file, json_file):
+    """get .json file from .md file"""
     with open(md_file, 'r') as f:
         data = f.read()
     res_json = []
@@ -96,26 +98,6 @@ def md_to_json(md_file, json_file):
 def get_json(md_file):
     json_file = md_file.replace('.md', '.json')
     md_to_json(md_file, json_file)
-
-
-def main():
-    program = 'python ' + os.path.basename(__file__)
-    parser = argparse.ArgumentParser(
-        description='Convert log from MarkDown to JSON', prog=program)
-    parser.add_argument(
-        'md_log_file',
-        type=str,
-        help='path to your MarkDown log file (for example, ida_log_all.md)')
-
-    args = parser.parse_args()
-
-    if os.path.isfile(args.md_log_file):
-        try:
-            get_json(args.md_log_file)
-        except Exception as e:
-            print('[error] {}'.format(repr(e)))
-    else:
-        print('[error] check file name')
 
 
 if __name__ == '__main__':

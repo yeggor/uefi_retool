@@ -1,6 +1,7 @@
+################################################################################
 # MIT License
 #
-# Copyright (c) 2018-2019 yeggor
+# Copyright (c) 2018-2020 yeggor
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+################################################################################
 
 import json
 
@@ -51,9 +53,7 @@ class chooser_handler_t(idaapi.action_handler_t):
 
 
 class ProtsWindow(Choose):
-    '''
-    class to display protocols information output window
-    '''
+    """class to display protocols information output window"""
     def __init__(self, title, dep_json, nb=5):
         sizes = self._get_sizes(dep_json)
         # yapf: disable
@@ -79,9 +79,7 @@ class ProtsWindow(Choose):
         self.dep_json = dep_json
 
     def _get_sizes(self, data):
-        '''
-        get maximum field sizes
-        '''
+        """get maximum field sizes"""
         sizes = {
             'GUID': 0,
             'Name': 0,
@@ -100,9 +98,7 @@ class ProtsWindow(Choose):
         return sizes
 
     def _get_lines(self, dep_json):
-        '''
-        to fill line in the table
-        '''
+        """to fill line in the table"""
         lines = []
         for elem in dep_json:
             item = [
@@ -116,9 +112,7 @@ class ProtsWindow(Choose):
         return lines
 
     def _make_item(self):
-        '''
-        make custom element
-        '''
+        """make custom element"""
         item = [
             idaapi.ask_str('', 0, 'GUID'),
             idaapi.ask_str('', 0, 'Name'),

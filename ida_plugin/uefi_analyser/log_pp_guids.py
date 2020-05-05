@@ -1,6 +1,7 @@
+################################################################################
 # MIT License
 #
-# Copyright (c) 2018-2019 yeggor
+# Copyright (c) 2018-2020 yeggor
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+################################################################################
 
 import os
 import sys
@@ -34,7 +36,7 @@ LOG_FILE = os.path.join('..', 'log', 'ida_log_pp_guids.md')
 
 def print_log(data):
     with open(LOG_FILE, 'a') as log:
-        log.write(data + '\n')
+        log.write('{}\n'.format(data))
 
 
 def get_table_line(guid, module, service, address):

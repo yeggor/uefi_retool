@@ -1,6 +1,7 @@
+################################################################################
 # MIT License
 #
-# Copyright (c) 2018-2019 yeggor
+# Copyright (c) 2018-2020 yeggor
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+################################################################################
 
 import os
 
@@ -33,7 +35,7 @@ LOG_FILE = os.path.join('..', 'log', 'ida_log_all.md')
 
 def print_log(data):
     with open(LOG_FILE, 'a') as log:
-        log.write(data + '\n')
+        log.write('{}\n'.format(data))
 
 
 def list_boot_services(analyser):
@@ -53,7 +55,7 @@ def log_all():
     if not analyser.valid:
         idc.qexit(-1)
     analyser.get_boot_services()
-    print_log('## Module: ' + idaapi.get_root_filename())
+    print_log('## Module: {}'.format(idaapi.get_root_filename()))
     print_log('### Boot services:')
     list_boot_services(analyser)
     analyser.get_protocols()
@@ -63,13 +65,13 @@ def log_all():
     if not len(data):
         print_log('* empty')
     for element in data:
-        guid_str = '[guid] ' + get_guid_str(element['guid'])
+        guid_str = '[guid] {}'.format(get_guid_str(element['guid']))
         print_log('* [{0}]'.format(
             '{addr:#x}'.format(addr=element['address'])))
-        print_log('\t - [service] ' + element['service'])
-        print_log('\t - [protocol_name] ' + element['protocol_name'])
-        print_log('\t - [protocol_place] ' + element['protocol_place'])
-        print_log('\t - ' + guid_str)
+        print_log('\t - [service] {}'.format(element['service']))
+        print_log('\t - [protocol_name] {}'.format(element['protocol_name']))
+        print_log('\t - [protocol_place] {}'.format(element['protocol_place']))
+        print_log('\t - {}'.format(guid_str))
     idc.qexit(0)
 
 

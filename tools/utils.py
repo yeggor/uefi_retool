@@ -1,6 +1,7 @@
+################################################################################
 # MIT License
 #
-# Copyright (c) 2018-2019 yeggor
+# Copyright (c) 2018-2020 yeggor
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+################################################################################
 
 IMAGE_FILE_MACHINE_IA64 = 0x8664
 IMAGE_FILE_MACHINE_I386 = 0x014c
@@ -26,6 +28,7 @@ PE_OFFSET = 0x3c
 
 
 def get_num_le(bytearr):
+    """get le-number from data"""
     num_le = 0
     for i in range(len(bytearr)):
         num_le += bytearr[i] * pow(256, i)
@@ -33,6 +36,7 @@ def get_num_le(bytearr):
 
 
 def get_machine_type(module_path):
+    """get architecture"""
     with open(module_path, 'rb') as module:
         data = module.read()
     PE_POINTER = get_num_le(data[PE_OFFSET:PE_OFFSET + 1:])

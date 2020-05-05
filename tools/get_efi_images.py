@@ -1,6 +1,7 @@
+################################################################################
 # MIT License
 #
-# Copyright (c) 2018-2019 yeggor
+# Copyright (c) 2018-2020 yeggor
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,8 +20,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+################################################################################
 
-import argparse
 import os
 import shutil
 import sys
@@ -29,13 +30,15 @@ from glob import glob
 import click
 import colorama
 import uefi_firmware
+
 from .guid_db import UEFI_GUIDS
 
-dir_name = 'all'
-pe_dir = 'modules'
+DIR_NAME = 'all'
+PE_DIR = 'modules'
 
 
 def get_files(directory_name, pe_dir):
+    """get efi images from "all" directory"""
     if not os.path.isdir(pe_dir):
         os.mkdir(pe_dir)
     bar_template = click.style('%(label)s  %(bar)s | %(info)s', fg='cyan')
@@ -56,12 +59,12 @@ def get_files(directory_name, pe_dir):
                             pe_name = ui.read().replace(b'\x00', b'')
                             dst = os.path.join(pe_dir, pe_name.decode('utf-8'))
                     else:
-                        # No UI section, try to get a friendly name from the GUID database.
+                        # no UI section, try to get a friendly name from the GUID database
                         pe_guid = directory_name.split(os.path.sep)[-2]
                         pe_guid = pe_guid.replace("file-", "").upper()
                         pe_name = UEFI_GUIDS.get(pe_guid)
                         if not pe_name:
-                            # Unknown GUID.
+                            # unknown GUID
                             pe_name = pe_guid
                         dst = os.path.join(pe_dir, pe_name)
                     shutil.copy(src, dst)
@@ -99,48 +102,10 @@ class Dumper():
 
 
 def get_efi_images(fw_name):
-    '''
-    for correct color display in uefi_firmware module
-    '''
-    colorama.init()
-    dumper = Dumper(fw_name, dir_name, pe_dir)
+    """get images from firmware"""
+    colorama.init()  # for correct color display in uefi_firmware module
+    dumper = Dumper(fw_name, DIR_NAME, PE_DIR)
     if not dumper.dump_all():
         exit()
     dumper.get_pe_files()
     return True
-
-
-def main():
-    '''
-    for correct color display in uefi_firmware module
-    '''
-    colorama.init()
-    program = 'python ' + os.path.basename(__file__)
-    parser = argparse.ArgumentParser(description='Get all UEFI PE-images',
-                                     prog=program)
-    parser.add_argument('firmware_path',
-                        type=str,
-                        help='path to your UEFI firmware')
-    parser.add_argument(
-        '--all_dir',
-        type=str,
-        help=
-        'name of the directory containing all firmware items (default: `all`)',
-        default=dir_name)
-    parser.add_argument(
-        '--pe_dir',
-        type=str,
-        help=
-        'name of the directory containing all firmware PE-images (default: `modules`)',
-        default=pe_dir)
-
-    args = parser.parse_args()
-
-    dumper = Dumper(args.firmware_path, args.all_dir, args.pe_dir)
-    if not dumper.dump_all():
-        exit()
-    dumper.get_pe_files()
-
-
-if __name__ == '__main__':
-    main()
