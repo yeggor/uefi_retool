@@ -1,6 +1,7 @@
+################################################################################
 # MIT License
 #
-# Copyright (c) 2018-2019 yeggor
+# Copyright (c) 2018-2020 yeggor
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+################################################################################
 
 import json
 
@@ -104,9 +106,7 @@ class Analyser():
         return False
 
     def get_boot_services(self):
-        '''
-        found boot services in idb
-        '''
+        """found boot services in idb"""
         code = list(idautils.Functions())[0]
         start = idc.get_segm_start(code)
         end = idc.get_segm_end(code)
@@ -123,9 +123,7 @@ class Analyser():
             ea = idc.next_head(ea)
 
     def get_protocols(self):
-        '''
-        found UEFI protocols information in idb
-        '''
+        """found UEFI protocols information in idb"""
         for service_name in self.gBServices:
             for address in self.gBServices[service_name]:
                 ea, found = address, False
@@ -160,10 +158,10 @@ class Analyser():
                         self.Protocols['all'].append(record)
 
     def get_prot_names(self):
-        '''
+        """
         match UEFI protocols GUIDs with known GUIDs
         if protocol GUID is not found in a lists of known GUIDs, the protocol is considered proprietary
-        '''
+        """
         for index in range(len(self.Protocols['all'])):
             fin = False
             for guid_place in [
@@ -190,9 +188,7 @@ class Analyser():
                 self.Protocols['all'][index]['protocol_place'] = 'unknown'
 
     def get_data_guids(self):
-        '''
-        rename GUIDs in idb
-        '''
+        """rename GUIDs in idb"""
         EFI_GUID = 'EFI_GUID *'
         EFI_GUID_ID = idc.get_struc_id('EFI_GUID')
         segments = ['.text', '.data']
@@ -223,8 +219,7 @@ class Analyser():
                     ]:
                         for name in self.Protocols[guid_place]:
                             if self.Protocols[guid_place][name] == cur_guid:
-                                prot_name = name + '_' + \
-                                    '{addr:#x}'.format(addr=ea)
+                                prot_name = '{}_{:#x}'.format(name, ea)
                                 record = {
                                     'address': ea,
                                     'service': 'unknown',
@@ -245,9 +240,7 @@ class Analyser():
                 ea += 1
 
     def make_comments(self):
-        '''
-        make comments in idb
-        '''
+        """make comments in idb"""
         EFI_BOOT_SERVICES_ID = idc.get_struc_id('EFI_BOOT_SERVICES')
         self.get_boot_services()
         empty = True
@@ -263,9 +256,7 @@ class Analyser():
             print(' * list is empty')
 
     def make_names(self):
-        '''
-        make names in idb
-        '''
+        """make names in idb"""
         EFI_GUID = 'EFI_GUID *'
         EFI_GUID_ID = idc.get_struc_id('EFI_GUID')
         self.get_boot_services()
@@ -277,8 +268,7 @@ class Analyser():
             try:
                 idc.SetType(element['address'], EFI_GUID)
                 self.apply_struct(element['address'], 16, EFI_GUID_ID)
-                name = element['protocol_name'] + '_' + \
-                    '{addr:#x}'.format(addr=element['address'])
+                name = '{prot_name}_{addr:#x}'.format(prot_name=element['protocol_name'], addr=element['address'])
                 idc.set_name(element['address'], name)
                 empty = False
                 print('[ {ea} ] {name}'.format(
@@ -290,10 +280,10 @@ class Analyser():
             print(' * list is empty')
 
     def set_types(self):
-        '''
+        """
         handle (EFI_BOOT_SERVICES *) type
         and (EFI_SYSTEM_TABLE *) for x64 images
-        '''
+        """
         RAX = 0
         O_REG = 1
         O_MEM = 2
@@ -340,9 +330,7 @@ class Analyser():
             print(' * list is empty')
 
     def list_boot_services(self):
-        '''
-        display boot services information to the IDAPython output window
-        '''
+        """display boot services information"""
         self.get_boot_services()
         empty = True
         table_data = []
@@ -359,9 +347,7 @@ class Analyser():
             print(Table.display(table_data))
 
     def list_protocols(self):
-        '''
-        display protocols information to the IDAPython output window
-        '''
+        """display protocols information"""
         self.get_boot_services()
         self.get_protocols()
         self.get_prot_names()

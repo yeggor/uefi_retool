@@ -1,6 +1,7 @@
+################################################################################
 # MIT License
 #
-# Copyright (c) 2018-2019 yeggor
+# Copyright (c) 2018-2020 yeggor
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+################################################################################
 
 # pylint: disable=import-error
 import ida_kernwin
@@ -50,9 +52,7 @@ class chooser_handler_t(idaapi.action_handler_t):
 
 
 class ProtsWindow(Choose):
-    '''
-    class to display protocols information output window
-    '''
+    """display protocols information output window"""
     def __init__(self, title, analyser, nb=5):
         sizes = self._get_sizes(analyser)
         # yapf: disable
@@ -78,9 +78,7 @@ class ProtsWindow(Choose):
         self.popup_names = []
 
     def _get_sizes(self, analyser):
-        '''
-        get maximum field sizes
-        '''
+        """get maximum field sizes"""
         sizes = {
             'Address': 0,
             'Name': 0,
@@ -103,9 +101,7 @@ class ProtsWindow(Choose):
         return sizes
 
     def _get_lines(self, analyser):
-        '''
-        to fill line in the table
-        '''
+        """fill line in the table"""
         lines = []
         for prot in analyser.Protocols['all'] + analyser.Protocols['data']:
             item = [
@@ -120,9 +116,7 @@ class ProtsWindow(Choose):
         return lines
 
     def _make_item(self):
-        '''
-        make custom element
-        '''
+        """make custom element"""
         item = [
             idaapi.ask_str('', 0, 'Address'),
             idaapi.ask_str('', 0, 'Name'),

@@ -2,101 +2,174 @@
 
 A tool for UEFI firmware reverse engineering.
 
-The tool consists of a plugin for IDA and a set of scripts for UEFI firmware analysing.
-
 ## Table of Contents
 
-- [IDA plugin](#ida-plugin)
-- [UEFI firmware analysis with IDA Pro](#uefi-firmware-analysis-with-ida-pro)
-- [UEFI firmware analysis with radare2](#uefi-firmware-analysis-with-radare2)
+<details>
+ <summary>Click to open TOC</summary>
+<!-- MarkdownTOC autolink="true" bracket="round" style="unordered" indent="  " autoanchor="false" markdown_preview="github" -->
+
+- [UEFI firmware analysis with uefi_retool.py script](#uefi-firmware-analysis-with-uefi_retoolpy-script)
+  - [Commands](#commands)
+  - [get-images](#get-images)
+  - [get-info](#get-info)
+  - [get-pp](#get-pp)
 - [Additional tools](#additional-tools)
+- [IDA plugin](#ida-plugin)
+  - [Analyser & Protocol explorer](#analyser--protocol-explorer)
+    - [Usage](#usage)
+    - [Example](#example)
+      - [Before analysis](#before-analysis)
+      - [After analysis](#after-analysis)
+      - [Protocol explorer window](#protocol-explorer-window)
+  - [Dependency browser & Dependency graph](#dependency-browser--dependency-graph)
+    - [Usage](#usage-1)
+    - [Example](#example-1)
+      - [Dependency browser window](#dependency-browser-window)
+      - [Dependency graph](#dependency-graph)
 - [Similar works](#similar-works)
 - [Contributors](#contributors)
+
+<!-- /MarkdownTOC -->
+</details>
+
+# UEFI firmware analysis with [uefi_retool.py](https://github.com/yeggor/UEFI_RETool/blob/master/uefi_retool.py) script
+
+Usage:
+
+ * Copy `ida_plugin\uefi_analyser` directory to IDA plugins directory
+ * Edit `config-[win|nix].json` file
+    - `PE_DIR` is a folder that contains all executable images from the UEFI firmware
+    - `DUMP_DIR` is a folder that contains all components from the firmware filesystem
+    - `IDA_PATH` and `IDA64_PATH` are paths to IDA Pro executable files
+ * Run `pip install -r requirements.txt`
+ * Run `python uefi_retool.py` command to display the help message
+
+## Commands
+
+```bash
+python uefi_retool.py
+```
+
+```
+Usage: uefi_retool.py [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  get-images  Get executable images from UEFI firmware.
+  get-info    Analyze the entire UEFI firmware.
+  get-pp      Get a list of proprietary protocols in the UEFI firmware.
+```
+
+## get-images
+
+```bash
+python uefi_retool.py get-images --help
+```
+
+```
+Usage: uefi_retool.py get-images [OPTIONS] FIRMWARE_PATH
+
+  Get executable images from UEFI firmware. Images are stored in "modules"
+  directory.
+
+Options:
+  --help  Show this message and exit.
+```
+
+## get-info
+
+```bash
+python uefi_retool.py get-info --help
+```
+
+```
+Usage: uefi_retool.py get-info [OPTIONS] FIRMWARE_PATH
+
+  Analyze the entire UEFI firmware. The analysis result is saved to .md and
+  .json files.
+
+Options:
+  --help  Show this message and exit.
+```
+
+## get-pp
+
+```bash
+python uefi_retool.py get-pp --help
+```
+
+```
+Usage: uefi_retool.py get-pp [OPTIONS] FIRMWARE_PATH
+
+  Get a list of proprietary protocols in the UEFI firmware. The result is
+  saved to .md file.
+
+Options:
+  --help  Show this message and exit.
+```
+
+*Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpt480s.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpt480s.md)*
+
+# Additional tools
+
+* `tools\update_edk2_guids.py` is a script that updates protocol GUIDs list from the conf directory
 
 # IDA plugin
 
 [IDA plugin for UEFI analysis](https://github.com/yeggor/UEFI_RETool/tree/master/ida_plugin)
 
-# UEFI firmware analysis with IDA Pro
+## Analyser & Protocol explorer
 
-[analyse_fw_ida.py](https://github.com/yeggor/UEFI_RETool/blob/master/analyse_fw_ida.py) is a script for UEFI firmware analysis with IDA Pro
+### Usage
+  
+  * Copy `uefi_analyser` and `uefi_analyser.py` to your `%IDA_DIR%/plugins` directory
+ 
+  * Open the executable UEFI image in IDA and go to `Edit` -> `Plugins` -> `UEFI analyser` *(alternatively, you can use the key combination `Ctrl+Alt+U`)*
 
-Usage:
+### Example
 
- * Copy `ida_plugin\uefi_analyser` directory to IDA plugins directory
- * Edit `config.json` file
-    - "PE_DIR" is a folder that contains all executable images from the UEFI firmware file
-    - "DUMP_DIR" is a folder that contains all components from the firmware filesystem
-    - "IDA_PATH" and "IDA64_PATH" are paths to IDA Pro executable files
- * Run `pip install -r requirements.txt`
- * Run `python analyse_fw_ida.py -h` command to display the help message
+#### Before analysis
 
-```
-UEFI_RETool
-A tool for UEFI firmware analysis with IDA Pro
-usage: python analyse_fw_ida.py [-h] [--all] [--pp_guids] [--get_efi_images]
-                                [--update_edk2_guids EDK2_PATH]
-                                firmware_path
+![before_analysis](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/before_analysis.png)
 
-positional arguments:
-  firmware_path         path to UEFI firmware for analysis
+#### After analysis
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --all                 analyse of all UEFI firmware modules and output of
-                        information to .\log\ida_log_all.md file (example:
-                        python analyse_fw_ida.py --all <firmware_path>)
-  --pp_guids            analyse all UEFI firmware modules and save a table
-                        with proprietry protocols to .\log\ida_pp_guids.md
-                        file (example: python analyse_fw_ida.py --pp_guids
-                        <firmware_path>)
-  --get_efi_images      get all executable images from UEFI firmware (images
-                        are stored in .\modules directory, example: python
-                        analyse_fw_ida.py --get_efi_images <firmware_path>)
-```
+![after_analysis](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/after_analysis.png)
 
-*Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpt480s.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpt480s.md)*
+#### Protocol explorer window
 
-# UEFI firmware analysis with radare2
+![protocols](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/protocols.png)
 
-[analyse_fw_r2.py](https://github.com/yeggor/UEFI_RETool/blob/master/analyse_fw_r2.py) is a similar script for UEFI firmware analysis with radare2
+## Dependency browser & Dependency graph
 
-Usage:
- * Run `pip install -r requirements.txt`
- * Run `python analyse_fw_r2.py -h` command to display the help message
+### Usage
 
-```
-UEFI_RETool
-A tool for UEFI firmware analysis with radare2
-usage: python analyse_fw_r2.py [-h] [--all] [--pp_guids] [--pp_guids_num]
-                               [--get_efi_images]
-                               [--update_edk2_guids EDK2_PATH]
-                               firmware_path
+  * Analyse the firmware using [uefi_retool.py](https://github.com/yeggor/UEFI_RETool/blob/master/uefi_retool.py)
 
-positional arguments:
-  firmware_path         path to UEFI firmware for analysis
+      ```bash
+      uefi_retool.py get-info FIRMWARE_PATH
+      ```
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --all                 analyse of all UEFI firmware modules and output of
-                        information to .\log\r2_log_all.md file (example:
-                        python analyse_fw_r2.py --all <firmware_path>)
-  --pp_guids            analyse all UEFI firmware modules and save a table
-                        with proprietary protocols to .\log\r2_pp_guids.md
-                        file (example: python analyse_fw_r2.py --pp_guids
-                        <firmware_path>)
-  --pp_guids_num        analyse all UEFI firmware modules and get number of
-                        proprietary protocols (example: python
-                        analyse_fw_r2.py --pp_guids_num <firmware_path>)
-  --get_efi_images      get all executable images from UEFI firmware (images
-                        are stored in .\modules directory, example: python
-                        analyse_fw_r2.py --get_efi_images <firmware_path>)
-```
+   * Next to the `ida_log_all.md` file should be the `ida_log_all.json` file
 
-# Additional tools
+   * Load `ida_log_all.json` file to IDA (`File` -> `UEFI_RETool...`)
 
- * `tools\get_efi_images.py` is a script that gets all PE-images from the firmware file
- * `tools\update_edk2_guids.py` is a script that updates protocol GUIDs list from the `conf` directory
+      ![db-usage](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/db-usage.png)
+
+      *alternatively, you can use the key combination `Ctrl+Alt+J`*)
+
+### Example
+
+#### Dependency browser window
+
+![db-usage](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/depend-browser.png)
+
+#### Dependency graph
+
+![db-graph](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/depend-graph.png)
+
 
 # Similar works
 

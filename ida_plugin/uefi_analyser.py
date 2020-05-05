@@ -1,6 +1,7 @@
+################################################################################
 # MIT License
 #
-# Copyright (c) 2018-2019 yeggor
+# Copyright (c) 2018-2020 yeggor
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+################################################################################
 
 import os
 
@@ -30,7 +32,7 @@ from PyQt5 import QtWidgets
 from uefi_analyser import dep_browser, dep_graph, prot_explorer, ui
 
 AUTHOR = 'yeggor'
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 
 NAME = 'UEFI_RETool'
 HELP_MSG = 'This plugin performs automatic analysis of the input UEFI module'
@@ -85,11 +87,11 @@ class UefiAnalyserPlugin(idaapi.plugin_t):
     @staticmethod
     def _welcome():
         main_line = ' {} plugin {} by {} '.format(NAME, VERSION, AUTHOR)
-        message = '[{}]\n'.format('=' * len(main_line))
+        message = '+{}+\n'.format('-' * len(main_line))
         message += '|{}|\n'.format(' ' * len(main_line))
         message += '|{}|\n'.format(main_line)
         message += '|{}|\n'.format(' ' * len(main_line))
-        message += '[{}]\n'.format('=' * len(main_line))
+        message += '+{}+\n'.format('-' * len(main_line))
         print(message)
 
     @staticmethod

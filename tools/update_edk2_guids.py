@@ -1,6 +1,7 @@
+################################################################################
 # MIT License
 #
-# Copyright (c) 2018-2019 yeggor
+# Copyright (c) 2018-2020 yeggor
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+################################################################################
 
 import argparse
 import glob
@@ -26,11 +28,8 @@ import os
 import re
 import shutil
 
-import click
-
 DATA_PATH = os.path.join('..', 'conf')
 IDA_GUIDS = os.path.join('..', 'ida_plugin', 'uefi_analyser', 'guids')
-R2_GUIDS = os.path.join('..', 'r2_uefi_re', 'guids')
 
 
 def get_py(string):
@@ -78,10 +77,10 @@ def get_guids_list(edk2_path, data_path):
     for dec_file in dec_files:
         with open(dec_file, 'r') as dec:
             guids_list = re.findall(regexp, dec.read())
-            conf_content += '# Guids from {dec_file} file \n'.format(
+            conf_content += '# Guids from {dec_file} file\n'.format(
                 dec_file=dec_file)
             for guid in guids_list:
-                conf_content += guid + '\n'
+                conf_content += '{}\n'.format(guid)
     with open(os.path.join(DATA_PATH, 'edk2_guids.conf'), 'w') as conf:
         conf.write(
             '# This file was automatically generated with update_edk2_guids.py script\n'
@@ -108,8 +107,8 @@ def update(edk2_path, data_path, guids_path):
 
 
 def main():
-    program = 'python ' + os.path.basename(__file__)
-    parser = argparse.ArgumentParser(description='Get all UEFI PE-images',
+    program = 'python {}'.format(os.path.basename(__file__))
+    parser = argparse.ArgumentParser(description='Script to update the edk2_guids.py file',
                                      prog=program)
     parser.add_argument('edk2_path',
                         type=str,
@@ -120,8 +119,6 @@ def main():
     if get_guids_list(args.edk2_path, DATA_PATH):
         shutil.copyfile(os.path.join(DATA_PATH, 'edk2_guids.py'),
                         os.path.join(IDA_GUIDS, 'edk2_guids.py'))
-        shutil.copyfile(os.path.join(DATA_PATH, 'edk2_guids.py'),
-                        os.path.join(R2_GUIDS, 'edk2_guids.py'))
         print('[*] Files {0}, {1} was successfully updated'.format(
             os.path.join(DATA_PATH, 'edk2_guids.conf'),
             os.path.join(DATA_PATH, 'edk2_guids.py')))
