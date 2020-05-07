@@ -31,7 +31,6 @@ A tool for UEFI firmware reverse engineering.
       - [Dependency browser window](#dependency-browser-window)
       - [Dependency graph](#dependency-graph)
 - [Similar works](#similar-works)
-- [Contributors](#contributors)
 
 <!-- /MarkdownTOC -->
 </details>
@@ -137,7 +136,7 @@ python uefi_retool.py get-pp -w 6 test_fw/fw-tp-x1-carbon-5th.bin
 
 # Additional tools
 
-* `tools/update_edk2_guids.py` is a script that updates protocol GUIDs list from the conf directory
+* `tools/update_edk2_guids.py` is a script that updates protocol GUIDs list from `edk2` project
 
 # IDA plugin
 
@@ -196,8 +195,4 @@ python uefi_retool.py get-pp -w 6 test_fw/fw-tp-x1-carbon-5th.bin
 
  * [ida-efiutils](https://github.com/snare/ida-efiutils)
  * [EFISwissKnife](https://github.com/gdbinit/EFISwissKnife)
-
-# Contributors
-
- * yeggor (vasilenko.yegor@gmail.com)
- * p41l (philka9498@gmail.com)
+ * [ghidra-firmware-utils](https://github.com/al3xtjames/ghidra-firmware-utils)
