@@ -24,7 +24,6 @@
 
 import os
 
-# pylint: disable=import-error
 import idaapi
 import idautils
 import idc

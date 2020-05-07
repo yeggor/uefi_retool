@@ -108,8 +108,8 @@ def update(edk2_path, data_path, guids_path):
 
 def main():
     program = 'python {}'.format(os.path.basename(__file__))
-    parser = argparse.ArgumentParser(description='Script to update the edk2_guids.py file',
-                                     prog=program)
+    parser = argparse.ArgumentParser(
+        description='Script to update the edk2_guids.py file', prog=program)
     parser.add_argument('edk2_path',
                         type=str,
                         help='the path to EDK2 directory')

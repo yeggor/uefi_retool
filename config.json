@@ -1,6 +1,7 @@
 {
     "DUMP_DIR" : "all",
     "PE_DIR" : "modules",
+    "LOGS_DIR": "logs",
     "IDA_PATH" : "/home/yeggor/idapro-7.4/ida",
     "IDA64_PATH" : "/home/yeggor/idapro-7.4/ida64"
 }

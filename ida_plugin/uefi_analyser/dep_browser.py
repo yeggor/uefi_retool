@@ -24,7 +24,6 @@
 
 import json
 
-# pylint: disable=import-error
 import ida_kernwin
 import idaapi
 import idautils

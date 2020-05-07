@@ -25,7 +25,6 @@
 import json
 import os
 
-# pylint: disable=import-error
 import ida_funcs
 import ida_graph
 import ida_idp

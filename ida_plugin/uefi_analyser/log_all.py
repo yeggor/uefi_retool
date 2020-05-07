@@ -22,56 +22,70 @@
 # SOFTWARE.
 ################################################################################
 
+import binascii
+import json
 import os
+import tempfile
 
-# pylint: disable=import-error
+import ida_nalt
 import idaapi
 import idc
 from uefi_analyser.analyser import Analyser
 from uefi_analyser.utils import get_guid_str
 
-LOG_FILE = os.path.join('..', 'log', 'ida_log_all.md')
 
-
-def print_log(data):
-    with open(LOG_FILE, 'a') as log:
-        log.write('{}\n'.format(data))
-
-
-def list_boot_services(analyser):
-    empty = True
+def get_boot_services(analyser):
+    boot_services = []
     for service in analyser.gBServices:
         for address in analyser.gBServices[service]:
-            empty = False
-            print_log('* [{0}] EFI_BOOT_SERVICES->{1}'.format(
-                '{addr:#x}'.format(addr=address), service))
-    if empty:
-        print_log('* empty')
+            boot_services.append({
+                'address':
+                '{:#x}'.format(address),
+                'bs_name':
+                'EFI_BOOT_SERVICES->{}'.format(service)
+            })
+    return boot_services
+
+
+def get_protocols(analyser):
+    protocols = []
+    analyser.get_protocols()
+    analyser.get_prot_names()
+    data = analyser.Protocols['all']
+    for element in data:
+        guid = get_guid_str(element['guid'])
+        address = '{:#x}'.format(element['address'])
+        protocols.append({
+            'address': address,
+            'service': element['service'],
+            'protocol_name': element['protocol_name'],
+            'protocol_place': element['protocol_place'],
+            'guid': guid
+        })
+    return protocols
 
 
 def log_all():
+    data = {}
     idc.auto_wait()
     analyser = Analyser()
     if not analyser.valid:
         idc.qexit(-1)
     analyser.get_boot_services()
-    print_log('## Module: {}'.format(idaapi.get_root_filename()))
-    print_log('### Boot services:')
-    list_boot_services(analyser)
-    analyser.get_protocols()
-    analyser.get_prot_names()
-    data = analyser.Protocols['all']
-    print_log('### Protocols:')
-    if not len(data):
-        print_log('* empty')
-    for element in data:
-        guid_str = '[guid] {}'.format(get_guid_str(element['guid']))
-        print_log('* [{0}]'.format(
-            '{addr:#x}'.format(addr=element['address'])))
-        print_log('\t - [service] {}'.format(element['service']))
-        print_log('\t - [protocol_name] {}'.format(element['protocol_name']))
-        print_log('\t - [protocol_place] {}'.format(element['protocol_place']))
-        print_log('\t - {}'.format(guid_str))
+    module = idaapi.get_root_filename()
+    boot_services = get_boot_services(analyser)
+    protocols = get_protocols(analyser)
+    data['module_name'] = module
+    data['boot_services'] = boot_services
+    data['protocols'] = protocols
+    logs_dir = os.path.join(tempfile.gettempdir(), 'uefi-retool-all-info')
+    if not os.path.isdir(logs_dir):
+        os.mkdir(logs_dir)
+    log_fname = os.path.join(
+        logs_dir, '{}.json'.format(
+            binascii.hexlify(ida_nalt.retrieve_input_file_md5()).decode()))
+    with open(log_fname, 'w') as f:
+        json.dump(data, f, indent=4)
     idc.qexit(0)
 
 

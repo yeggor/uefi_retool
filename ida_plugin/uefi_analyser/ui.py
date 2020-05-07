@@ -22,7 +22,6 @@
 # SOFTWARE.
 ################################################################################
 
-# pylint: disable=import-error
 import idaapi
 
 NAME = 'UEFI_RETool'

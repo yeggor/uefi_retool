@@ -1,8 +1,12 @@
-## [UEFI_RETool](https://github.com/yeggor/UEFI_RETool)
+![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg)
+![Python Versions](https://img.shields.io/pypi/pyversions/yt2mp3.svg)
+![Version](https://img.shields.io/badge/version-1.2.0-blue)
+
+# [UEFI_RETool](https://github.com/yeggor/UEFI_RETool)
 
 A tool for UEFI firmware reverse engineering.
 
-## Table of Contents
+# Table of Contents
 
 <details>
  <summary>Click to open TOC</summary>
@@ -36,10 +40,11 @@ A tool for UEFI firmware reverse engineering.
 
 Usage:
 
- * Copy `ida_plugin\uefi_analyser` directory to IDA plugins directory
- * Edit `config-[win|nix].json` file
-    - `PE_DIR` is a folder that contains all executable images from the UEFI firmware
-    - `DUMP_DIR` is a folder that contains all components from the firmware filesystem
+ * Copy `ida_plugin/uefi_analyser.py` script and `ida_plugin/uefi_analyser` directory to IDA plugins directory
+ * Edit `config.json` file
+    - `PE_DIR` is a directory that contains all executable images from the UEFI firmware
+    - `DUMP_DIR` is a directory that contains all components from the firmware filesystem
+    - `LOGS_DIR` is a directory for logs
     - `IDA_PATH` and `IDA64_PATH` are paths to IDA Pro executable files
  * Run `pip install -r requirements.txt`
  * Run `python uefi_retool.py` command to display the help message
@@ -78,6 +83,12 @@ Options:
   --help  Show this message and exit.
 ```
 
+Example:
+
+```bash
+python uefi_retool.py get-images test_fw/fw-tp-x1-carbon-5th.bin
+```
+
 ## get-info
 
 ```bash
@@ -87,11 +98,18 @@ python uefi_retool.py get-info --help
 ```
 Usage: uefi_retool.py get-info [OPTIONS] FIRMWARE_PATH
 
-  Analyze the entire UEFI firmware. The analysis result is saved to .md and
-  .json files.
+  Analyze the entire UEFI firmware. The analysis result is saved to .json
+  file.
 
 Options:
-  --help  Show this message and exit.
+  -w, --workers INTEGER  Number of workers (8 by default).
+  --help                 Show this message and exit.
+```
+
+Example:
+
+```bash
+python uefi_retool.py get-info -w 6 test_fw/fw-tp-x1-carbon-5th.bin
 ```
 
 ## get-pp
@@ -104,17 +122,22 @@ python uefi_retool.py get-pp --help
 Usage: uefi_retool.py get-pp [OPTIONS] FIRMWARE_PATH
 
   Get a list of proprietary protocols in the UEFI firmware. The result is
-  saved to .md file.
+  saved to .json file.
 
 Options:
-  --help  Show this message and exit.
+  -w, --workers INTEGER  Number of workers (8 by default).
+  --help                 Show this message and exit.
 ```
 
-*Examples of logs can be viewed at the following links: [log_all](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_all_tpt480s.md), [log_pp_guids](https://github.com/yeggor/UEFI_RETool/blob/master/log/examples/ida_log_pp_guids_tpt480s.md)*
+Example:
+
+```bash
+python uefi_retool.py get-pp -w 6 test_fw/fw-tp-x1-carbon-5th.bin
+```
 
 # Additional tools
 
-* `tools\update_edk2_guids.py` is a script that updates protocol GUIDs list from the conf directory
+* `tools/update_edk2_guids.py` is a script that updates protocol GUIDs list from the conf directory
 
 # IDA plugin
 
@@ -149,12 +172,10 @@ Options:
   * Analyse the firmware using [uefi_retool.py](https://github.com/yeggor/UEFI_RETool/blob/master/uefi_retool.py)
 
       ```bash
-      uefi_retool.py get-info FIRMWARE_PATH
+      python uefi_retool.py get-info FIRMWARE_PATH
       ```
 
-   * Next to the `ida_log_all.md` file should be the `ida_log_all.json` file
-
-   * Load `ida_log_all.json` file to IDA (`File` -> `UEFI_RETool...`)
+   * Load `<LOGS_DIR>/<FIRMWARE_NAME>-all-info.json` file to IDA (`File` -> `UEFI_RETool...`)
 
       ![db-usage](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/db-usage.png)
 

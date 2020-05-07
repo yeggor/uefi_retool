@@ -22,31 +22,19 @@
 # SOFTWARE.
 ################################################################################
 
+import binascii
+import json
 import os
-import sys
+import tempfile
 
-# pylint: disable=import-error
+import ida_nalt
 import idaapi
 import idc
 from uefi_analyser.analyser import Analyser
 from uefi_analyser.utils import get_guid_str
 
-LOG_FILE = os.path.join('..', 'log', 'ida_log_pp_guids.md')
-
-
-def print_log(data):
-    with open(LOG_FILE, 'a') as log:
-        log.write('{}\n'.format(data))
-
-
-def get_table_line(guid, module, service, address):
-    return '| {} | {} | {} | {} |'.format(guid, module, service, address)
-
 
 def log_pp_guids():
-    if not os.path.isfile(LOG_FILE) or not os.path.getsize(LOG_FILE):
-        print_log(get_table_line('Guid', 'Module', 'Service', 'Address'))
-        print_log(get_table_line('---', '---', '---', '---'))
     idc.auto_wait()
     analyser = Analyser()
     if not analyser.valid:
@@ -54,13 +42,27 @@ def log_pp_guids():
     analyser.get_boot_services()
     analyser.get_protocols()
     analyser.get_prot_names()
+    data = {}
+    data['module_name'] = idaapi.get_root_filename()
+    data['protocols'] = []
     for protocol_record in analyser.Protocols['all']:
         if (protocol_record['protocol_name'] == 'ProprietaryProtocol'):
             guid = get_guid_str(protocol_record['guid'])
-            module = idaapi.get_root_filename()
             service = protocol_record['service']
             address = '{addr:#x}'.format(addr=protocol_record['address'])
-            print_log(get_table_line(guid, module, service, address))
+            data['protocols'].append({
+                'guid': guid,
+                'service': service,
+                'address': address
+            })
+    logs_dir = os.path.join(tempfile.gettempdir(), 'uefi-retool-pp-guids')
+    if not os.path.isdir(logs_dir):
+        os.mkdir(logs_dir)
+    log_fname = os.path.join(
+        logs_dir, '{}.json'.format(
+            binascii.hexlify(ida_nalt.retrieve_input_file_md5()).decode()))
+    with open(log_fname, 'w') as f:
+        json.dump(data, f, indent=4)
     idc.qexit(0)
 
 

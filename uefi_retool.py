@@ -26,71 +26,72 @@
 
 import json
 import os
-import platform
+import tempfile
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 import click
 import uefi_firmware
-from tools import md_to_json, utils
+from tools import utils
 from tools.get_efi_images import get_efi_images
-from tools.update_edk2_guids import update
+from tqdm import tqdm
 
-# get a platform
-if platform.system() == 'Windows':
-    CONFIG_FILE = 'config-win.json'
-
-if platform.system() == 'Linux':
-    CONFIG_FILE = 'config-nix.json'
-
-# read configuration data
-with open(CONFIG_FILE, 'rb') as cfile:
-    config = json.load(cfile)
-
-IDA_PATH = '"{}"'.format(config['IDA_PATH'])
-IDA64_PATH = '"{}"'.format(config['IDA64_PATH'])
-
+CONFIG_FILE = 'config.json'
 DONE = click.style('DONE', fg='green')
 ERROR = click.style('ERROR', fg='red')
 
+# read configuration data
+with open(CONFIG_FILE, 'rb') as cfile:
+    CONFIG = json.load(cfile)
 
-def show_item(item):
-    return 'current module: {}'.format(item)
+# ida and ida64 executables
+IDA_PATH = '"{}"'.format(CONFIG['IDA_PATH'])
+IDA64_PATH = '"{}"'.format(CONFIG['IDA64_PATH'])
+
+# directories with logs
+PP_GUIDS_LOGS = os.path.join(tempfile.gettempdir(), 'uefi-retool-pp-guids')
+ALL_INFO_LOGS = os.path.join(tempfile.gettempdir(), 'uefi-retool-all-info')
 
 
-def analyse_all(scr_name):
+def analyse_module(module, scr_name):
+    module_path = os.path.join(CONFIG['PE_DIR'], module)
+    machine_type = utils.get_machine_type(module_path)
+    ida_exe = IDA64_PATH
+    if machine_type == utils.IMAGE_FILE_MACHINE_I386:
+        ida_exe = IDA_PATH
+    analyser = os.path.join('plugins', 'uefi_analyser', scr_name)
+    cmd = ' '.join([ida_exe, '-c -A -S{}'.format(analyser), module_path])
+    # analyse module in batch mode
+    os.system(cmd)
+    if not (os.path.isfile('{}.i64'.format(module_path))
+            or os.path.isfile('{}.idb'.format(module_path))):
+        print(
+            '{res} check your config.json file or move ida_plugin/uefi_analyser directory to IDA plugins directory'
+            .format(res=ERROR))
+        exit()
+    return True
+
+
+def analyse_all(scr_name, max_workers):
     log_path = os.path.join('log',
                             'ida_{}'.format(scr_name.replace('.py', '.md')))
     if os.path.isfile(log_path):
         os.remove(log_path)
-    files = os.listdir(config['PE_DIR'])
-    bar_template = click.style('%(label)s  %(bar)s | %(info)s', fg='cyan')
-    label = 'Modules analysis'
-    with click.progressbar(files,
-                           length=len(files),
-                           bar_template=bar_template,
-                           label=label,
-                           item_show_func=show_item) as bar:
-        for module in bar:
-            if module[-4:] in ['.idb', '.i64', '.id1', '.id2', '.nam', '.til']:
-                continue
-            module_path = os.path.join(config['PE_DIR'], module)
-            machine_type = utils.get_machine_type(module_path)
-            ida_exe = IDA64_PATH
-            if machine_type == utils.IMAGE_FILE_MACHINE_I386:
-                ida_exe = IDA_PATH
-            analyser = os.path.join('plugins', 'uefi_analyser', scr_name)
-            cmd = ' '.join(
-                [ida_exe, '-c -A -S{}'.format(analyser), module_path])
-            # analyse module in batch mode
-            os.system(cmd)
-            if not (os.path.isfile('{}.i64'.format(module_path))
-                    or os.path.isfile('{}.idb'.format(module_path))):
-                print(
-                    '{res} check your config.json file or move ida_plugin/uefi_analyser directory to IDA plugins directory'
-                    .format(res=ERROR))
-                exit()
-    if scr_name == 'log_all.py':
-        md_name = os.path.join('log', 'ida_log_all.md')
-        md_to_json.get_json(md_name)
+    files = os.listdir(CONFIG['PE_DIR'])
+    # check first module
+    analyse_module(files[0], scr_name)
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        futures = [
+            executor.submit(analyse_module, module, scr_name)
+            for module in files[1:]
+        ]
+        params = {
+            'total': len(futures),
+            'unit': 'module',
+            'unit_scale': True,
+            'leave': True
+        }
+        for f in tqdm(as_completed(futures), **params):
+            pass
 
 
 def clear(dirname):
@@ -102,8 +103,32 @@ def clear(dirname):
 
 
 def clear_all():
-    clear(config['DUMP_DIR'])
-    clear(config['PE_DIR'])
+    clear(CONFIG['DUMP_DIR'])
+    clear(CONFIG['PE_DIR'])
+    clear(PP_GUIDS_LOGS)
+    clear(ALL_INFO_LOGS)
+
+
+def get_log(command, firmware_path):
+    suf = 'all-info.json'
+    tmp_dir = ALL_INFO_LOGS
+    if command == 'get-pp':
+        suf = 'pp-guids.json'
+        tmp_dir = PP_GUIDS_LOGS
+    # collect all in one log
+    if not os.path.isdir(CONFIG['LOGS_DIR']):
+        os.mkdir(CONFIG['LOGS_DIR'])
+    log_fname = os.path.join(
+        CONFIG['LOGS_DIR'],
+        '{}-{}'.format(firmware_path.split(os.sep)[-1], suf))
+    info = []
+    logs = os.listdir(tmp_dir)
+    for log in logs:
+        with open(os.path.join(tmp_dir, log), 'r') as f:
+            info.append(json.load(f))
+    with open(log_fname, 'w') as f:
+        json.dump(info, f, indent=4)
+    print('{res} check {log} file'.format(res=DONE, log=log_fname))
 
 
 @click.group()
@@ -113,27 +138,34 @@ def cli():
 
 @click.command()
 @click.argument('firmware_path')
-def get_info(firmware_path):
-    """Analyze the entire UEFI firmware. The analysis result is saved to .md and .json files."""
+@click.option('-w',
+              '--workers',
+              help='Number of workers (8 by default).',
+              type=int)
+def get_info(firmware_path, workers):
+    """Analyze the entire UEFI firmware. The analysis result is saved to .json file."""
+    if not workers:
+        workers = 8
     clear_all()
     get_efi_images(firmware_path)
-    analyse_all('log_all.py')
-    print(
-        '{res} check .{sep}log{sep}ida_log_all.md and .{sep}log{sep}ida_log_all.json files'
-        .format(res=DONE, sep=os.sep))
-    clear_all()
+    analyse_all('log_all.py', workers)
+    get_log('get-info', firmware_path)
 
 
 @click.command()
 @click.argument('firmware_path')
-def get_pp(firmware_path):
-    """Get a list of proprietary protocols in the UEFI firmware. The result is saved to .md file."""
+@click.option('-w',
+              '--workers',
+              help='Number of workers (8 by default).',
+              type=int)
+def get_pp(firmware_path, workers):
+    """Get a list of proprietary protocols in the UEFI firmware. The result is saved to .json file."""
+    if not workers:
+        workers = 8
     clear_all()
     get_efi_images(firmware_path)
-    analyse_all('log_pp_guids.py')
-    print('{res} check .{sep}log{sep}ida_pp_guids.md file'.format(res=DONE,
-                                                                  sep=os.sep))
-    clear_all()
+    analyse_all('log_pp_guids.py', workers)
+    get_log('get-pp', firmware_path)
 
 
 @click.command()
