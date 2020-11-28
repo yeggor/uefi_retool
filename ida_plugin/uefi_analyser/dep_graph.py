@@ -99,7 +99,7 @@ class DependencyGraph(ida_graph.GraphViewer):
                 if now_node != was_node:
                     if self.v().GetWidget() == w:
                         print(
-                            '[{NAME}] current node now: {str(now_node)} (was {str(was_node)})'
+                            f'[{NAME}] current node now: {str(now_node)} (was {str(was_node)})'
                         )
 
         self.my_view_hooks = my_view_hooks_t(self)
