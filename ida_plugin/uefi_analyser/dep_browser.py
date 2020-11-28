@@ -34,8 +34,6 @@ from .utils import get_dep_json
 
 NAME = 'UEFI_RETool'
 
-DEBUG = True
-
 
 class chooser_handler_t(idaapi.action_handler_t):
     def __init__(self, thing):
@@ -55,21 +53,15 @@ class ProtsWindow(Choose):
     """class to display protocols information output window"""
     def __init__(self, title, dep_json, nb=5):
         sizes = self._get_sizes(dep_json)
-        # yapf: disable
         Choose.__init__(
             self,
             title,
-            [
-                ['GUID', sizes['GUID']],
-                ['Name', sizes['Name']],
-                ['Module', sizes['Module']],
-                ['Service', sizes['Service']]
-            ],
+            [['GUID', sizes['GUID']], ['Name', sizes['Name']],
+             ['Module', sizes['Module']], ['Service', sizes['Service']]],
             flags=0,
             width=None,
             height=None,
-            embedded=False
-        )
+            embedded=False)
         self.n = 0
         self.items = self._get_lines(dep_json)
         self.selcount = 0
@@ -79,12 +71,7 @@ class ProtsWindow(Choose):
 
     def _get_sizes(self, data):
         """get maximum field sizes"""
-        sizes = {
-            'GUID': 0,
-            'Name': 0,
-            'Module': 0,
-            'Service': 0
-        }
+        sizes = {'GUID': 0, 'Name': 0, 'Module': 0, 'Service': 0}
         for element in data:
             if len(element['guid']) > sizes['GUID']:
                 sizes['GUID'] = len(element['guid'])
@@ -101,9 +88,7 @@ class ProtsWindow(Choose):
         lines = []
         for elem in dep_json:
             item = [
-                elem['guid'],
-                elem['protocol_name'],
-                elem['module_name'],
+                elem['guid'], elem['protocol_name'], elem['module_name'],
                 elem['service']
             ]
             if not lines.count(item):
@@ -113,10 +98,10 @@ class ProtsWindow(Choose):
     def _make_item(self):
         """make custom element"""
         item = [
-            idaapi.ask_str('', 0, 'GUID'),
-            idaapi.ask_str('', 0, 'Name'),
-            idaapi.ask_str('', 0, 'Module'),
-            idaapi.ask_str('', 0, 'Service')
+            idaapi.ask_str(str(), 0, 'GUID'),
+            idaapi.ask_str(str(), 0, 'Name'),
+            idaapi.ask_str(str(), 0, 'Module'),
+            idaapi.ask_str(str(), 0, 'Service')
         ]
         self.n += 1
         return item
@@ -129,23 +114,20 @@ class ProtsWindow(Choose):
         return n
 
     def OnClose(self):
-        if DEBUG:
-            print('[{}] dependency browser window was closed'.format(NAME))
+        print(f'[{NAME}] dependency browser window was closed')
 
     def OnEditLine(self, n):
-        if DEBUG:
-            print('[{}] editing is not supported'.format(NAME))
+        print(f'[{NAME}] editing is not supported')
         return n
 
     def OnInsertLine(self, n):
-        if DEBUG:
-            print('[{}] inserting is not supported'.format(NAME))
+        print(f'[{NAME}] inserting is not supported')
         return n
 
     def OnSelectLine(self, n):
         self.selcount += 1
         guid = self.items[n][0]
-        print('[{}] {} protocol information'.format(NAME, self.items[n][1]))
+        print(f'[{NAME}] {self.items[n][1]} protocol information')
         for protocol in self.dep_json:
             if protocol['guid'] == guid:
                 print(json.dumps(protocol, indent=4))
@@ -153,13 +135,11 @@ class ProtsWindow(Choose):
         return n
 
     def OnDeleteLine(self, n):
-        if DEBUG:
-            print('[{}] deleting is not supported'.format(NAME))
+        print(f'[{NAME}] deleting is not supported')
         return n
 
     def OnRefresh(self, n):
-        if DEBUG:
-            print('[{}] refreshing is not supported'.format(NAME))
+        print(f'[{NAME}] refreshing is not supported')
         return n
 
     def OnGetLineAttr(self, n):
@@ -171,7 +151,7 @@ class ProtsWindow(Choose):
 
 def handle_json(res_json):
     dep_json = get_dep_json(res_json)
-    wind = ProtsWindow('{} dependency browser'.format(NAME), dep_json, nb=10)
+    wind = ProtsWindow(f'{NAME} dependency browser', dep_json, nb=10)
     wind.show()
 
 
@@ -181,6 +161,6 @@ def run(log_file):
             res_json = json.load(f)
         handle_json(res_json)
     except Exception as e:
-        print('[{} error] {}'.format(NAME, repr(e)))
+        print(f'[{NAME} error] {repr(e)}')
         return False
     return True

@@ -48,13 +48,14 @@ def get_boot_services(analyser):
 
 
 def get_protocols(analyser):
-    protocols = []
+    protocols = list()
     analyser.get_protocols()
     analyser.get_prot_names()
     data = analyser.Protocols['all']
     for element in data:
         guid = get_guid_str(element['guid'])
-        address = '{:#x}'.format(element['address'])
+        addr = element['address']
+        address = f'{addr:#x}'
         protocols.append({
             'address': address,
             'service': element['service'],
@@ -66,7 +67,7 @@ def get_protocols(analyser):
 
 
 def log_all():
-    data = {}
+    data = dict()
     idc.auto_wait()
     analyser = Analyser()
     if not analyser.valid:
@@ -81,11 +82,10 @@ def log_all():
     logs_dir = os.path.join(tempfile.gettempdir(), 'uefi-retool-all-info')
     if not os.path.isdir(logs_dir):
         os.mkdir(logs_dir)
-    log_fname = os.path.join(
-        logs_dir, '{}.json'.format(
-            binascii.hexlify(ida_nalt.retrieve_input_file_md5()).decode()))
-    with open(log_fname, 'w') as f:
-        json.dump(data, f, indent=4)
+    log_fname = f'{binascii.hexlify(ida_nalt.retrieve_input_file_md5()).decode()}.json'
+    log_fpath = os.path.join(logs_dir, log_fname)
+    with open(log_fpath, 'w') as f:
+        json.dump(data, f, indent=2)
     idc.qexit(0)
 
 

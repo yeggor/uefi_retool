@@ -59,33 +59,30 @@ class Table():
     @classmethod
     def display(cls, table_data):
         cls = Table(table_data)
-        table = cls.angle + '{angle}'.join([(
-            (cls.gl *
-             (size + 2))) for size in cls.max_sizes]).format(angle=cls.angle)
-        table += '{}\n{} '.format(cls.angle, cls.vl)
-        table += '{vl} '.join([
+        table = cls.angle + f'{cls.angle}'.join([((cls.gl * (size + 2)))
+                                                 for size in cls.max_sizes])
+        table += f'{cls.angle}\n{cls.vl} '
+        table += f'{cls.vl} '.join([
             ((cls.table_data[0][i] + ' ' *
               (cls.max_sizes[i] - len(cls.table_data[0][i]) + 1)))
             for i in range(len(cls.table_data[0]))
-        ]).format(vl=cls.vl)
-        table += '{}\n{}'.format(cls.vl, cls.angle)
-        table += '{angle}'.join([
-            ((cls.gl * (size + 2))) for size in cls.max_sizes
-        ]).format(angle=cls.angle)
-        table += '{}\n'.format(cls.angle)
+        ])
+        table += f'{cls.vl}\n{cls.angle}'
+        table += f'{cls.angle}'.join([((cls.gl * (size + 2)))
+                                      for size in cls.max_sizes])
+        table += f'{cls.angle}\n'
         for j in range(1, len(cls.table_data)):
-            table += '{} '.format(cls.vl)
-            table += '{vl} '.join([
+            table += f'{cls.vl} '
+            table += f'{cls.vl} '.join([
                 ((cls.table_data[j][i] + ' ' *
                   (cls.max_sizes[i] - len(cls.table_data[j][i]) + 1)))
                 for i in range(len(cls.table_data[j]))
-            ]).format(vl=cls.vl)
-            table += '{}\n'.format(cls.vl)
+            ])
+            table += f'{cls.vl}\n'
         table += cls.angle
-        table += '{angle}'.join([
-            ((cls.gl * (size + 2))) for size in cls.max_sizes
-        ]).format(angle=cls.angle)
-        table += '{}'.format(cls.angle)
+        table += f'{cls.angle}'.join([((cls.gl * (size + 2)))
+                                      for size in cls.max_sizes])
+        table += f'{cls.angle}'
         return table
 
 
@@ -116,10 +113,10 @@ def get_guid(address):
 
 
 def get_guid_str(guid_struct):
-    guid = '{dw:08X}-'.format(dw=guid_struct[0])
-    guid += '{w:04X}-'.format(w=guid_struct[1])
-    guid += '{w:04X}-'.format(w=guid_struct[2])
-    guid += ''.join(['{b:02X}'.format(b=guid_struct[i]) for i in range(3, 11)])
+    guid = f'{guid_struct[0]:08X}-'
+    guid += f'{guid_struct[1]:04X}-'
+    guid += f'{guid_struct[2]:04X}-'
+    guid += ''.join([f'{guid_struct[i]:02X}' for i in range(3, 11)])
     return guid
 
 
@@ -133,9 +130,10 @@ def get_num_le(bytearr):
 
 def rev_endian(num):
     """reorders bytes in number"""
-    num_str = '{:x}'.format(num)
+    num_str = f'{num:x}'
     # yapf: disable
     num_ba = ([int('0x' + num_str[i:i + 2], 16) for i in range(0, len(num_str) - 1, 2)])
+    # yapf: enable
     return get_num_le(num_ba)
 
 
@@ -195,9 +193,9 @@ def get_dep_json(res_json):
     dep_json = []
     for module_info in res_json:
         for protocol in module_info['protocols']:
-            if (protocol['service'] == 'InstallProtocolInterface' or
-                protocol['service'] == 'InstallMultipleProtocolInterfaces'
-                ):
+            if (protocol['service'] == 'InstallProtocolInterface'
+                    or protocol['service']
+                    == 'InstallMultipleProtocolInterfaces'):
                 dep_json_item = {
                     'module_name': module_info['module_name'],
                     'protocol_name': protocol['protocol_name'],

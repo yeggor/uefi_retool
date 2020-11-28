@@ -37,8 +37,6 @@ from .utils import get_dep_json
 NAME = 'UEFI_RETool'
 DEP_GRAPH = None
 
-DEBUG = True
-
 
 class _base_graph_action_handler_t(ida_kernwin.action_handler_t):
     def __init__(self, graph):
@@ -70,19 +68,19 @@ class SelectionPrinter(_base_graph_action_handler_t):
             gv = ida_graph.get_graph_viewer(self.graph.GetWidget())
             ida_graph.viewer_get_selection(gv, sel)
         if sel:
-            if DEBUG:
-                for s in sel:
-                    if s.is_node:
-                        print('[{}] selected node {}'.format(NAME, s.node))
-                    else:
-                        # yapf: disable
-                        print('[{}] selected edge {} -> {}'.format(NAME, str(s.elp.e.src), str(s.elp.e.dst)))
+            for s in sel:
+                if s.is_node:
+                    print(f'[{NAME}] selected node {s.node}')
+                else:
+                    print(
+                        f'[{NAME}] selected edge {str(s.elp.e.src)} -> {str(s.elp.e.dst)}'
+                    )
         return 1
 
 
 class DependencyGraph(ida_graph.GraphViewer):
     def __init__(self, dep_json):
-        self.title = '{} dependency graph'.format(NAME)
+        self.title = f'{NAME} dependency graph'
         ida_graph.GraphViewer.__init__(self, self.title)
         self.dep_json = dep_json
         self.pairs = self._get_all_pairs()
@@ -98,17 +96,17 @@ class DependencyGraph(ida_graph.GraphViewer):
             def view_loc_changed(self, w, now, was):
                 now_node = now.renderer_info().pos.node
                 was_node = was.renderer_info().pos.node
-                if DEBUG:
-                    if now_node != was_node:
-                        if self.v().GetWidget() == w:
-                            print('[{}] current node now: {} (was {})'.format(
-                                NAME, str(now_node), str(was_node)))
+                if now_node != was_node:
+                    if self.v().GetWidget() == w:
+                        print(
+                            '[{NAME}] current node now: {str(now_node)} (was {str(was_node)})'
+                        )
 
         self.my_view_hooks = my_view_hooks_t(self)
 
     def OnRefresh(self):
         self.Clear()
-        saved_nodes = []
+        saved_nodes = list()
         for pair in self.pairs:
             output_node = None
             input_node = None
@@ -134,25 +132,27 @@ class DependencyGraph(ida_graph.GraphViewer):
 
     def OnPopup(self, form, popup_handle):
         # graph closer
-        actname = 'graph_closer:{}'.format(self.title)
-        desc = ida_kernwin.action_desc_t(
-            actname, 'Close: {}'.format(self.title), GraphCloser(self))
+        actname = f'graph_closer:{self.title}'
+        desc = ida_kernwin.action_desc_t(actname, f'Close: {self.title}',
+                                         GraphCloser(self))
         ida_kernwin.attach_dynamic_action_to_popup(form, popup_handle, desc)
 
         # color changer
-        actname = 'color_changer:{}'.format(self.title)
-        desc = ida_kernwin.action_desc_t(
-            actname, 'Change colors: {}'.format(self.title), ColorChanger(self))
+        actname = f'color_changer:{self.title}'
+        desc = ida_kernwin.action_desc_t(actname,
+                                         f'Change colors: {self.title}',
+                                         ColorChanger(self))
         ida_kernwin.attach_dynamic_action_to_popup(form, popup_handle, desc)
 
         # selection printer
-        actname = 'selection_printer:{}'.format(self.title)
-        desc = ida_kernwin.action_desc_t(
-            actname, 'Print selection: {}'.format(self.title), SelectionPrinter(self))
+        actname = f'selection_printer:{self.title}'
+        desc = ida_kernwin.action_desc_t(actname,
+                                         f'Print selection: {self.title}',
+                                         SelectionPrinter(self))
         ida_kernwin.attach_dynamic_action_to_popup(form, popup_handle, desc)
 
     def _get_all_pairs(self):
-        pairs = []
+        pairs = list()
         for mod in self.dep_json:
             for ub_mod in mod['used_by']:
                 pairs.append((mod['module_name'], ub_mod))
@@ -172,17 +172,9 @@ def run(json_file):
         if g.Show():
             return g
     except Exception as e:
-        print('[{} error] {}'.format(NAME, repr(e)))
+        print(f'[{NAME} error] {repr(e)}')
     return False
 
 
-def test():
-    json_file = os.path.join(idautils.GetIdbDir().replace(
-        'modules', 'log'), 'examples', 'ida_log_all_tpt480s.json')
-    g = run(json_file)
-    if g and DEBUG:
-        print('[{}] graph created and displayed'.format(NAME))
-
-
 if __name__ == '__main__':
-    test()
+    pass

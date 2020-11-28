@@ -77,10 +77,9 @@ def get_guids_list(edk2_path, data_path):
     for dec_file in dec_files:
         with open(dec_file, 'r') as dec:
             guids_list = re.findall(regexp, dec.read())
-            conf_content += '# Guids from {dec_file} file\n'.format(
-                dec_file=dec_file)
+            conf_content += f'# Guids from {dec_file} file\n'
             for guid in guids_list:
-                conf_content += '{}\n'.format(guid)
+                conf_content += f'{guid}\n'
     with open(os.path.join(DATA_PATH, 'edk2_guids.conf'), 'w') as conf:
         conf.write(
             '# This file was automatically generated with update_edk2_guids.py script\n'
@@ -99,15 +98,15 @@ def update(edk2_path, data_path, guids_path):
     if get_guids_list(edk2_path, data_path):
         shutil.copy(os.path.join(data_path, 'edk2_guids.py'),
                     os.path.join(guids_path, 'edk2_guids.py'))
-        print('[*] Files {0}, {1} was successfully updated'.format(
-            os.path.join(data_path, 'edk2_guids.conf'),
-            os.path.join(data_path, 'edk2_guids.py')))
+        conf_path = os.path.join(data_path, 'edk2_guids.conf')
+        py_path = os.path.join(data_path, 'edk2_guids.py')
+        print(f'[*] Files {conf_path}, {py_path} was successfully updated')
         return True
     return False
 
 
 def main():
-    program = 'python {}'.format(os.path.basename(__file__))
+    program = f'python {os.path.basename(__file__)}'
     parser = argparse.ArgumentParser(
         description='Script to update the edk2_guids.py file', prog=program)
     parser.add_argument('edk2_path',
@@ -119,9 +118,9 @@ def main():
     if get_guids_list(args.edk2_path, DATA_PATH):
         shutil.copyfile(os.path.join(DATA_PATH, 'edk2_guids.py'),
                         os.path.join(IDA_GUIDS, 'edk2_guids.py'))
-        print('[*] Files {0}, {1} was successfully updated'.format(
-            os.path.join(DATA_PATH, 'edk2_guids.conf'),
-            os.path.join(DATA_PATH, 'edk2_guids.py')))
+        conf_path = os.path.join(data_path, 'edk2_guids.conf')
+        py_path = os.path.join(data_path, 'edk2_guids.py')
+        print(f'[*] Files {conf_path}, {py_path} was successfully updated')
 
 
 if __name__ == '__main__':

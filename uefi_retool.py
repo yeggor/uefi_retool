@@ -59,23 +59,19 @@ def analyse_module(module, scr_name):
     if machine_type == utils.IMAGE_FILE_MACHINE_I386:
         ida_exe = IDA_PATH
     analyser = os.path.join('plugins', 'uefi_analyser', scr_name)
-    cmd = ' '.join([ida_exe, '-c -A -S{}'.format(analyser), module_path])
+    cmd = ' '.join([ida_exe, f'-c -A -S{analyser}', module_path])
     # analyse module in batch mode
     os.system(cmd)
-    if not (os.path.isfile('{}.i64'.format(module_path))
-            or os.path.isfile('{}.idb'.format(module_path))):
+    if not (os.path.isfile(f'{module_path}.i64')
+            or os.path.isfile(f'{module_path}.idb')):
         print(
-            '{res} check your config.json file or move ida_plugin/uefi_analyser directory to IDA plugins directory'
-            .format(res=ERROR))
+            '{ERROR} check your config.json file or move ida_plugin/uefi_analyser directory to IDA plugins directory'
+        )
         exit()
     return True
 
 
 def analyse_all(scr_name, max_workers):
-    log_path = os.path.join('log',
-                            'ida_{}'.format(scr_name.replace('.py', '.md')))
-    if os.path.isfile(log_path):
-        os.remove(log_path)
     files = os.listdir(CONFIG['PE_DIR'])
     # check first module
     analyse_module(files[0], scr_name)
@@ -118,17 +114,16 @@ def get_log(command, firmware_path):
     # collect all in one log
     if not os.path.isdir(CONFIG['LOGS_DIR']):
         os.mkdir(CONFIG['LOGS_DIR'])
-    log_fname = os.path.join(
-        CONFIG['LOGS_DIR'],
-        '{}-{}'.format(firmware_path.split(os.sep)[-1], suf))
-    info = []
+    _, fw_name = os.path.split(firmware_path)
+    log_fname = os.path.join(CONFIG['LOGS_DIR'], f'{fw_name}-{suf}')
+    info = list()
     logs = os.listdir(tmp_dir)
     for log in logs:
         with open(os.path.join(tmp_dir, log), 'r') as f:
             info.append(json.load(f))
     with open(log_fname, 'w') as f:
         json.dump(info, f, indent=4)
-    print('{res} check {log} file'.format(res=DONE, log=log_fname))
+    print(f'{DONE} check {log_fname} file')
 
 
 @click.group()
@@ -174,7 +169,7 @@ def get_images(firmware_path):
     """Get executable images from UEFI firmware. Images are stored in "modules" directory."""
     clear_all()
     get_efi_images(firmware_path)
-    print('{res} check .{sep}modules directory'.format(res=DONE, sep=os.sep))
+    print(f'{DONE} check .{os.sep}modules directory')
 
 
 cli.add_command(get_info)

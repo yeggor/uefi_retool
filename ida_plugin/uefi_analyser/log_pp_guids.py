@@ -42,14 +42,15 @@ def log_pp_guids():
     analyser.get_boot_services()
     analyser.get_protocols()
     analyser.get_prot_names()
-    data = {}
+    data = dict()
     data['module_name'] = idaapi.get_root_filename()
     data['protocols'] = []
     for protocol_record in analyser.Protocols['all']:
         if (protocol_record['protocol_name'] == 'ProprietaryProtocol'):
             guid = get_guid_str(protocol_record['guid'])
             service = protocol_record['service']
-            address = '{addr:#x}'.format(addr=protocol_record['address'])
+            addr = protocol_record['address']
+            address = f'{addr:#x}'
             data['protocols'].append({
                 'guid': guid,
                 'service': service,
@@ -58,11 +59,10 @@ def log_pp_guids():
     logs_dir = os.path.join(tempfile.gettempdir(), 'uefi-retool-pp-guids')
     if not os.path.isdir(logs_dir):
         os.mkdir(logs_dir)
-    log_fname = os.path.join(
-        logs_dir, '{}.json'.format(
-            binascii.hexlify(ida_nalt.retrieve_input_file_md5()).decode()))
-    with open(log_fname, 'w') as f:
-        json.dump(data, f, indent=4)
+    log_fname = f'{binascii.hexlify(ida_nalt.retrieve_input_file_md5()).decode()}.json'
+    log_fpath = os.path.join(logs_dir, log_fname)
+    with open(log_fpath, 'w') as f:
+        json.dump(data, f, indent=2)
     idc.qexit(0)
 
 

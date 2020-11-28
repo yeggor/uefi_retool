@@ -28,13 +28,13 @@ NAME = 'UEFI_RETool'
 
 
 def init_menu(action_handler):
-    action = '{}:loadfile'.format(NAME)
+    action = f'{NAME}:loadfile'
     action_desc = idaapi.action_desc_t(
         action,
-        '{}...'.format(NAME),
+        f'{NAME}...',
         action_handler,
         'Ctrl+Alt+J',
-        '{} dependency browser'.format(NAME),
+        f'{NAME} dependency browser',
     )
     idaapi.register_action(action_desc)
     idaapi.attach_action_to_menu('File', action, idaapi.SETMENU_APP)

@@ -85,7 +85,7 @@ class Dumper():
 
     def dump_all(self):
         if not os.path.isfile(self.fw_name):
-            print('[-] Check {0} file'.format(self.fw_name))
+            print(f'[-] Check {self.fw_name} file')
             return False
         with open(self.fw_name, 'rb') as fw:
             file_content = fw.read()
