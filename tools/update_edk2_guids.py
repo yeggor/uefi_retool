@@ -1,26 +1,4 @@
-################################################################################
-# MIT License
-#
-# Copyright (c) 2018-2020 yeggor
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-################################################################################
+# SPDX-License-Identifier: MIT
 
 import argparse
 import glob
@@ -28,34 +6,34 @@ import os
 import re
 import shutil
 
-DATA_PATH = os.path.join('..', 'conf')
-IDA_GUIDS = os.path.join('..', 'ida_plugin', 'uefi_analyser', 'guids')
+DATA_PATH = os.path.join("..", "conf")
+IDA_GUIDS = os.path.join("..", "ida_plugin", "uefi_analyser", "guids")
 
 
 def get_py(string):
-    new_string = 'edk2_guids = {\n'
+    new_string = "edk2_guids = {\n"
 
     replace_table = {
-        '{': '[',
-        '}': ']',
-        '#': '\t#',
-        '=': ':',
-        ']\n': '],\n',
+        "{": "[",
+        "}": "]",
+        "#": "\t#",
+        "=": ":",
+        "]\n": "],\n",
     }
 
     re_table = {
-        r'\ng': "\n\t'g",
-        r' +:': ':',
-        r':': '\' :',
-        r'\]\]': ']',
-        r'\] +\]': ']',
-        r', +\[': ',',
-        r',\[': ',',
+        r"\ng": "\n\t'g",
+        r" +:": ":",
+        r":": "' :",
+        r"\]\]": "]",
+        r"\] +\]": "]",
+        r", +\[": ",",
+        r",\[": ",",
     }
 
     for key in replace_table:
         string = string.replace(key, replace_table[key])
-    new_string += string + '}'
+    new_string += string + "}"
     for regexp in re_table:
         new_string = re.sub(regexp, re_table[regexp], new_string)
     return new_string
@@ -63,32 +41,32 @@ def get_py(string):
 
 def get_guids_list(edk2_path, data_path):
     if not os.path.isdir(edk2_path):
-        print('[-] Error, check edk2 path')
+        print("[-] Error, check edk2 path")
         return False
-    tmpl = os.path.join(edk2_path, '*', '*.dec')
+    tmpl = os.path.join(edk2_path, "*", "*.dec")
     dec_files = glob.glob(tmpl)
     if not len(dec_files):
-        print('[-] Error, *.dec files list is empty')
+        print("[-] Error, *.dec files list is empty")
         return False
     if not os.path.isdir(DATA_PATH):
         os.mkdir(DATA_PATH)
-    regexp = re.compile(r'g.+=.+{.+}')
-    conf_content = ''
+    regexp = re.compile(r"g.+=.+{.+}")
+    conf_content = ""
     for dec_file in dec_files:
-        with open(dec_file, 'r') as dec:
+        with open(dec_file, "r") as dec:
             guids_list = re.findall(regexp, dec.read())
-            conf_content += f'# Guids from {dec_file} file\n'
+            conf_content += f"# Guids from {dec_file} file\n"
             for guid in guids_list:
-                conf_content += f'{guid}\n'
-    with open(os.path.join(DATA_PATH, 'edk2_guids.conf'), 'w') as conf:
+                conf_content += f"{guid}\n"
+    with open(os.path.join(DATA_PATH, "edk2_guids.conf"), "w") as conf:
         conf.write(
-            '# This file was automatically generated with update_edk2_guids.py script\n'
+            "# This file was automatically generated with update_edk2_guids.py script\n"
         )
         conf.write(conf_content)
     py_content = get_py(conf_content)
-    with open(os.path.join(DATA_PATH, 'edk2_guids.py'), 'w') as conf:
+    with open(os.path.join(DATA_PATH, "edk2_guids.py"), "w") as conf:
         conf.write(
-            '# This file was automatically generated with update_edk2_guids.py script\n'
+            "# This file was automatically generated with update_edk2_guids.py script\n"
         )
         conf.write(py_content)
     return True
@@ -96,32 +74,35 @@ def get_guids_list(edk2_path, data_path):
 
 def update(edk2_path, data_path, guids_path):
     if get_guids_list(edk2_path, data_path):
-        shutil.copy(os.path.join(data_path, 'edk2_guids.py'),
-                    os.path.join(guids_path, 'edk2_guids.py'))
-        conf_path = os.path.join(data_path, 'edk2_guids.conf')
-        py_path = os.path.join(data_path, 'edk2_guids.py')
-        print(f'[*] Files {conf_path}, {py_path} was successfully updated')
+        shutil.copy(
+            os.path.join(data_path, "edk2_guids.py"),
+            os.path.join(guids_path, "edk2_guids.py"),
+        )
+        conf_path = os.path.join(data_path, "edk2_guids.conf")
+        py_path = os.path.join(data_path, "edk2_guids.py")
+        print(f"[*] Files {conf_path}, {py_path} was successfully updated")
         return True
     return False
 
 
 def main():
-    program = f'python {os.path.basename(__file__)}'
+    program = f"python {os.path.basename(__file__)}"
     parser = argparse.ArgumentParser(
-        description='Script to update the edk2_guids.py file', prog=program)
-    parser.add_argument('edk2_path',
-                        type=str,
-                        help='the path to EDK2 directory')
+        description="Script to update the edk2_guids.py file", prog=program
+    )
+    parser.add_argument("edk2_path", type=str, help="the path to EDK2 directory")
 
     args = parser.parse_args()
 
     if get_guids_list(args.edk2_path, DATA_PATH):
-        shutil.copyfile(os.path.join(DATA_PATH, 'edk2_guids.py'),
-                        os.path.join(IDA_GUIDS, 'edk2_guids.py'))
-        conf_path = os.path.join(data_path, 'edk2_guids.conf')
-        py_path = os.path.join(data_path, 'edk2_guids.py')
-        print(f'[*] Files {conf_path}, {py_path} was successfully updated')
+        shutil.copyfile(
+            os.path.join(DATA_PATH, "edk2_guids.py"),
+            os.path.join(IDA_GUIDS, "edk2_guids.py"),
+        )
+        conf_path = os.path.join(DATA_PATH, "edk2_guids.conf")
+        py_path = os.path.join(DATA_PATH, "edk2_guids.py")
+        print(f"[*] Files {conf_path}, {py_path} was successfully updated")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

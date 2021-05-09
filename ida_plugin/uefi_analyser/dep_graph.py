@@ -1,26 +1,4 @@
-################################################################################
-# MIT License
-#
-# Copyright (c) 2018-2020 yeggor
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-################################################################################
+# SPDX-License-Identifier: MIT
 
 import json
 import os
@@ -34,7 +12,7 @@ import idautils
 
 from .utils import get_dep_json
 
-NAME = 'UEFI_RETool'
+NAME = "UEFI_RETool"
 DEP_GRAPH = None
 
 
@@ -54,7 +32,7 @@ class GraphCloser(_base_graph_action_handler_t):
 
 class ColorChanger(_base_graph_action_handler_t):
     def activate(self, ctx):
-        self.graph.color = self.graph.color ^ 0xffffff
+        self.graph.color = self.graph.color ^ 0xFFFFFF
         self.graph.Refresh()
         return 1
 
@@ -70,17 +48,17 @@ class SelectionPrinter(_base_graph_action_handler_t):
         if sel:
             for s in sel:
                 if s.is_node:
-                    print(f'[{NAME}] selected node {s.node}')
+                    print(f"[{NAME}] selected node {s.node}")
                 else:
                     print(
-                        f'[{NAME}] selected edge {str(s.elp.e.src)} -> {str(s.elp.e.dst)}'
+                        f"[{NAME}] selected edge {str(s.elp.e.src)} -> {str(s.elp.e.dst)}"
                     )
         return 1
 
 
 class DependencyGraph(ida_graph.GraphViewer):
     def __init__(self, dep_json):
-        self.title = f'{NAME} dependency graph'
+        self.title = f"{NAME} dependency graph"
         ida_graph.GraphViewer.__init__(self, self.title)
         self.dep_json = dep_json
         self.pairs = self._get_all_pairs()
@@ -91,6 +69,7 @@ class DependencyGraph(ida_graph.GraphViewer):
                 ida_kernwin.View_Hooks.__init__(self)
                 self.hook()
                 import weakref
+
                 self.v = weakref.ref(v)
 
             def view_loc_changed(self, w, now, was):
@@ -99,7 +78,7 @@ class DependencyGraph(ida_graph.GraphViewer):
                 if now_node != was_node:
                     if self.v().GetWidget() == w:
                         print(
-                            f'[{NAME}] current node now: {str(now_node)} (was {str(was_node)})'
+                            f"[{NAME}] current node now: {str(now_node)} (was {str(was_node)})"
                         )
 
         self.my_view_hooks = my_view_hooks_t(self)
@@ -132,30 +111,31 @@ class DependencyGraph(ida_graph.GraphViewer):
 
     def OnPopup(self, form, popup_handle):
         # graph closer
-        actname = f'graph_closer:{self.title}'
-        desc = ida_kernwin.action_desc_t(actname, f'Close: {self.title}',
-                                         GraphCloser(self))
+        actname = f"graph_closer:{self.title}"
+        desc = ida_kernwin.action_desc_t(
+            actname, f"Close: {self.title}", GraphCloser(self)
+        )
         ida_kernwin.attach_dynamic_action_to_popup(form, popup_handle, desc)
 
         # color changer
-        actname = f'color_changer:{self.title}'
-        desc = ida_kernwin.action_desc_t(actname,
-                                         f'Change colors: {self.title}',
-                                         ColorChanger(self))
+        actname = f"color_changer:{self.title}"
+        desc = ida_kernwin.action_desc_t(
+            actname, f"Change colors: {self.title}", ColorChanger(self)
+        )
         ida_kernwin.attach_dynamic_action_to_popup(form, popup_handle, desc)
 
         # selection printer
-        actname = f'selection_printer:{self.title}'
-        desc = ida_kernwin.action_desc_t(actname,
-                                         f'Print selection: {self.title}',
-                                         SelectionPrinter(self))
+        actname = f"selection_printer:{self.title}"
+        desc = ida_kernwin.action_desc_t(
+            actname, f"Print selection: {self.title}", SelectionPrinter(self)
+        )
         ida_kernwin.attach_dynamic_action_to_popup(form, popup_handle, desc)
 
     def _get_all_pairs(self):
         pairs = list()
         for mod in self.dep_json:
-            for ub_mod in mod['used_by']:
-                pairs.append((mod['module_name'], ub_mod))
+            for ub_mod in mod["used_by"]:
+                pairs.append((mod["module_name"], ub_mod))
         return pairs
 
 
@@ -164,7 +144,7 @@ def run(json_file):
     if DEP_GRAPH:
         DEP_GRAPH.Close()
     try:
-        with open(json_file, 'r') as f:
+        with open(json_file, "r") as f:
             res_json = json.load(f)
         dep_json = get_dep_json(res_json)
         g = DependencyGraph(dep_json)
@@ -172,9 +152,9 @@ def run(json_file):
         if g.Show():
             return g
     except Exception as e:
-        print(f'[{NAME} error] {repr(e)}')
+        print(f"[{NAME} error] {repr(e)}")
     return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

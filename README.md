@@ -2,40 +2,11 @@
 ![Python Versions](https://img.shields.io/pypi/pyversions/yt2mp3.svg)
 ![Version](https://img.shields.io/badge/version-1.2.0-blue)
 
-# [UEFI_RETool](https://github.com/yeggor/UEFI_RETool)
+# uefi_retool
 
 A tool for UEFI firmware reverse engineering.
 
-# Table of Contents
-
-<details>
- <summary>Click to open TOC</summary>
-<!-- MarkdownTOC autolink="true" bracket="round" style="unordered" indent="  " autoanchor="false" markdown_preview="github" -->
-
-- [UEFI firmware analysis with uefi_retool.py script](#uefi-firmware-analysis-with-uefi_retoolpy-script)
-  - [Commands](#commands)
-  - [get-images](#get-images)
-  - [get-info](#get-info)
-  - [get-pp](#get-pp)
-- [Additional tools](#additional-tools)
-- [IDA plugin](#ida-plugin)
-  - [Analyser & Protocol explorer](#analyser--protocol-explorer)
-    - [Usage](#usage)
-    - [Example](#example)
-      - [Before analysis](#before-analysis)
-      - [After analysis](#after-analysis)
-      - [Protocol explorer window](#protocol-explorer-window)
-  - [Dependency browser & Dependency graph](#dependency-browser--dependency-graph)
-    - [Usage](#usage-1)
-    - [Example](#example-1)
-      - [Dependency browser window](#dependency-browser-window)
-      - [Dependency graph](#dependency-graph)
-- [Similar works](#similar-works)
-
-<!-- /MarkdownTOC -->
-</details>
-
-# UEFI firmware analysis with [uefi_retool.py](https://github.com/yeggor/UEFI_RETool/blob/master/uefi_retool.py) script
+## UEFI firmware analysis with `uefi_retool.py` script
 
 Usage:
 
@@ -138,60 +109,11 @@ python uefi_retool.py get-pp -w 6 test_fw/fw-tp-x1-carbon-5th.bin
 
 * `tools/update_edk2_guids.py` is a script that updates protocol GUIDs list from `edk2` project
 
-# IDA plugin
+## IDA plugin
 
-[IDA plugin for UEFI analysis](https://github.com/yeggor/UEFI_RETool/tree/master/ida_plugin)
+[IDA plugin for UEFI analysis](https://github.com/yeggor/uefi_retool/tree/master/ida_plugin)
 
-## Analyser & Protocol explorer
-
-### Usage
-  
-  * Copy `uefi_analyser` and `uefi_analyser.py` to your `%IDA_DIR%/plugins` directory
- 
-  * Open the executable UEFI image in IDA and go to `Edit` -> `Plugins` -> `UEFI analyser` *(alternatively, you can use the key combination `Ctrl+Alt+U`)*
-
-### Example
-
-#### Before analysis
-
-![before_analysis](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/before_analysis.png)
-
-#### After analysis
-
-![after_analysis](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/after_analysis.png)
-
-#### Protocol explorer window
-
-![protocols](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/protocols.png)
-
-## Dependency browser & Dependency graph
-
-### Usage
-
-  * Analyse the firmware using [uefi_retool.py](https://github.com/yeggor/UEFI_RETool/blob/master/uefi_retool.py)
-
-      ```bash
-      python uefi_retool.py get-info FIRMWARE_PATH
-      ```
-
-   * Load `<LOGS_DIR>/<FIRMWARE_NAME>-all-info.json` file to IDA (`File` -> `UEFI_RETool...`)
-
-      ![db-usage](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/db-usage.png)
-
-      *alternatively, you can use the key combination `Ctrl+Alt+J`*)
-
-### Example
-
-#### Dependency browser window
-
-![db-usage](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/depend-browser.png)
-
-#### Dependency graph
-
-![db-graph](https://raw.githubusercontent.com/yeggor/UEFI_RETool/master/img/depend-graph.png)
-
-
-# Similar works
+## Similar works
 
  * [ida-efiutils](https://github.com/snare/ida-efiutils)
  * [EFISwissKnife](https://github.com/gdbinit/EFISwissKnife)

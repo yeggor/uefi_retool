@@ -2,6 +2,6 @@
     "DUMP_DIR" : "all",
     "PE_DIR" : "modules",
     "LOGS_DIR": "logs",
-    "IDA_PATH" : "C:\\Program Files\\IDA Pro 7.5\\ida.exe",
-    "IDA64_PATH" : "C:\\Program Files\\IDA Pro 7.5\\ida64.exe"
+    "IDA_PATH" : "C:\\Program Files\\IDA Pro 7.6\\ida.exe",
+    "IDA64_PATH" : "C:\\Program Files\\IDA Pro 7.6\\ida64.exe"
 }

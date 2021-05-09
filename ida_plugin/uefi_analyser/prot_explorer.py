@@ -1,26 +1,4 @@
-################################################################################
-# MIT License
-#
-# Copyright (c) 2018-2020 yeggor
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-################################################################################
+# SPDX-License-Identifier: MIT
 
 import ida_kernwin
 import idaapi
@@ -32,7 +10,7 @@ from .analyser import Analyser
 from .tables import BOOT_SERVICES_OFFSET_x64, BOOT_SERVICES_OFFSET_x86
 from .utils import get_guid_str
 
-NAME = 'UEFI_RETool'
+NAME = "UEFI_RETool"
 
 
 class chooser_handler_t(idaapi.action_handler_t):
@@ -51,54 +29,53 @@ class chooser_handler_t(idaapi.action_handler_t):
 
 class ProtsWindow(Choose):
     """display protocols information output window"""
+
     def __init__(self, title, analyser, nb=5):
         sizes = self._get_sizes(analyser)
         head = [
-            ['Address', sizes['Address']],
-            ['Name', sizes['Name']],
-            ['Service', sizes['Service']],
-            ['Place', sizes['Place']],
-            ['GUID', sizes['GUID']],
+            ["Address", sizes["Address"]],
+            ["Name", sizes["Name"]],
+            ["Service", sizes["Service"]],
+            ["Place", sizes["Place"]],
+            ["GUID", sizes["GUID"]],
         ]
-        Choose.__init__(self,
-                        title,
-                        head,
-                        flags=0,
-                        width=None,
-                        height=None,
-                        embedded=False)
+        Choose.__init__(
+            self, title, head, flags=0, width=None, height=None, embedded=False
+        )
         self.n = 0
         self.items = self._get_lines(analyser)
         self.selcount = 0
         self.modal = False
-        self.popup_names = []
+        self.popup_names = list()
 
     def _get_sizes(self, analyser):
         """get maximum field sizes"""
-        sizes = {'Address': 0, 'Name': 0, 'Service': 0, 'Place': 0, 'GUID': 0}
-        for prot in analyser.Protocols['all'] + analyser.Protocols['data']:
-            addr = prot['address']
-            if len(f'{addr:016X}') > sizes['Address']:
-                sizes['Address'] = len(f'{addr:016X}')
-            if len(prot['protocol_name']) > sizes['Name']:
-                sizes['Name'] = len(prot['protocol_name'])
-            if len(prot['service']) > sizes['Service']:
-                sizes['Service'] = len(prot['service'])
-            if len(prot['protocol_place']) > sizes['Place']:
-                sizes['Place'] = len(prot['protocol_place'])
-            if len(get_guid_str(prot['guid'])) > sizes['GUID']:
-                sizes['GUID'] = len(get_guid_str(prot['guid']))
+        sizes = {"Address": 0, "Name": 0, "Service": 0, "Place": 0, "GUID": 0}
+        for prot in analyser.Protocols["all"] + analyser.Protocols["data"]:
+            addr = prot["address"]
+            if len(f"{addr:016X}") > sizes["Address"]:
+                sizes["Address"] = len(f"{addr:016X}")
+            if len(prot["protocol_name"]) > sizes["Name"]:
+                sizes["Name"] = len(prot["protocol_name"])
+            if len(prot["service"]) > sizes["Service"]:
+                sizes["Service"] = len(prot["service"])
+            if len(prot["protocol_place"]) > sizes["Place"]:
+                sizes["Place"] = len(prot["protocol_place"])
+            if len(get_guid_str(prot["guid"])) > sizes["GUID"]:
+                sizes["GUID"] = len(get_guid_str(prot["guid"]))
         return sizes
 
     def _get_lines(self, analyser):
         """fill line in the table"""
         lines = list()
-        for prot in analyser.Protocols['all'] + analyser.Protocols['data']:
-            addr = prot['address']
+        for prot in analyser.Protocols["all"] + analyser.Protocols["data"]:
+            addr = prot["address"]
             item = [
-                f'{addr:016X}', prot['protocol_name'], prot['service'],
-                prot['protocol_place'],
-                get_guid_str(prot['guid'])
+                f"{addr:016X}",
+                prot["protocol_name"],
+                prot["service"],
+                prot["protocol_place"],
+                get_guid_str(prot["guid"]),
             ]
             if not lines.count(item):
                 lines.append(item)
@@ -107,11 +84,11 @@ class ProtsWindow(Choose):
     def _make_item(self):
         """make custom element"""
         item = [
-            idaapi.ask_str(str(), 0, 'Address'),
-            idaapi.ask_str(str(), 0, 'Name'),
-            idaapi.ask_str(str(), 0, 'Service'),
-            idaapi.ask_str(str(), 0, 'Place'),
-            idaapi.ask_str(str(), 0, 'GUID')
+            idaapi.ask_str(str(), 0, "Address"),
+            idaapi.ask_str(str(), 0, "Name"),
+            idaapi.ask_str(str(), 0, "Service"),
+            idaapi.ask_str(str(), 0, "Place"),
+            idaapi.ask_str(str(), 0, "GUID"),
         ]
         self.n += 1
         return item
@@ -124,29 +101,29 @@ class ProtsWindow(Choose):
         return n
 
     def OnClose(self):
-        print(f'[{NAME}] protocol explorer window was closed')
+        print(f"[{NAME}] protocol explorer window was closed")
 
     def OnInsertLine(self, n):
-        print(f'[{NAME}] inserting is not supported')
+        print(f"[{NAME}] inserting is not supported")
         return n
 
     def OnSelectLine(self, n):
         self.selcount += 1
         ea = int(self.items[n][0], 16)
         idc.jumpto(ea)
-        print(f'[{NAME}] jump to {ea:016X}')
+        print(f"[{NAME}] jump to {ea:016X}")
         return n
 
     def OnEditLine(self, n):
-        print(f'[{NAME}] editing is not supported')
+        print(f"[{NAME}] editing is not supported")
         return n
 
     def OnDeleteLine(self, n):
-        print(f'[{NAME}] deleting is not supported')
+        print(f"[{NAME}] deleting is not supported")
         return n
 
     def OnRefresh(self, n):
-        print(f'[{NAME}] refreshing is not supported')
+        print(f"[{NAME}] refreshing is not supported")
         return n
 
     def OnGetLineAttr(self, n):
@@ -164,20 +141,21 @@ def run():
         analyser.analyse_all()
     if not analyser.valid:
         analyser.arch = idaapi.ask_str(
-            'x86 / x64', 0, 'Set architecture manually (x86 or x64)')
-        if analyser.arch == 'x86':
+            "x86 / x64", 0, "Set architecture manually (x86 or x64)"
+        )
+        if analyser.arch == "x86":
             analyser.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x86
-        elif analyser.arch == 'x64':
+        elif analyser.arch == "x64":
             analyser.BOOT_SERVICES_OFFSET = BOOT_SERVICES_OFFSET_x64
         else:
             return False
         analyser.print_all()
         analyser.analyse_all()
-    if analyser.Protocols['all']:
-        wind = ProtsWindow(f'{NAME} protocol explorer', analyser, nb=10)
+    if analyser.Protocols["all"]:
+        wind = ProtsWindow(f"{NAME} protocol explorer", analyser, nb=10)
         wind.show()
     return True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()
