@@ -6,7 +6,7 @@
 
 A tool for UEFI firmware reverse engineering.
 
-## UEFI firmware analysis with `uefi_retool.py` script
+## UEFI firmware analysis with uefi_retool script
 
 Usage:
 
@@ -19,7 +19,7 @@ Usage:
  * Run `pip install -r requirements.txt`
  * Run `python uefi_retool.py` command to display the help message
 
-## Commands
+### Commands
 
 ```bash
 python uefi_retool.py
@@ -37,7 +37,7 @@ Commands:
   get-pp      Get a list of proprietary protocols in the UEFI firmware.
 ```
 
-## get-images
+### get-images
 
 ```bash
 python uefi_retool.py get-images --help
@@ -59,7 +59,7 @@ Example:
 python uefi_retool.py get-images test_fw/fw-tp-x1-carbon-5th.bin
 ```
 
-## get-info
+### get-info
 
 ```bash
 python uefi_retool.py get-info --help
@@ -82,7 +82,7 @@ Example:
 python uefi_retool.py get-info -w 6 test_fw/fw-tp-x1-carbon-5th.bin
 ```
 
-## get-pp
+### get-pp
 
 ```bash
 python uefi_retool.py get-pp --help
@@ -105,7 +105,7 @@ Example:
 python uefi_retool.py get-pp -w 6 test_fw/fw-tp-x1-carbon-5th.bin
 ```
 
-# Additional tools
+## Additional tools
 
 * `tools/update_edk2_guids.py` is a script that updates protocol GUIDs list from `edk2` project
 
