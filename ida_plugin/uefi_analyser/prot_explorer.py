@@ -1,8 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-import ida_kernwin
 import idaapi
-import idautils
 import idc
 from idaapi import Choose
 

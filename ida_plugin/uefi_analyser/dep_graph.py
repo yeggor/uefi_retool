@@ -1,14 +1,9 @@
 # SPDX-License-Identifier: MIT
 
 import json
-import os
 
-import ida_funcs
 import ida_graph
-import ida_idp
 import ida_kernwin
-import ida_ua
-import idautils
 
 from .utils import get_dep_json
 

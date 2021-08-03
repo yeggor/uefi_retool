@@ -4,28 +4,23 @@ import os
 
 import idaapi
 import idautils
-import idc
 from PyQt5 import QtWidgets
 
 from uefi_analyser import dep_browser, dep_graph, prot_explorer, ui
 
 AUTHOR = "yeggor"
 VERSION = "1.2.0"
-
 NAME = "UEFI_RETool"
-WANTED_KEY = "Ctrl+Alt+U"
-
-
-HELP_MSG = "This plugin performs automatic analysis of the input UEFI module"
-COMMENT_MSG = "This plugin performs automatic analysis of the input UEFI module"
+WANTED_HOTKEY = "Ctrl+Alt+U"
+HELP = "This plugin performs automatic analysis of the input UEFI module"
 
 
 class UefiAnalyserPlugin(idaapi.plugin_t):
     flags = idaapi.PLUGIN_MOD | idaapi.PLUGIN_PROC | idaapi.PLUGIN_FIX
-    comment = COMMENT_MSG
-    help = HELP_MSG
+    comment = HELP
+    help = HELP
     wanted_name = NAME
-    wanted_hotkey = WANTED_KEY
+    wanted_hotkey = WANTED_HOTKEY
 
     def init(self):
         self._last_directory = idautils.GetIdbDir()
@@ -71,7 +66,7 @@ class UefiAnalyserPlugin(idaapi.plugin_t):
     @staticmethod
     def _welcome():
         print(f"\n{NAME} plugin by {AUTHOR} ({VERSION})")
-        print(f"{NAME} shortcut key is {WANTED_KEY}\n")
+        print(f"{NAME} shortcut key is {WANTED_HOTKEY}\n")
 
     @staticmethod
     def _analyse_all():

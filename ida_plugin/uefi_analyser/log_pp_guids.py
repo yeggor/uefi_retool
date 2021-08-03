@@ -8,6 +8,7 @@ import tempfile
 import ida_nalt
 import idaapi
 import idc
+
 from uefi_analyser.analyser import Analyser
 from uefi_analyser.utils import get_guid_str
 

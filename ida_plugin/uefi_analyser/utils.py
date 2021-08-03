@@ -4,7 +4,6 @@ import os
 
 import ida_bytes
 import idaapi
-import idautils
 import idc
 
 # definitions from PE file structure

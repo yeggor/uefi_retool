@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: MIT
 
-import json
-
 import ida_bytes
 import ida_name
 import idaapi
