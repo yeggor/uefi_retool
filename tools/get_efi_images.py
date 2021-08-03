@@ -24,6 +24,7 @@ class Dumper:
         self.fw_name = fw_name
         self.dir_name = dir_name
         self.pe_dir = pe_dir
+        self.modules = list()
         if not os.path.isdir(self.dir_name):
             os.mkdir(self.dir_name)
         if not os.path.isdir(self.pe_dir):
@@ -34,8 +35,18 @@ class Dumper:
         print("[-] This type of binary is not supported")
         return False
 
-    @staticmethod
-    def get_module_name(module_path: str) -> str:
+    def get_unique_name(self, module_name: str) -> str:
+        # Get unique name, see https://github.com/binarly-io/efiXplorer/issues/11
+        index = 1
+        unique_name = module_name
+        while True:
+            if unique_name in self.modules:
+                unique_name = f"{module_name}_{index:#d}"
+                index += 1
+                continue
+            return unique_name
+
+    def get_module_name(self, module_path: str) -> str:
         module_name = str()
         dir_name, _ = os.path.split(module_path)
         template = os.path.join(dir_name, "*.ui")
@@ -45,7 +56,9 @@ class Dumper:
             with open(ui_path, "rb") as f:
                 module_name = f.read()
             module_name = module_name.decode("utf-16le")
-            return module_name[:-1]
+            module_name = self.get_unique_name(module_name[:-1])
+            self.modules.append(module_name)
+            return module_name
         # no UI section, try to get a friendly name from the GUID database
         file_guids = g_re_guid.findall(dir_name)
         if not file_guids:
@@ -54,6 +67,8 @@ class Dumper:
         module_name = UEFI_GUIDS.get(module_guid.upper())
         if not module_name:
             module_name = module_guid
+        module_name = self.get_unique_name(module_name)
+        self.modules.append(module_name)
         return module_name
 
     @staticmethod

@@ -6,6 +6,7 @@ import idaapi
 import idautils
 import idc
 from PyQt5 import QtWidgets
+
 from uefi_analyser import dep_browser, dep_graph, prot_explorer, ui
 
 AUTHOR = "yeggor"
@@ -13,6 +14,8 @@ VERSION = "1.2.0"
 
 NAME = "UEFI_RETool"
 WANTED_KEY = "Ctrl+Alt+U"
+
+
 HELP_MSG = "This plugin performs automatic analysis of the input UEFI module"
 COMMENT_MSG = "This plugin performs automatic analysis of the input UEFI module"
 
