@@ -1,7 +1,3 @@
-![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg)
-![Python Versions](https://img.shields.io/pypi/pyversions/yt2mp3.svg)
-![Version](https://img.shields.io/badge/version-1.2.0-blue)
-
 # uefi_retool
 
 A tool for UEFI firmware reverse engineering.
