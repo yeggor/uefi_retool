@@ -6,14 +6,14 @@ A tool for UEFI firmware reverse engineering.
 
 Usage:
 
- * Copy `ida_plugin/uefi_analyser.py` script and `ida_plugin/uefi_analyser` directory to IDA plugins directory
- * Edit `config.json` file
-    - `PE_DIR` is a directory that contains all executable images from the UEFI firmware
-    - `DUMP_DIR` is a directory that contains all components from the firmware filesystem
-    - `LOGS_DIR` is a directory for logs
-    - `IDA_PATH` and `IDA64_PATH` are paths to IDA Pro executable files
- * Run `pip install -r requirements.txt`
- * Run `python uefi_retool.py` command to display the help message
+- Copy `ida_plugin/uefi_analyser.py` script and `ida_plugin/uefi_analyser` directory to IDA plugins directory
+- Edit `config.json` file
+  - `PE_DIR` is a directory that contains all executable images from the UEFI firmware
+  - `DUMP_DIR` is a directory that contains all components from the firmware filesystem
+  - `LOGS_DIR` is a directory for logs
+  - `IDA_PATH` and `IDA64_PATH` are paths to IDA Pro executable files
+- Run `pip install -r requirements.txt`
+- Run `python uefi_retool.py` command to display the help message
 
 ### Commands
 
@@ -103,7 +103,7 @@ python uefi_retool.py get-pp -w 6 test_fw/fw-tp-x1-carbon-5th.bin
 
 ## Additional tools
 
-* `tools/update_edk2_guids.py` is a script that updates protocol GUIDs list from `edk2` project
+- `tools/update_edk2_guids.py` is a script that updates protocol GUIDs list from `edk2` project
 
 ## IDA plugin
 
@@ -111,6 +111,6 @@ python uefi_retool.py get-pp -w 6 test_fw/fw-tp-x1-carbon-5th.bin
 
 ## Similar works
 
- * [ida-efiutils](https://github.com/snare/ida-efiutils)
- * [EFISwissKnife](https://github.com/gdbinit/EFISwissKnife)
- * [ghidra-firmware-utils](https://github.com/al3xtjames/ghidra-firmware-utils)
+- [ida-efiutils](https://github.com/snare/ida-efiutils)
+- [EFISwissKnife](https://github.com/gdbinit/EFISwissKnife)
+- [ghidra-firmware-utils](https://github.com/al3xtjames/ghidra-firmware-utils)
